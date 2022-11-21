@@ -1,4 +1,5 @@
 <H1>Food Mayhem</h1>
+<H2>Cambio de nombre propuesto -> I-Scream </H2>
 
 Game Design Document
 
