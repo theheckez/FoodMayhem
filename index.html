@@ -16,19 +16,18 @@
 
     function Player(scene) {
       Phaser.Physics.Arcade.Sprite.call(this, scene, 500,450, 'dude');
-
       this.health = 100;
       this.attack = 10;
       this.speed = 100;
       
-      this.anims.create({
+      this.scene.anims.create({
         key: 'down',
-        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 5 }),
+        frames: this.scene.anims.generateFrameNumbers('dude', { start: 0, end: 5 }),
         frameRate: 10,
         repeat: -1
         );
         
-       this.anims.create({
+       this.scene.anims.create({
         key: 'turn',
         frames: [ { key: 'dude', frame: 2 } ],
         frameRate: 20
@@ -40,10 +39,10 @@
         this.setVelocityY(-160);
       } else if (keys['down'].isDown){
         this.setVelocityY(160);
-        this.anims.play('down',true);
+        this.scene.anims.play('down',true);
       } else {
         this.setVelocityY(0);
-        this.anims.play('turn');
+        this.scene.anims.play('turn');
       }
 
       if(keys['left'].isDown) {
