@@ -11,10 +11,12 @@
 <script type="text/javascript">
 
   var Player = new Phaser.Class({
+    Extends: Phaser.Physics.Arcade.Sprite,
     initialize:
 
-    function Player(player) {
-      this.parent = player;
+    function Player(scene) {
+      Phaser.Physics.Arcade.Sprite.call(this, scene, 500,450, 'dude');
+
       this.health = 100;
     }
 
@@ -31,7 +33,7 @@
 
     hunt: function(target) {
       parent.rotation = Phaser.Math.Angle.Between(parent.x, parent.y, target.x, target.y);
-      parent.setVelocityX = (target.x - parent.x);
+
     }
   })
   var MainGame = new Phaser.Class({
@@ -62,7 +64,9 @@
     create: function() {
       this.add.image(400,300,'sky');
 
-      player = this.physics.add.sprite(300,450,'dude');
+      player = this.physics.add.existing(new Player(this));
+      this.add.existing(player);
+      player.setVisible(true);
       enemy = this.physics.add.sprite(300,150,'pumpkin');
       enemyProp = new Enemy(enemy);
 
@@ -76,9 +80,9 @@
 
     update: function() {
 
-      this.checkInput();
+      //this.checkInput();
       enemyProp.hunt(player);
-      enemy.setVelocityX
+
     },
 
     checkInput: function() {
