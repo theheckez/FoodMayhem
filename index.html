@@ -18,24 +18,44 @@
       Phaser.Physics.Arcade.Sprite.call(this, scene, 500,450, 'dude');
 
       this.health = 100;
+      this.attack = 10;
+      this.speed = 100;
+    },
+    
+    move: function(keys) {
+      if(keys['up'].isDown) {
+        this.setVelocityY(-160);
+      } else if (keys['down'].isDown){
+        this.setVelocityY(160);
+      } else {
+        this.setVelocityY(0);
+      }
+
+      if(keys['left'].isDown) {
+        this.setVelocityX(-160);
+      } else if(keys['right'].isDown) {
+        this.setVelocityX(160);
+      } else {
+        this.setVelocityX(0);
+      }
     }
 
 
   });
 
   var Enemy = new Phaser.Class({
+    Extends: Phaser.Physics.Arcade.Sprite,
     initialize:
 
-    function Enemy(enemy) {
-      this.parent = enemy;
+    function Enemy(scene) {
+      Phaser.Physics.Arcade.Sprite.call(this,scene, 500, 200, 'pumpkin');
+      
       this.health = 100;
-    },
-
-    hunt: function(target) {
-      parent.rotation = Phaser.Math.Angle.Between(parent.x, parent.y, target.x, target.y);
-
+      this.attack = 10;
+      this.speed = 100;
     }
   })
+  
   var MainGame = new Phaser.Class({
     Extends: Phaser.Scene,
 
@@ -45,12 +65,9 @@
        Phaser.Scene.call(this, { key: 'mainGame' });
 
        this.player;
-       this.playerSpeed;
-       this.playerHealth;
-       this.playerAttack;
 
        this.enemy;
-       this.enemyProp;
+       
        this.keys;
 
     },
@@ -66,9 +83,7 @@
 
       player = this.physics.add.existing(new Player(this));
       this.add.existing(player);
-      player.setVisible(true);
-      enemy = this.physics.add.sprite(300,150,'pumpkin');
-      enemyProp = new Enemy(enemy);
+    
 
       keys = this.input.keyboard.addKeys({
         'up': Phaser.Input.Keyboard.KeyCodes.W,
@@ -81,27 +96,11 @@
     update: function() {
 
       //this.checkInput();
-      enemyProp.hunt(player);
+      player.move(keys);
 
-    },
+    }
 
-    checkInput: function() {
-      if(keys['up'].isDown) {
-        player.setVelocityY(-160);
-      } else if (keys['down'].isDown){
-        player.setVelocityY(160);
-      } else {
-        player.setVelocityY(0);
-      }
-
-      if(keys['left'].isDown) {
-        player.setVelocityX(-160);
-      } else if(keys['right'].isDown) {
-        player.setVelocityX(160);
-      } else {
-        player.setVelocityX(0);
-      }
-    },
+   
 
   });
 
