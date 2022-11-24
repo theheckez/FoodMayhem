@@ -4,14 +4,191 @@
 <head>
   <meta name="" charset="utf-8" content=""/>
   <title>Food Mayhem</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
 </head>
 
 <body>
-  <div id="container"></div>
-  <script src="./node_modules/phaser/dist/phaser.js"></script>
-  <script src="./src/init.js"></script>
+<script type="text/javascript">
+
+  var Player = new Phaser.Class({
+    Extends: Phaser.Physics.Arcade.Sprite,
+    initialize:
+
+    function Player(scene) {
+      Phaser.Physics.Arcade.Sprite.call(this, scene, 500,450, 'dude');
+
+      scene.add.existing(this);
+      scene.physics.add.existing(this);
+
+      this.health = 100;
+      this.attack = 10;
+      this.speed = 100;
+
+      this.keys = scene.input.keyboard.addKeys({
+        'up': Phaser.Input.Keyboard.KeyCodes.W,
+        'down': Phaser.Input.Keyboard.KeyCodes.S,
+        'left': Phaser.Input.Keyboard.KeyCodes.A,
+        'right': Phaser.Input.Keyboard.KeyCodes.D
+      });
+
+      this.initAnimations();
+    },
+
+    move: function(scene) {
+      if(this.keys['up'].isDown) {
+        this.setVelocityY(-this.speed);
+        this.anims.play('up', true);
+      } else if (this.keys['down'].isDown){
+        this.setVelocityY(this.speed);
+        this.anims.play('down',true);
+      } else {
+        this.setVelocityY(0);
+        this.anims.play('turn');
+      }
+
+      if(this.keys['left'].isDown) {
+        this.setVelocityX(-this.speed);
+        this.anims.play('left', true);
+      } else if(this.keys['right'].isDown) {
+        this.setVelocityX(this.speed);
+        this.anims.play('right', true);
+      } else {
+        this.setVelocityX(0);
+      }
+
+      // Event handler for when the animation completes on our sprite
+      this.on(Phaser.Animations.Events.ANIMATION_COMPLETE, function () {
+          this.anims.play('turn');
+        }, this);
+
+      if (this.scene.input.activePointer.downTime != 0) { // sale la animacion solo cuando esta pulsado el click, necesito q cuando se pulse salga la animacion entera
+        this.anims.play('punch', true);
+      }
+
+      /*this.scene.input.on('pointerdown', function(pointer){
+        player.anims.play('punch', true);
+      }, this);*/
+    },
+
+    initAnimations: function() {
+
+      this.scene.anims.create({
+        key: 'down',
+        frames: this.scene.anims.generateFrameNumbers('dude', { start: 7, end: 12 }),
+        frameRate: 10,
+        repeat: -1
+      });
+
+      this.scene.anims.create({
+        key: 'up',
+        frames: this.scene.anims.generateFrameNumbers('dude', { start: 14, end: 19 }),
+        frameRate: 10,
+        repeat: -1
+      });
+
+      this.scene.anims.create({
+        key: 'left',
+        frames: this.scene.anims.generateFrameNumbers('dude', { start: 28, end: 32 }),
+        frameRate: 10,
+        repeat: -1
+      });
+
+      this.scene.anims.create({
+        key: 'right',
+        frames: this.scene.anims.generateFrameNumbers('dude', { start: 21, end: 25 }),
+        frameRate: 10,
+        repeat: -1
+      });
+
+      this.scene.anims.create({
+        key: 'turn',
+        frames: [ { key: 'dude', frame: 1 } ],
+        frameRate: 20,
+        repeat: 1
+      });
+
+      // MORIR (se ve cuando vida = 0)
+      this.scene.anims.create({
+        key: 'die',
+        frames: this.scene.anims.generateFrameNumbers('attack', { start: 16, end: 18 }),
+        frameRate: 10,
+      });
+      
+        // PEGAR (al dar click izdo)
+      this.scene.anims.create({
+        key: 'punch',
+        frames: this.scene.anims.generateFrameNumbers('attack', { start: 12, end: 15 }),
+        frameRate: 10,
+      });
+    }
+  });
+
+  var Enemy = new Phaser.Class({
+    Extends: Phaser.Physics.Arcade.Sprite,
+    initialize:
+
+    function Enemy(scene) {
+      Phaser.Physics.Arcade.Sprite.call(this,scene, 500, 200, 'pumpkin');
+
+      this.health = 100;
+      this.attack = 10;
+      this.speed = 100;
+    }
+  })
+
+  var MainGame = new Phaser.Class({
+    Extends: Phaser.Scene,
+
+    initialize:
+
+    function MainGame() {
+       Phaser.Scene.call(this, { key: 'mainGame' });
+
+       this.player;
+
+       this.enemy;
+
+    },
+
+    preload: function(){
+      this.load.image('sky', 'assets/sky.png');
+      this.load.spritesheet('dude', 'assets/SpritesheetP1(Andar).png', { frameWidth: 64, frameHeight: 64 });
+      this.load.spritesheet('attack', 'assets/player.png', { frameWidth: 48, frameHeight: 48 });
+    },
+
+    create: function() {
+      this.add.image(400,300,'sky');
+
+      player = new Player(this);
+
+    },
+
+    update: function() {
+
+      //this.checkInput();
+      player.move(this);
+
+      
+    }
+
+  });
+
+  const config = {
+    type: Phaser.Auto,
+    width: 800,
+    height: 600,
+    pixelArt: true,
+    physics: {
+      default: 'arcade',
+      arcade: {
+        gravity: {y: 0},
+        debug: true
+      }
+    },
+    scene: [ MainGame ]
+  };
+
+  var game = new Phaser.Game(config);
+
+</script>
 </body>
-
-
-
-</html>
