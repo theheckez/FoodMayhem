@@ -16,42 +16,58 @@
 
     function Player(scene) {
       Phaser.Physics.Arcade.Sprite.call(this, scene, 500,450, 'dude');
+
+      scene.add.existing(this);
+      scene.physics.add.existing(this);
+
       this.health = 100;
       this.attack = 10;
       this.speed = 100;
-      
+
+      this.keys = scene.input.keyboard.addKeys({
+        'up': Phaser.Input.Keyboard.KeyCodes.W,
+        'down': Phaser.Input.Keyboard.KeyCodes.S,
+        'left': Phaser.Input.Keyboard.KeyCodes.A,
+        'right': Phaser.Input.Keyboard.KeyCodes.D
+      });
+
+      this.initAnimations();
+    },
+
+    move: function(scene) {
+      if(this.keys['up'].isDown) {
+        this.setVelocityY(-this.speed);
+      } else if (this.keys['down'].isDown){
+        this.setVelocityY(this.speed);
+        this.anims.play('down',true);
+      } else {
+        this.setVelocityY(0);
+        this.anims.play('turn');
+      }
+
+      if(this.keys['left'].isDown) {
+        this.setVelocityX(-this.speed);
+      } else if(this.keys['right'].isDown) {
+        this.setVelocityX(this.speed);
+      } else {
+        this.setVelocityX(0);
+      }
+    },
+
+    initAnimations: function() {
+
       this.scene.anims.create({
         key: 'down',
         frames: this.scene.anims.generateFrameNumbers('dude', { start: 0, end: 5 }),
         frameRate: 10,
         repeat: -1
-        );
-        
+      });
+
        this.scene.anims.create({
         key: 'turn',
         frames: [ { key: 'dude', frame: 2 } ],
         frameRate: 20
       });
-    },
-    
-    move: function(keys) {
-      if(keys['up'].isDown) {
-        this.setVelocityY(-160);
-      } else if (keys['down'].isDown){
-        this.setVelocityY(160);
-        this.scene.anims.play('down',true);
-      } else {
-        this.setVelocityY(0);
-        this.scene.anims.play('turn');
-      }
-
-      if(keys['left'].isDown) {
-        this.setVelocityX(-160);
-      } else if(keys['right'].isDown) {
-        this.setVelocityX(160);
-      } else {
-        this.setVelocityX(0);
-      }
     }
 
 
@@ -63,13 +79,13 @@
 
     function Enemy(scene) {
       Phaser.Physics.Arcade.Sprite.call(this,scene, 500, 200, 'pumpkin');
-      
+
       this.health = 100;
       this.attack = 10;
       this.speed = 100;
     }
   })
-  
+
   var MainGame = new Phaser.Class({
     Extends: Phaser.Scene,
 
@@ -81,8 +97,7 @@
        this.player;
 
        this.enemy;
-       
-       this.keys;
+
 
     },
 
@@ -95,26 +110,20 @@
     create: function() {
       this.add.image(400,300,'sky');
 
-      player = this.physics.add.existing(new Player(this));
-      this.add.existing(player);
-    
+      player = new Player(this);
 
-      keys = this.input.keyboard.addKeys({
-        'up': Phaser.Input.Keyboard.KeyCodes.W,
-        'down': Phaser.Input.Keyboard.KeyCodes.S,
-        'left': Phaser.Input.Keyboard.KeyCodes.A,
-        'right': Phaser.Input.Keyboard.KeyCodes.D
-      });
+
+
     },
 
     update: function() {
 
       //this.checkInput();
-      player.move(keys);
+      player.move(this);
 
     }
 
-   
+
 
   });
 
