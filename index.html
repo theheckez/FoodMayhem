@@ -43,18 +43,26 @@
 
       if(this.keys['left'].isDown) {
         this.setVelocityX(-this.speed);
-      !this.anims.isPlaying && this.anims.play('left',true);
+
+      if(!(this.anims.getCurrentKey() === 'up' || this.anims.getCurrentKey() === 'down'))
+      this.anims.play('left',true);
       } else if(this.keys['right'].isDown) {
         this.setVelocityX(this.speed);
-            !this.anims.isPlaying && this.anims.play('right',true);
+
+        if(!(this.anims.getCurrentKey() === 'up' || this.anims.getCurrentKey() === 'down'))
+        this.anims.play('right',true);
       }
 
       if(this.keys['up'].isDown) {
         this.setVelocityY(-this.speed);
-            !this.anims.isPlaying && this.anims.play('up',true);
+         this.anims.play('up',true);
       } else if (this.keys['down'].isDown){
         this.setVelocityY(this.speed);
-            !this.anims.isPlaying && this.anims.play('down',true);
+        this.anims.play('down',true);
+    }
+
+    if(this.body.velocity.equals(new Phaser.Math.Vector2(0, 0))){
+      this.anims.play('turn',true);
     }
 
     } else {
@@ -66,6 +74,27 @@
 
        this.setVelocityX(this.speed * axisH);
        this.setVelocityY(this.speed * axisV);
+
+       if(axisH < 0) {
+
+       if(!(this.anims.getCurrentKey() === 'up' || this.anims.getCurrentKey() === 'down'))
+       this.anims.play('left',true);
+     } else if(axisH > 0) {
+
+         if(!(this.anims.getCurrentKey() === 'up' || this.anims.getCurrentKey() === 'down'))
+         this.anims.play('right',true);
+       }
+
+       if(axisV<0) {
+
+          this.anims.play('up',true);
+       } else if (axisV >0){
+         this.anims.play('down',true);
+     }
+
+     if(this.body.velocity.equals(new Phaser.Math.Vector2(0, 0))){
+       this.anims.play('turn',true);
+     }
     }
     }
 
