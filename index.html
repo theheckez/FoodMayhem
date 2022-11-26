@@ -474,8 +474,10 @@
       this.load.image('valla2', 'assets/vallas/valla2.2.png');
       this.load.image('valla3', 'assets/vallas/valla3.png');
 
-      this.load.image('lifeLevel1', 'assets/nivelVida.png');
-      this.load.image('lifeBar1', 'assets/barraVida.png');
+      this.load.image('lifeLevel', 'assets/nivelVida.png');
+          this.load.image('lifeLevelP2', 'assets/nivelVidaP2.png');
+      this.load.image('lifeBarP1', 'assets/barraVidaP1.png');
+      this.load.image('lifeBarP2', 'assets/barraVidaP2.png');
     //  this.load.image('musicActive', 'assets/musicaActiva.png');
     //  this.load.image('musicInactive', 'assets/musicaInactiva.png');
       this.load.image('pause', 'assets/star.png');
@@ -498,10 +500,10 @@
       this.blocks = this.physics.add.staticGroup();
 
 
-      this.blocks.create(80,65,'valla');
-      this.blocks.create(410,139,'valla1');
-      this.blocks.create(553,100,'valla2');
-      this.blocks.create(410,335,'valla3');
+      this.blocks.create(80,65,'valla').setScale(0.95).refreshBody();
+      this.blocks.create(410,139,'valla1').setScale(0.95).refreshBody();
+      this.blocks.create(547,101,'valla2').setScale(0.95).refreshBody();
+      this.blocks.create(410,334,'valla3').setScale(0.95).refreshBody();
 
 
       //Declaración de PJs y NPCs
@@ -509,7 +511,7 @@
         classType: Enemy,
         runChildUpdate:false
       });
-      
+
       this.generateEnemies(5);
 
       //Jugadores
@@ -527,13 +529,13 @@
 
         //JUGADORES
         // 1
-        this.add.image(150, 50, 'lifeLevel');
-        this.life1 = this.add.image(150, 50, 'lifeBar1');
+        this.add.image(100, 30, 'lifeLevel');
+        this.life1 = this.add.image(100, 30, 'lifeBarP1');
         //this.life1.setCrop(0, 0, this.player.health * 2, 32);
         this.player.lifeBar = this.life1;
-        this.width= this.life1.width;
-        this.life2 = this.add.image(300, 50, 'lifeBar1');
-        this.add.image(750, 50, 'lifeLevel');
+
+        this.life2 = this.add.image(700, 30, 'lifeLevelP2');
+        this.add.image(660, 30, 'lifeBarP2');
         //var life2 = this.add.image(700,50,'lifeBar');
         //life2.setCrop(200 - (this.player.health * 2), 0, 200, 32);
 
@@ -591,8 +593,8 @@
 
       }
 
-      this.life1.setCrop(0, 0, this.width, 32);
-      this.life1.setCrop(0, 0, (this.player.health * this.width)/100, 32);
+    //  this.life1.setCrop(0, 0, this.width, 32);
+      //this.life1.setCrop(0, 0, (this.player.health * this.width)/100, 32);
 
       //console.log(this.life1.width);
       //console.log((this.player.health * this.width)/100);
