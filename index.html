@@ -7,7 +7,8 @@
     <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
 </head>
 
-<body>
+<body style="text-align:center">
+
 <script type="text/javascript">
 
   var Player = new Phaser.Class({
@@ -26,6 +27,7 @@
       this.attackDmg = 20;
       this.attackRange = 50;
       this.attackCooldown = 1;
+      this.bullets = this.scene.physics.add.group({ classType: Bullet, runChildUpdate: true });
 
       this.speed = 100;
 
@@ -70,7 +72,12 @@
     }
 
     if(this.scene.input.activePointer.isDown){
-      this.attack();
+      if(this.scene.input.activePointer.rightButtonDown()){
+            this.distAttack();
+      } else {
+        this.attack();
+      }
+
     }
 
       if(this.body.velocity.equals(new Phaser.Math.Vector2(0, 0)) && this.health >0 && !(this.anims.getCurrentKey() === 'punch')){
@@ -112,6 +119,10 @@
         this.attack();
       }
 
+      if(this.pad.isButtonDown(3)){
+        this.distAttack();
+      }
+
       if(this.body.velocity.equals(new Phaser.Math.Vector2(0, 0)) && this.health >0 && !(this.anims.getCurrentKey() === 'punch')){
         this.anims.play('turn',true);
       } else if(this.health === 0 && !this.dead){
@@ -129,9 +140,9 @@
       if (this.actualTime > (this.timeSinceLastIncrement + this.attackCooldown)) {
       this.anims.play('punch', true);
       //this.hitSound.play();
-    //  targets.health -= 10;
+      //  targets.health -= 10;
       console.log("Enemigo dañado");
-    //  console.log("Vida restante = " + targets.health);
+      //  console.log("Vida restante = " + targets.health);
       this.timeSinceLastIncrement = this.scene.time.now / 1000;
 
     //  if (targets.health == 0) {
@@ -142,11 +153,41 @@
       }
     },
 
+      distAttack: function (targets) {
+       this.actualTime = this.scene.time.now / 1000;
+
+         console.log("Right pointer Down")
+         if (this.actualTime > (this.timeSinceLastIncrement + this.attackCooldown)) {
+           // Get bullet from bullets group
+           var bullet = this.bullets.get().setActive(true).setVisible(true);
+           if (bullet) {
+             bullet.fire(this, targets);
+             this.scene.physics.add.collider(targets, bullet, function (target, bull) {
+               target.health -= 10;
+               console.log("Enemigo dañado por bala");
+               console.log("Vida restante = " + target.health);
+
+               // Kill enemy if health = 0
+               if (target.health == 0) {
+                 target.anims.play('malvinDie');
+                 target.dead = true;
+                 target.destroy();
+               }
+
+               // Destroy bullet
+               bull.setActive(false).setVisible(false);
+             });
+
+             this.timeSinceLastIncrement = this.scene.time.now / 1000;
+
+           }
+         }
+
+     },
+
     checkGamepad: function() {
       if(this.scene.input.gamepad.total === 1){
       this.control = true;
-
-
       }
 
 
@@ -225,8 +266,8 @@
     initialize:
 
 
-    function Enemy(newScene) {
-      Phaser.Physics.Arcade.Sprite.call(this,newScene, 500, 200, 'malvin');
+    function Enemy(newScene, x,y) {
+      Phaser.Physics.Arcade.Sprite.call(this,newScene, x, y, 'malvin');
 
       this.timeSinceLastIncrement = -3;
       this.actualTime;
@@ -235,9 +276,10 @@
       this.speed = 70;
       this.dead = false;
 
-      this.attackDmg = 10;
-      this.attackRange = 65;
+      this.attackDmg = 50;
+      this.attackRange = 50;
       this.attackCooldown = 3;
+      this.target;
 
       this.scene = newScene;
       newScene.add.existing(this);
@@ -256,41 +298,156 @@
       });
 
       this.scene.anims.create({
+        key:'malvinUp',
+        frames:this.scene.anims.generateFrameNumbers('malvin', {start:6,end:11}),
+        frameRate: 10,
+        repeat: -1
+      });
+
+      this.scene.anims.create({
+        key: 'malvinRight',
+        frames: this.scene.anims.generateFrameNumbers('malvin', {start:12,end:15}),
+        frameRate:10,
+        repeat: -1
+      });
+
+      this.scene.anims.create({
+        key: 'malvinLeft',
+        frames: this.scene.anims.generateFrameNumbers('malvin', {start:18,end:21}),
+        frameRate:10,
+        repeat: -1
+      })
+
+      this.scene.anims.create({
           key: 'malvinDie',
           frames: this.scene.anims.generateFrameNumbers('icyattack', { start: 36, end: 44 }),
           frameRate: 10,
-          repeat: -1
         });
+
 
     },
 
     hunt: function(targets) {
-
+      if(!targets[0].dead || !targets[1].dead ){
+      this.getTarget(targets);
       if(!this.dead){
-        this.direction = new Phaser.Math.Vector2(targets.x - this.x, targets.y - this.y);
+        this.direction = new Phaser.Math.Vector2(this.target.x - this.x, this.target.y - this.y);
         this.module = this.direction.length();
         if(this.module < this.attackRange) {
           this.setVelocityX(0);
           this.setVelocityY(0);
-          this.attack(targets);
+          this.attack(this.target);
         } else{
           this.setVelocityX((this.direction.x/this.module) * this.speed);
           this.setVelocityY((this.direction.y/this.module) * this.speed);
         }
+
+        if(this.direction.x > 0 && !(this.anims.getCurrentKey() === 'malvinUp' || this.anims.getCurrentKey() === 'malvinDown') ) {
+          this.anims.play('malvinRight',true);
+        } else if(this.direction.x < 0 && !(this.anims.getCurrentKey() === 'malvinUp' || this.anims.getCurrentKey() === 'malvinDown') ) {
+          this.anims.play('malvinLeft',true);
+        }
+
+        if(this.direction.y>0) {
+          this.anims.play('malvinDown',true)
+        } else if(this.direction.y <0) {
+          this.anims.play('malvinUp',true);
+        }
+
+
       }
+    } else{
+      this.setVelocityX(0);
+      this.setVelocityY(0);
+      this.anims.stop();
+    }
     },
 
     attack: function(targets) {
       this.actualTime = this.scene.time.now/1000;
 
       if(this.actualTime>(this.timeSinceLastIncrement+this.attackCooldown)){
-        targets.health-= 10;
-        targets.lifeBar.setCrop(0, 0, targets.health * 2, 32);
+        targets.health-= this.attackDmg;
+        //targets.lifeBar.setCrop(0, 0, targets.health * 2, 32);
         this.timeSinceLastIncrement = this.scene.time.now/1000;
       }
 
+    },
+
+    getTarget: function (targets) {
+      var distances = [];
+      var i;
+      var bestDistance;
+
+      distances[0] = Phaser.Math.Distance.Between(this.x, this.y, targets[0].x, targets[0].y);
+      bestDistance = distances[0];
+      if(!targets[0].dead){
+        this.target = targets[0];
+      }
+
+      for(i = 1; i<targets.length; i++){
+        distances[i] = Phaser.Math.Distance.Between(this.x, this.y, targets[i].x, targets[i].y);
+        if(bestDistance > distances[i] || this.target.dead){
+          bestDistance = distances[i];
+          if(!targets[i].dead){
+            this.target = targets[i];
+          }
+        }
+      }
     }
+
   })
+
+  var Bullet = new Phaser.Class({
+
+        Extends: Phaser.GameObjects.Image,
+
+        initialize:
+
+          // Bullet Constructor
+          function Bullet(scene) {
+            Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bullet');
+            this.speed = 1;
+            this.born = 0;
+            this.direction = 0;
+            this.xSpeed = 0;
+            this.ySpeed = 0;
+            this.setSize(12, 12, true);
+          },
+
+        fire: function (shooter, target) {
+          this.setPosition(shooter.x, shooter.y); // Initial position
+          this.direction = Math.atan((target.x - this.x) / (target.y - this.y));
+
+          // Calculate X and y velocity of bullet to moves it from shooter to target
+          if (target.y >= this.y) {
+            this.xSpeed = this.speed * Math.sin(this.direction);
+            this.ySpeed = this.speed * Math.cos(this.direction);
+          }
+          else {
+            this.xSpeed = -this.speed * Math.sin(this.direction);
+            this.ySpeed = -this.speed * Math.cos(this.direction);
+          }
+
+          this.rotation = shooter.rotation; // angle bullet with shooters rotation
+          this.born = 0; // Time since new bullet spawned
+
+          // this.setActive(false);
+          // this.setVisible(false);
+
+        },
+
+        update: function (time, delta) {
+          this.x += this.xSpeed * delta;
+          this.y += this.ySpeed * delta;
+          this.born += delta;
+          if (this.born > 1800) {
+            this.setActive(false);
+            this.setVisible(false);
+          }
+        }
+
+      });
 
   var MainGame = new Phaser.Class({
     Extends: Phaser.Scene,
@@ -302,23 +459,31 @@
 
        this.player;
        this.player2;
-
-       this.enemy;
+       this.players;
+       this.enemies;
 
        this.life1;
-;
+
     },
 
     preload: function(){
+      //Imágenes de escenario
       this.load.image('map', 'assets/map1.png');
-      this.load.image('deco', 'assets/deco1.png');
+      this.load.image('valla', 'assets/vallas/valla1.png');
+      this.load.image('valla1', 'assets/vallas/valla2.1.png');
+      this.load.image('valla2', 'assets/vallas/valla2.2.png');
+      this.load.image('valla3', 'assets/vallas/valla3.png');
+
       this.load.image('lifeLevel1', 'assets/nivelVida.png');
       this.load.image('lifeBar1', 'assets/barraVida.png');
     //  this.load.image('musicActive', 'assets/musicaActiva.png');
     //  this.load.image('musicInactive', 'assets/musicaInactiva.png');
       this.load.image('pause', 'assets/star.png');
+
+      //Imágenes de Icy
       this.load.spritesheet('icy', 'assets/icy.png', {frameWidth: 64, frameHeight: 64});
       this.load.spritesheet('icyattack', 'assets/icyattack.png', {frameWidth:64, frameHeight:64});
+      this.load.image('bullet', 'assets/bullet.png');
       this.load.spritesheet('malvin', 'assets/malvin.png', {frameWidth: 64, frameHeight: 64});
 //this.load.audio('escMusic', [
   //       'assets/Fantasy Zone - Keep on the Beat (Remastered).ogg',
@@ -332,15 +497,28 @@
 
       this.blocks = this.physics.add.staticGroup();
 
-      this.blocks.create(400,300,'deco');
 
+      this.blocks.create(80,65,'valla');
+      this.blocks.create(410,139,'valla1');
+      this.blocks.create(553,100,'valla2');
+      this.blocks.create(410,335,'valla3');
+
+
+      //Declaración de PJs y NPCs
+      this.enemies = this.add.group({
+        classType: Enemy,
+        runChildUpdate:false
+      });
+      
+      this.generateEnemies(5);
+
+      //Jugadores
       this.player = new Player(this, 300, 450);
       this.player2 = new Player(this, 500, 450);
-      this.enemy = new Enemy(this);
+      this.players = [this.player,this.player2];
 
-      this.add.existing(this.player);
-      this.physics.add.existing(this.player);
-      this.player.setCollideWorldBounds(true);
+      //Control de colisiones de mundo
+      this.initCollisions();
 
       // BOTONES
         var pause = this.add.image(400, 20, 'pause').setInteractive();
@@ -384,18 +562,21 @@
         //OPCIONES
         pause.on('pointerdown', function () {
           console.log("Pausa");
+
           // aqui se cambia al menu de pausa
         });
 
 
-        this.physics.add.collider(this.player,this.enemy);
-        this.physics.add.collider(this.player,this.blocks);
+
       },
 
     update: function() {
 
       this.player.move(this);
-      this.enemy.hunt(this.player);
+
+      this.enemies.children.each(function(enem) {
+      enem.hunt(this.players);
+      },this);
 
 
       //Jugador 2
@@ -404,7 +585,8 @@
         this.add.existing(this.player2);
         this.physics.add.existing(this.player2);
         this.player2.setCollideWorldBounds(true);
-
+        this.player2.setSize(30,30);
+        this.player2.setOffset(17,28);
         this.player2.move(this);
 
       }
@@ -412,12 +594,40 @@
       this.life1.setCrop(0, 0, this.width, 32);
       this.life1.setCrop(0, 0, (this.player.health * this.width)/100, 32);
 
-      console.log(this.life1.width);
-      console.log((this.player.health * this.width)/100);
-      console.log(this.player.health);
-      console.log("Tamaño actualizado" + this.life1.width + " vs. Tamaño estático: " + this.width);
-    }
+      //console.log(this.life1.width);
+      //console.log((this.player.health * this.width)/100);
+      //console.log(this.player.health);
+      //console.log("Tamaño actualizado" + this.life1.width + " vs. Tamaño estático: " + this.width);
+    },
 
+    initCollisions: function() {
+      this.add.existing(this.player);
+      this.physics.add.existing(this.player);
+      this.player.setCollideWorldBounds(true);
+      this.player.setSize(30,30);
+      this.player.setOffset(17,28);
+
+      //HitBox Enemigos
+      this.enemies.children.each(function(enem) {
+      enem.setSize(30,30);
+      enem.setOffset(17,28);
+      },this);
+
+      //Colisiones de mundo
+      this.physics.add.collider(this.player,this.enemies);
+      this.physics.add.collider(this.player,this.blocks);
+      this.physics.add.collider(this.enemies,this.enemies);
+      this.physics.add.collider(this.enemies,this.blocks);
+      this.physics.add.collider(this.player2,this.enemies);
+      this.physics.add.collider(this.player2,this.blocks);
+
+    },
+
+    generateEnemies: function(number) {
+      for(var i = 0; i<number ; i++){
+        this.enemies.get(Phaser.Math.Between(100,500),
+        Phaser.Math.Between(100,700), 'malvin');  }
+    }
 
 
   });
@@ -540,7 +750,7 @@
       'transparent'
     ]
   },
-    scene: [ PantallaCarga, PantallaInicio, MainGame ]
+    scene: [MainGame ]
   };
 
   var game = new Phaser.Game(config);
