@@ -26,7 +26,7 @@ const config = {
     ]
   },
   //ESCENAS:
-  scene: [PantallaCarga, PantallaInicio, PantallaSeleccion]
+  scene: [PantallaSeleccion]
 };
 
 //Instancia del juego

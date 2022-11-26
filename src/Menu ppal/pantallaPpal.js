@@ -21,12 +21,6 @@ class PantallaInicio extends Phaser.Scene {
         this.playButton = this.add.sprite(380, 350, "BotonPlay").setInteractive();
         this.playButton.scale = 3;
 
-        //Animar boton:
-        this.anims.create({
-            key: 'pasar',
-            frameRate: 64,
-            frames: 1
-        });
     }
 
     update(time, delta)
