@@ -1,5 +1,6 @@
 import PantallaCarga from './Menu ppal/loadScene.js'
 import PantallaInicio from './Menu ppal/pantallaPpal.js'
+import PantallaSeleccion from './Menu ppal/seleccPlayer.js';
 
 const config = {
   title: 'FoodMayhem',
@@ -25,7 +26,7 @@ const config = {
     ]
   },
   //ESCENAS:
-  scene: [PantallaInicio]
+  scene: [PantallaCarga, PantallaInicio, PantallaSeleccion]
 };
 
 //Instancia del juego

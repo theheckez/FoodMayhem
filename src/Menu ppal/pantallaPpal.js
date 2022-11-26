@@ -17,24 +17,41 @@ class PantallaInicio extends Phaser.Scene {
     create(){
         //this.add.image(this.game.renderer.width/2, this.game.renderer.height*0.20, "star");
         this.add.image(400, 300, "sky");
-        this.add.image(60, 0, "logo").setOrigin(0);
-        this.playButton = this.add.sprite(300, 300, "BotonPlay").setInteractive();
-        playButton.scale = 3;
+        this.add.image(150, 50, "logo").setOrigin(0);
+        this.playButton = this.add.sprite(380, 350, "BotonPlay").setInteractive();
+        this.playButton.scale = 3;
+
+        //Animar boton:
+        this.anims.create({
+            key: 'pasar',
+            frameRate: 64,
+            frames: 1
+        });
     }
+
     update(time, delta)
     {
-        playButton.on("pointover", ()=>{
-            console.log("Encima del boton")
+        this.playButton.on("pointerover", ()=>{
+            console.log("Encima");
+            this.playButton.setFrame(1);
         })
         
-        playButton.on("pointerout", ()=>{
-            console.log("Saliendo del boton")
+        
+        this.playButton.on("pointerout", ()=>{
+            console.log("Saliendo del boton");
+            this.playButton.setFrame(0);
         })
         
-        playButton.on("pointerup", ()=>{
+        
+        this.playButton.on("pointerdown", ()=>{
             console.log("Open the gates")
+            this.playButton.setFrame(3);
+            this.scene.start("PantallaSeleccion", "hello from menu"); 
         })
+        
     }
+
+    
 }
 
 export default PantallaInicio;
