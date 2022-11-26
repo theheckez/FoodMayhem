@@ -14,12 +14,8 @@
     Extends: Phaser.Physics.Arcade.Sprite,
     initialize:
 
-    function Player(newScene) {
-      Phaser.Physics.Arcade.Sprite.call(this, newScene, 500,450, 'icy');
-
-      newScene.add.existing(this);
-      newScene.physics.add.existing(this);
-      this.setCollideWorldBounds(true);
+    function Player(newScene, x,y ) {
+      Phaser.Physics.Arcade.Sprite.call(this, newScene, x,y, 'icy');
 
       this.timeSinceLastIncrement = -1;
 
@@ -35,8 +31,10 @@
 
       this.scene = newScene;
 
+      this.control = false;
       this.keys;
       this.pad;
+      this.buttons;
 
       this.initInput();
       this.initAnimations();
@@ -45,9 +43,8 @@
     },
 
     move: function(scene) {
-      this.pad = this.scene.input.gamepad.getPad(0);
-
-      if (this.scene.input.gamepad.total === 0)
+  this.pad = this.scene.input.gamepad.getPad(0);
+      if (!this.control && !this.dead)
     {
       this.setVelocity(0);
 
@@ -72,16 +69,20 @@
         this.anims.play('down',true);
     }
 
-    if(this.body.velocity.equals(new Phaser.Math.Vector2(0, 0)) && this.health >0 && !(this.anims.getCurrentKey() === 'punch')){
-    this.anims.play('turn',true);
-    } else if(this.health === 0 && !this.dead){
-      this.anims.play('death',true);
-      this.dead = true;
+    if(this.scene.input.activePointer.isDown){
+      this.attack();
     }
 
+      if(this.body.velocity.equals(new Phaser.Math.Vector2(0, 0)) && this.health >0 && !(this.anims.getCurrentKey() === 'punch')){
+        this.anims.play('turn',true);
+      } else if(this.health === 0 && !this.dead){
+      this.anims.play('death',true);
+      this.dead = true;
+      }
 
 
-    } else {
+
+  } else if(this.control  && !this.dead) {
       if (this.pad.axes.length)
      {
 
@@ -107,12 +108,16 @@
         this.anims.play('down',true);
       }
 
-     if(this.body.velocity.equals(new Phaser.Math.Vector2(0, 0)) && this.health > 0){
-      this.anims.play('turn',true);
-    } else if(this.health === 0){
-      this.anims.play('death',true);
+      if(this.pad.isButtonDown(2)){
+        this.attack();
+      }
 
-    }
+      if(this.body.velocity.equals(new Phaser.Math.Vector2(0, 0)) && this.health >0 && !(this.anims.getCurrentKey() === 'punch')){
+        this.anims.play('turn',true);
+      } else if(this.health === 0 && !this.dead){
+      this.anims.play('death',true);
+      this.dead = true;
+      }
 
    }
     }
@@ -121,24 +126,30 @@
     attack: function(targets) {
       this.actualTime = this.scene.time.now / 1000;
 
-      if (this.scene.input.activePointer.isDown) {
-      console.log("Pointer Down")
       if (this.actualTime > (this.timeSinceLastIncrement + this.attackCooldown)) {
-      console.log("time cooldown")
       this.anims.play('punch', true);
       //this.hitSound.play();
-      targets.health -= 10;
+    //  targets.health -= 10;
       console.log("Enemigo dañado");
-      console.log("Vida restante = " + targets.health);
+    //  console.log("Vida restante = " + targets.health);
       this.timeSinceLastIncrement = this.scene.time.now / 1000;
 
-      if (targets.health == 0) {
-      targets.anims.play('malvinDie');
-      targets.dead = true;
-      targets.destroy();
+    //  if (targets.health == 0) {
+    //  targets.anims.play('malvinDie');
+    //  targets.dead = true;
+    //  targets.destroy();
+    //  }
       }
+    },
+
+    checkGamepad: function() {
+      if(this.scene.input.gamepad.total === 1){
+      this.control = true;
+
+
       }
-      }
+
+
     },
 
     initAnimations: function() {
@@ -199,6 +210,7 @@
        'left': Phaser.Input.Keyboard.KeyCodes.A,
        'right': Phaser.Input.Keyboard.KeyCodes.D
      });
+
    },
 
    initSounds: function() {
@@ -289,6 +301,7 @@
        Phaser.Scene.call(this, { key: 'mainGame' });
 
        this.player;
+       this.player2;
 
        this.enemy;
 
@@ -321,8 +334,13 @@
 
       this.blocks.create(400,300,'deco');
 
-      this.player = new Player(this);
+      this.player = new Player(this, 300, 450);
+      this.player2 = new Player(this, 500, 450);
       this.enemy = new Enemy(this);
+
+      this.add.existing(this.player);
+      this.physics.add.existing(this.player);
+      this.player.setCollideWorldBounds(true);
 
       // BOTONES
         var pause = this.add.image(400, 20, 'pause').setInteractive();
@@ -336,7 +354,7 @@
         //this.life1.setCrop(0, 0, this.player.health * 2, 32);
         this.player.lifeBar = this.life1;
         this.width= this.life1.width;
-
+        this.life2 = this.add.image(300, 50, 'lifeBar1');
         this.add.image(750, 50, 'lifeLevel');
         //var life2 = this.add.image(700,50,'lifeBar');
         //life2.setCrop(200 - (this.player.health * 2), 0, 200, 32);
@@ -378,13 +396,24 @@
 
       this.player.move(this);
       this.enemy.hunt(this.player);
-      this.player.attack(this.enemy);
 
 
-      this.life1.setCrop(0, 0, (this.player.health * this.width)/100 , 32);
-        this.croppedWidth = (this.player.health * this.life1.width)/100;
-        console.log(this.croppedWidth);
-      //  this.width -=   this.croppedWidth;
+      //Jugador 2
+      this.player2.checkGamepad();
+      if(this.player2.control) {
+        this.add.existing(this.player2);
+        this.physics.add.existing(this.player2);
+        this.player2.setCollideWorldBounds(true);
+
+        this.player2.move(this);
+
+      }
+
+      this.life1.setCrop(0, 0, this.width, 32);
+      this.life1.setCrop(0, 0, (this.player.health * this.width)/100, 32);
+
+      console.log(this.life1.width);
+      console.log((this.player.health * this.width)/100);
       console.log(this.player.health);
       console.log("Tamaño actualizado" + this.life1.width + " vs. Tamaño estático: " + this.width);
     }
@@ -392,6 +421,95 @@
 
 
   });
+
+  var PantallaInicio = new Phaser.Class({
+    Extends: Phaser.Scene,
+
+    initialize:
+
+    function PantallaInicio() {
+      Phaser.Scene.call(this, {key: 'PantallaInicio'});
+    },
+
+    preload: function(){
+        this.load.image("sky", "assets/sky.png");
+        this.load.image("logo", "assets/logo/LogoI-Scream.png");
+        this.load.spritesheet('BotonPlay',
+            'assets/BotonPlay.png',
+            { frameWidth: 64, frameHeight: 64 }
+        );
+    },
+    create: function(){
+        //this.add.image(this.game.renderer.width/2, this.game.renderer.height*0.20, "star");
+        this.add.image(400, 300, "sky");
+        this.add.image(60, 0, "logo").setOrigin(0);
+        this.playButton = this.add.sprite(300, 300, "BotonPlay").setInteractive();
+        this.playButton.scale = 3;
+
+        this.playButton.on("pointerup", ()=>{
+            console.log("Open the gates")
+            this.scene.start('mainGame');
+        })
+    },
+    update: function(time, delta)
+    {
+        this.playButton.on("pointover", ()=>{
+            console.log("Encima del boton")
+        })
+
+        this.playButton.on("pointerout", ()=>{
+            console.log("Saliendo del boton")
+        })
+
+
+    }
+  });
+
+  var PantallaCarga = new Phaser.Class({
+    Extends: Phaser.Scene,
+
+    initialize:
+
+    function PantallaCarga(){
+      Phaser.Scene.call(this, {key: 'PantallaCarga'});
+    },
+
+    preload: function(){
+        let loadingBar = this.add.graphics({
+            fillStyle: {
+                color: 0xffffff //color barra de cargar (CAMBIAR)
+            }
+        });
+
+        //Loader events:
+        //-complete: done loading everything
+        //-progress: loader number of progress in decimal
+
+        //Simulate large load
+        /*
+        for(let i  = 0; i < 100; i++){
+            this.load.spritesheet('BotonPlay',
+            'assets/BotonPlay.png',
+            { frameWidth: 50, frameHeight: 60 });
+        }
+        */
+
+        this.load.on("progress", (percent)=>{
+            loadingBar.fillRect(0, this.game.renderer.height/2, this.game.renderer.width*percent, 50);
+            console.log(percent);
+        });
+
+        this.load.on("complete", ()=>{
+            console.log('done');
+        });
+
+    },
+
+    create: function(){
+        this.scene.start('PantallaInicio'); //esta linea para visualizar directamente Menu Ppal
+    }
+  })
+
 
   const config = {
     type: Phaser.Auto,
@@ -408,7 +526,21 @@
         debug: true
       }
     },
-    scene: [ MainGame ]
+
+    parent: 'container',
+    backgroundColor: '#34495E',
+
+    banner:{
+    hidePhaser: false,
+    text: '#000000',
+    background: [
+      'red',
+      'yellow',
+      'red',
+      'transparent'
+    ]
+  },
+    scene: [ PantallaCarga, PantallaInicio, MainGame ]
   };
 
   var game = new Phaser.Game(config);
