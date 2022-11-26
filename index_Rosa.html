@@ -10,28 +10,81 @@
 <body>
   <script type="text/javascript">
 
+    var Bullet = new Phaser.Class({
+
+      Extends: Phaser.GameObjects.Image,
+
+      initialize:
+
+        // Bullet Constructor
+        function Bullet(scene) {
+          Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bullet');
+          this.speed = 1;
+          this.born = 0;
+          this.direction = 0;
+          this.xSpeed = 0;
+          this.ySpeed = 0;
+          this.setSize(12, 12, true);
+        },
+
+      fire: function (shooter, target) {
+        this.setPosition(shooter.x, shooter.y); // Initial position
+        this.direction = Math.atan((target.x - this.x) / (target.y - this.y));
+
+        // Calculate X and y velocity of bullet to moves it from shooter to target
+        if (target.y >= this.y) {
+          this.xSpeed = this.speed * Math.sin(this.direction);
+          this.ySpeed = this.speed * Math.cos(this.direction);
+        }
+        else {
+          this.xSpeed = -this.speed * Math.sin(this.direction);
+          this.ySpeed = -this.speed * Math.cos(this.direction);
+        }
+
+        this.rotation = shooter.rotation; // angle bullet with shooters rotation
+        this.born = 0; // Time since new bullet spawned
+
+        // this.setActive(false);
+        // this.setVisible(false);
+
+      },
+
+      update: function (time, delta) {
+        this.x += this.xSpeed * delta;
+        this.y += this.ySpeed * delta;
+        this.born += delta;
+        if (this.born > 1800) {
+          this.setActive(false);
+          this.setVisible(false);
+        }
+      }
+
+    });
+
     var Player = new Phaser.Class({
       Extends: Phaser.Physics.Arcade.Sprite,
       initialize:
 
         function Player(newScene) {
-          Phaser.Physics.Arcade.Sprite.call(this, newScene, 500, 450, 'dude');
-
-          this.timeSinceLastIncrement = -1;
+          Phaser.Physics.Arcade.Sprite.call(this, newScene, 500, 450, 'icy');
 
           newScene.add.existing(this);
           newScene.physics.add.existing(this);
           this.setCollideWorldBounds(true);
 
+          this.timeSinceLastIncrement = -1;
+
           this.health = 100;
           this.lifeBar = null;
+          this.dead = false;
 
           this.attackDmg = 20;
           this.attackRange = 50;
           this.attackCooldown = 1;
-          this.hitSound = null;
+          this.bullets = this.scene.physics.add.group({ classType: Bullet, runChildUpdate: true });
 
           this.speed = 100;
+
           this.scene = newScene;
 
           this.keys;
@@ -43,15 +96,11 @@
 
         },
 
-
-      ////////////////////////////////////////////////////////////////////////////////////////////
-
       move: function (scene) {
         this.pad = this.scene.input.gamepad.getPad(0);
 
         if (this.scene.input.gamepad.total === 0) {
           this.setVelocity(0);
-
 
           if (this.keys['left'].isDown) {
             this.setVelocityX(-this.speed);
@@ -68,14 +117,20 @@
           if (this.keys['up'].isDown) {
             this.setVelocityY(-this.speed);
             this.anims.play('up', true);
+
           } else if (this.keys['down'].isDown) {
             this.setVelocityY(this.speed);
             this.anims.play('down', true);
           }
 
-          if (this.body.velocity.equals(new Phaser.Math.Vector2(0, 0)) && !(this.anims.getCurrentKey() === 'punch')) {
+          if (this.body.velocity.equals(new Phaser.Math.Vector2(0, 0)) && this.health > 0 && !(this.anims.getCurrentKey() === 'punch')) {
             this.anims.play('turn', true);
+          } else if (this.health === 0 && !this.dead) {
+            this.anims.play('death', true);
+            this.dead = true;
           }
+
+
 
         } else {
           if (this.pad.axes.length) {
@@ -97,26 +152,27 @@
             }
 
             if (axisV < 0) {
-
               this.anims.play('up', true);
             } else if (axisV > 0) {
               this.anims.play('down', true);
             }
 
-            if (this.body.velocity.equals(new Phaser.Math.Vector2(0, 0))) {
+            if (this.body.velocity.equals(new Phaser.Math.Vector2(0, 0)) && this.health > 0) {
               this.anims.play('turn', true);
+            } else if (this.health === 0) {
+              this.anims.play('death', true);
+
             }
+
           }
         }
       },
 
-      ////////////////////////////////////////////////////////////////////////////////////////////
-
       attack: function (targets) {
         this.actualTime = this.scene.time.now / 1000;
 
-        if (this.scene.input.activePointer.isDown) {
-          console.log("Pointer Down")
+        if (this.scene.input.activePointer.primaryDown) {
+          console.log("Left pointer Down")
           if (this.actualTime > (this.timeSinceLastIncrement + this.attackCooldown)) {
             console.log("time cooldown")
             this.anims.play('punch', true);
@@ -135,7 +191,62 @@
         }
       },
 
-      ////////////////////////////////////////////////////////////////////////////////////////////
+      distAttack: function (targets) {
+        this.actualTime = this.scene.time.now / 1000;
+
+        //if(this.scene.input.activePointer.isDown) {  // NO LO RECONOCE
+        if (this.keys['distAttack'].isDown) {
+
+          console.log("Right pointer Down")
+          if (this.actualTime > (this.timeSinceLastIncrement + this.attackCooldown)) {
+
+            // Get bullet from bullets group
+            var bullet = this.bullets.get().setActive(true).setVisible(true);
+            if (bullet) {
+              bullet.fire(this, targets);
+              
+              this.scene.physics.add.collider(targets, bullet, function (target, bull) {
+                target.health -= 10;
+                console.log("Enemigo dañado por bala");
+                console.log("Vida restante = " + target.health);
+
+                // Kill enemy if health = 0
+                if (target.health == 0) {
+                  target.anims.play('malvinDie');
+                  target.dead = true;
+                  target.destroy();
+                }
+
+                // Destroy bullet
+                bull.setActive(false).setVisible(false);
+              });
+              
+              this.timeSinceLastIncrement = this.scene.time.now / 1000;
+
+            }
+          }
+        };
+      },
+
+      /*enemyHitCallback: function (enemyHit, bulletHit) {
+        // Reduce health of enemy
+        if (bulletHit.active === true && enemyHit.active === true) {
+          enemyHit.health -= 10;
+          console.log("Enemigo dañado por bala");
+          console.log("Vida restante = " + targets.health);
+
+          // Kill enemy if health <= 0
+          if (enemyHit.health <= 0) {
+            targets.anims.play('malvinDie');
+            targets.dead = true;
+            targets.destroy();
+          }
+
+          // Destroy bullet
+          bulletHit.setActive(false).setVisible(false);
+        }
+      },*/
+
 
       initAnimations: function () {
 
@@ -172,7 +283,13 @@
           frames: this.scene.anims.generateFrameNumbers('icy', { start: 21, end: 25 }),
           frameRate: 15,
           repeat: -1
-        })
+        });
+
+        this.scene.anims.create({
+          key: 'death',
+          frames: this.scene.anims.generateFrameNumbers('icyattack', { start: 36, end: 44 }),
+          frameRate: 10
+        });
 
         this.scene.anims.create({
           key: 'punch',
@@ -181,32 +298,23 @@
         });
       },
 
-      /////////////////////////////////////////////////////////////////////////////////////////
-
-      initSounds: function () { 
-        this.hitSound = this.scene.sound.add('hitSound', { loop: false });
-      },
-
-      /////////////////////////////////////////////////////////////////////////////////////////
-
       initInput: function () {
 
         this.keys = this.scene.input.keyboard.addKeys({
           'up': Phaser.Input.Keyboard.KeyCodes.W,
           'down': Phaser.Input.Keyboard.KeyCodes.S,
           'left': Phaser.Input.Keyboard.KeyCodes.A,
-          'right': Phaser.Input.Keyboard.KeyCodes.D
+          'right': Phaser.Input.Keyboard.KeyCodes.D,
+          'distAttack': Phaser.Input.Keyboard.KeyCodes.Q
         });
+      },
+
+      initSounds: function () {
+        this.hitSound = this.scene.sound.add('hitSound', { loop: false });
       }
+
+
     });
-
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 
     var Enemy = new Phaser.Class({
       Extends: Phaser.Physics.Arcade.Sprite,
@@ -224,7 +332,7 @@
           this.dead = false;
 
           this.attackDmg = 10;
-          this.attackRange = 50;
+          this.attackRange = 65;
           this.attackCooldown = 3;
 
           this.scene = newScene;
@@ -235,28 +343,25 @@
           this.initAnimations();
         },
 
-
-      ///////////////////////////////////////////////////////////////////////////////////////////
-
       initAnimations: function () {
         this.scene.anims.create({
           key: 'malvinDown',
           frames: this.scene.anims.generateFrameNumbers('malvin', { start: 0, end: 5 }),
           frameRate: 10,
           repeat: -1
-        })
+        });
+
         this.scene.anims.create({
           key: 'malvinDie',
           frames: this.scene.anims.generateFrameNumbers('icyattack', { start: 36, end: 44 }),
           frameRate: 10,
           repeat: -1
-        })
+        });
 
       },
 
-      ////////////////////////////////////////////////////////////////////////////////////////////
-
       hunt: function (targets) {
+
         if (!this.dead) {
           this.direction = new Phaser.Math.Vector2(targets.x - this.x, targets.y - this.y);
           this.module = this.direction.length();
@@ -268,13 +373,8 @@
             this.setVelocityX((this.direction.x / this.module) * this.speed);
             this.setVelocityY((this.direction.y / this.module) * this.speed);
           }
-
         }
-
-
       },
-
-      /////////////////////////////////////////////////////////////////////////////////////////
 
       attack: function (targets) {
         this.actualTime = this.scene.time.now / 1000;
@@ -282,21 +382,13 @@
         if (this.actualTime > (this.timeSinceLastIncrement + this.attackCooldown)) {
           targets.health -= 10;
           targets.lifeBar.setCrop(0, 0, targets.health * 2, 32);
-          console.log("Objetivo dañado");
-          console.log("Vida restante = " + targets.health);
           this.timeSinceLastIncrement = this.scene.time.now / 1000;
         }
 
-      }
+      },
+
+
     })
-
-
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 
     var MainGame = new Phaser.Class({
       Extends: Phaser.Scene,
@@ -310,54 +402,61 @@
 
           this.enemy;
 
-
+          this.life1;
+          ;
         },
 
       preload: function () {
-        this.load.image('sky', 'assets/sky.png');
-        this.load.image('escenario', 'assets/map.png');
-        this.load.image('lifeBar1', 'assets/barraVida.png');
-        this.load.image('lifeLevel', 'assets/nivelVida.png');
-        this.load.image('musicActive', 'assets/musicaActiva.png');
-        this.load.image('musicInactive', 'assets/musicaInactiva.png');
+        this.load.image('map', 'assets/map1.png');
+        this.load.image('deco', 'assets/deco1.png');
+        this.load.image('lifeLevelP1', 'assets/Interfaz/nivelVida.png');
+        this.load.image('lifeLevelP2', 'assets/Interfaz/nivelVidaP2.png');
+        this.load.image('lifeBarP1', 'assets/Interfaz/barraVidaP1.png');
+        this.load.image('lifeBarP2', 'assets/Interfaz/barraVidaP2.png');
+        this.load.image('lifeBarP2', 'assets/barraVida2.png');
+        this.load.image('musicActive', 'assets/Interfaz/BotonActMusica.png');
+        this.load.image('musicInactive', 'assets/Interfaz/BotonDesactMusica.png');
         this.load.image('pause', 'assets/star.png');
         this.load.spritesheet('icy', 'assets/icy.png', { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet('icyattack', 'assets/icyattack.png', { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet('malvin', 'assets/malvin.png', { frameWidth: 64, frameHeight: 64 });
-        this.load.spritesheet('icyattack', 'assets/deathSpriteSheet.png', { frameWidth: 64, frameHeight: 64 });
+        this.load.image('bullet', 'assets/bullet.png');
         this.load.audio('escMusic', [
-          'assets/Fantasy Zone - Keep on the Beat (Remastered).ogg',
-          'assets/Fantasy Zone - Keep on the Beat (Remastered).mp3'
+          'assets/Audio/musicEsc.mp3'
         ]);
-        this.load.audio('hitSound', ['icyHit.mp3']);
+        this.load.audio('hitSound', ['assets/Audio/icyHit.mp3']);
       },
 
       create: function () {
-        this.add.image(400, 300, 'sky');
-        this.add.image(400, 300, 'escenario');
+        this.add.image(400, 300, 'map');
+
+        this.blocks = this.physics.add.staticGroup();
+
+        this.blocks.create(400, 300, 'deco');
 
         this.player = new Player(this);
         this.enemy = new Enemy(this);
 
         // BOTONES
         var pause = this.add.image(400, 20, 'pause').setInteractive();
-        var musicAct = this.add.image(10, 300, 'musicActive').setInteractive();
-        var musicInact = this.add.image(10, 300, 'musicInactive').setInteractive();
+        var musicAct = this.add.image(400, 570, 'musicActive').setInteractive();
+        var musicInact = this.add.image(400, 570, 'musicInactive').setInteractive();
 
-        //JUGADORES
+        // BARRAS DE VIDA
         // 1
-        this.add.image(150, 50, 'lifeBar1');
-        var life1 = this.add.image(150, 50, 'lifeLevel');
-        life1.setCrop(0, 0, this.player.health * 2, 32);
-        this.player.lifeBar = life1;
+        this.add.image(100, 30, 'lifeBarP1');
+        this.life1 = this.add.image(119, 29, 'lifeLevelP1');
+        this.life1.setCrop(0, 0, this.player.health * 2, 20);
+        this.player.lifeBar = this.life1;
+
         // 2
-        this.add.image(750, 50, 'lifeBar1');
-        //var life2 = this.add.image(700,50,'lifeBar');
-        //life2.setCrop(200 - (this.player.health * 2), 0, 200, 32);
+        this.add.image(700, 30, 'lifeBarP2');
+        this.life2 = this.add.image(680, 29, 'lifeLevelP2');
+        //this.life2.setCrop(200 - (this.player.health * 2), 0, 200, 20);
+
 
         //MUSICA
         musicInact.visible = false;
-
-        //this.player.hitSound = this.sound.add('hitSound');
         var music = this.sound.add('escMusic');
         //music.play();
 
@@ -383,29 +482,17 @@
 
 
         this.physics.add.collider(this.player, this.enemy);
+        this.physics.add.collider(this.player, this.blocks);
       },
-
       update: function () {
 
         this.player.move(this);
         this.enemy.hunt(this.player);
         this.player.attack(this.enemy);
-
-        //this.life1.setCrop(0, 0, 200, 32);
-        //this.life2.setCrop(0, 0, 200, 32);
-
-
-
+        this.player.distAttack(this.enemy);
       }
+
     });
-
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 
     const config = {
       type: Phaser.Auto,
@@ -422,10 +509,7 @@
           debug: true
         }
       },
-      scene: [MainGame],
-      audio: {
-        disableWebAudio: true
-      },
+      scene: [MainGame]
     };
 
     var game = new Phaser.Game(config);
