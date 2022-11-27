@@ -7,6 +7,7 @@
     <script src="js/phaser.min.js"></script>
     <script src="js/stateMachinePlayer.js"></script>
     <script src="js/enemiesClasses.js"></script>
+    <script src="js/playerClasses.js"></script>
 </head>
 
 <body style="text-align:center">
@@ -143,7 +144,7 @@
         } else{
           //this.anims.play('P2punch', true);
         }
-
+        console.log(this.attackHitbox)
         this.setVelocityX(0);
         this.setVelocityY(0);
         this.attackHitbox.x = this.x;
@@ -151,7 +152,7 @@
         //this.attackHitbox.enable = true;
         this.scene.physics.add.existing(this.attackHitbox);
         this.hitSound.play();
-
+        console.log(this.attackHitbox)
         console.log("Enemigo dañado");
 
       this.timeSinceLastIncrement = this.scene.time.now / 1000;
@@ -422,7 +423,10 @@
       this.load.spritesheet('icyB', 'assets/Yci.png', {frameWidth: 64, frameHeight: 64});
       this.load.spritesheet('icyattack', 'assets/icyattack.png', {frameWidth:64, frameHeight:64});
       this.load.image('bullet', 'assets/bullet.png');
+
+      //Imágenes de Enemigos
       this.load.spritesheet('malvin', 'assets/malvin.png', {frameWidth: 64, frameHeight: 64});
+      this.load.spritesheet('demon', 'assets/enemies/demon.png',  {frameWidth: 32, frameHeight: 32})
       this.load.spritesheet('malvinattack', 'assets/malvinattack.png', {frameWidth: 64, frameHeight: 64});
       //this.load.audio('escMusic', [
       //'assets/sounds/Fantasy Zone - Keep on the Beat (Remastered).ogg',
@@ -447,14 +451,22 @@
       //Declaración de PJs y NPCs
       this.enemies = this.add.group({
         classType: Malvin,
+        runChildUpdate: false
+      });
+
+      this.bosses= this.add.group({
+        classType: DemonBoss,
         runChildUpdate:false
       });
 
-      this.generateEnemies(5);
+
+
+      this.generateEnemies(5,this.enemies, 'malvin');
+      this.generateEnemies(1,this.bosses,'demon');
       this.generateTrees(2);
       //Jugadores
-      this.player = new Player(this, 300, 450, 'icy',true);
-      this.player2 = new Player(this, 500, 450, 'icyB',false);
+      this.player = new Player(this, 300, 450, 'icy', true);
+      this.player2 = new Player(this, 500, 450, 'icyB', false);
       this.players = [this.player,this.player2];
       this.handleStateMachines();
 
@@ -512,12 +524,6 @@
 
       this.player.move(this);
 
-      this.enemies.children.each(function(enem) {
-      enem.hunt(this.players);
-      },this);
-
-
-      //Jugador 2
       this.player2.checkGamepad();
       if(this.player2.control) {
         this.add.existing(this.player2);
@@ -525,9 +531,21 @@
         this.player2.setCollideWorldBounds(true);
         this.player2.setSize(30,30);
         this.player2.setOffset(17,28);
-        this.player2.move(this);
-
+        this.player2.move();
       }
+
+      this.enemies.children.each(function(enem) {
+      enem.hunt(this.players);
+      enem.update();
+      },this);
+
+      this.bosses.children.each(function(enem) {
+      enem.setScale(2);
+      enem.hunt(this.players);
+      },this);
+
+      //Jugador 2
+
 
     //  this.life1.setCrop(0, 0, this.width, 32);
       //this.life1.setCrop(0, 0, (this.player.health * this.width)/100, 32);
@@ -563,10 +581,10 @@
 
     },
 
-    generateEnemies: function(number) {
+    generateEnemies: function(number,enemies, sprite) {
       for(var i = 0; i<number ; i++){
-        this.enemies.get(Phaser.Math.Between(100,700),
-        Phaser.Math.Between(100,500), 'malvin');  }
+        enemies.get(Phaser.Math.Between(100,700),
+        Phaser.Math.Between(100,500), sprite);  }
     },
 
     generateTrees: function(number){
