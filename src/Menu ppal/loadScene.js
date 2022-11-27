@@ -6,6 +6,7 @@ class PantallaCarga extends Phaser.Scene {
 
     }
     preload(){
+        //Pantalla de carga
         let loadingBar = this.add.graphics({
             fillStyle: {
                 color: 0xffffff //color barra de cargar (CAMBIAR)
@@ -20,6 +21,32 @@ class PantallaCarga extends Phaser.Scene {
         this.load.on("complete", ()=>{
             console.log('done');
         })
+
+        //Menu de Inicio
+        this.load.image("sky", "assets/sky.png");
+        this.load.image("logo", "logo/LogoI-Scream.png");
+        this.load.spritesheet('BotonPlay', 
+            'assets/BotonPlay.png',
+            { frameWidth: 64, frameHeight: 64 }
+        );
+        
+
+        //Pantalla seleccion personaje
+        //Personaje:
+        this.load.spritesheet('player', 
+            'SpritesheetJugadores/SpitesheetP1/SpritesheetP1(Andar).png',
+            { frameWidth: 64, frameHeight: 64 }
+        );
+        //Aceptar
+        this.load.spritesheet('aceptar', 
+            'DiseñoInterfaz/Botones/botonOk.png',
+            { frameWidth: 120, frameHeight: 47 }
+        );
+        //Menu
+        this.load.spritesheet('menu', 
+            'DiseñoInterfaz/Botones/botonMenu.png',
+            { frameWidth: 120, frameHeight: 47 }
+        );
         
     }
     create(){

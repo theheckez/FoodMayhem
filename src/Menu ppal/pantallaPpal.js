@@ -6,14 +6,7 @@ class PantallaInicio extends Phaser.Scene {
     {
         
     }
-    preload(){
-        this.load.image("sky", "assets/sky.png");
-        this.load.image("logo", "logo/LogoI-Scream.png");
-        this.load.spritesheet('BotonPlay', 
-            'Diseño Interfaz/BotonPlay.png',
-            { frameWidth: 64, frameHeight: 64 }
-        );
-    }
+
     create(){
         //this.add.image(this.game.renderer.width/2, this.game.renderer.height*0.20, "star");
         this.add.image(400, 300, "sky");
@@ -25,6 +18,7 @@ class PantallaInicio extends Phaser.Scene {
 
     update(time, delta)
     {
+
         this.playButton.on("pointerover", ()=>{
             console.log("Encima");
             this.playButton.setFrame(1);
@@ -37,9 +31,9 @@ class PantallaInicio extends Phaser.Scene {
         })
         
         
-        this.playButton.on("pointerdown", ()=>{
-            console.log("Open the gates")
-            this.playButton.setFrame(3);
+        this.playButton.on("pointerup", ()=>{
+            this.playButton.setFrame(2);
+            console.log("Cambio pantalla")
             this.scene.start("PantallaSeleccion", "hello from menu"); 
         })
         
