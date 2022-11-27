@@ -15,13 +15,13 @@
     Extends: Phaser.Physics.Arcade.Sprite,
     initialize:
 
-    function Player(newScene, x,y ) {
-      Phaser.Physics.Arcade.Sprite.call(this, newScene, x,y, 'icy');
+    function Player(newScene, x,y, sprite) {
+      Phaser.Physics.Arcade.Sprite.call(this, newScene, x,y,sprite);
 
       this.timeSinceLastIncrement = -1;
-
+      this.sprite = sprite;
       this.health = 100;
-      this.lifeBar = null;
+      this.lifeBar;
       this.dead = false;
 
       this.attackDmg = 20;
@@ -139,7 +139,7 @@
 
       if (this.actualTime > (this.timeSinceLastIncrement + this.attackCooldown)) {
       this.anims.play('punch', true);
-      //this.hitSound.play();
+      this.hitSound.play();
       //  targets.health -= 10;
       console.log("Enemigo dañado");
       //  console.log("Vida restante = " + targets.health);
@@ -197,35 +197,35 @@
 
       this.scene.anims.create({
         key: 'down',
-        frames: this.scene.anims.generateFrameNumbers('icy', { start: 7, end: 12 }),
+        frames: this.scene.anims.generateFrameNumbers(this.sprite, { start: 7, end: 12 }),
         frameRate: 10,
         repeat: -1
       });
 
        this.scene.anims.create({
         key: 'turn',
-        frames: this.scene.anims.generateFrameNumbers('icy', {start: 0, end:4 }),
+        frames: this.scene.anims.generateFrameNumbers(this.sprite, {start: 0, end:4 }),
         frameRate: 10,
         repeat: -1
       });
 
       this.scene.anims.create({
         key:'up',
-        frames: this.scene.anims.generateFrameNumbers('icy', {start:14, end:19}),
+        frames: this.scene.anims.generateFrameNumbers(this.sprite, {start:14, end:19}),
         frameRate:10,
         repeat:-1
       });
 
       this.scene.anims.create({
         key: 'left',
-        frames: this.scene.anims.generateFrameNumbers('icy',{start:28,end:32}),
+        frames: this.scene.anims.generateFrameNumbers(this.sprite,{start:28,end:32}),
         frameRate:15,
         repeat: -1
       });
 
       this.scene.anims.create({
         key: 'right',
-        frames: this.scene.anims.generateFrameNumbers('icy',{start:21,end:25}),
+        frames: this.scene.anims.generateFrameNumbers(this.sprite,{start:21,end:25}),
         frameRate: 15,
         repeat: -1
       });
@@ -255,7 +255,7 @@
    },
 
    initSounds: function() {
-//this.hitSound = this.scene.sound.add('hitSound', { loop: false });
+      this.hitSound = this.scene.sound.add('hitSound', { loop: false });
    }
 
 
@@ -368,6 +368,7 @@
 
       if(this.actualTime>(this.timeSinceLastIncrement+this.attackCooldown)){
         targets.health-= this.attackDmg;
+        console.log(targets.health);
         //targets.lifeBar.setCrop(0, 0, targets.health * 2, 32);
         this.timeSinceLastIncrement = this.scene.time.now/1000;
       }
@@ -473,32 +474,41 @@
       this.load.image('valla1', 'assets/vallas/valla2.1.png');
       this.load.image('valla2', 'assets/vallas/valla2.2.png');
       this.load.image('valla3', 'assets/vallas/valla3.png');
+      this.load.image('arbolB', 'assets/arboles/arbolBlanco.png');
+      this.load.image('arbolN', 'assets/arboles/arbolNaranja.png');
+      this.load.image('arbolR', 'assets/arboles/arbolRosa.png');
+      this.load.image('arbolV', 'assets/arboles/arbolVerde.png');
 
       this.load.image('lifeLevel', 'assets/nivelVida.png');
-          this.load.image('lifeLevelP2', 'assets/nivelVidaP2.png');
+      this.load.image('lifeLevelP2', 'assets/nivelVidaP2.png');
       this.load.image('lifeBarP1', 'assets/barraVidaP1.png');
       this.load.image('lifeBarP2', 'assets/barraVidaP2.png');
-    //  this.load.image('musicActive', 'assets/musicaActiva.png');
-    //  this.load.image('musicInactive', 'assets/musicaInactiva.png');
+
+      this.load.image('musicActive', 'assets/interfaz/BotonActMusica.png');
+      this.load.image('musicInactive', 'assets/interfaz/BotonDesactMusica.png');
+      this.load.audio('escMusic', [
+         'assets/sounds/musicEsc.mp3'
+       ]);
       this.load.image('pause', 'assets/star.png');
 
       //Imágenes de Icy
       this.load.spritesheet('icy', 'assets/icy.png', {frameWidth: 64, frameHeight: 64});
+      this.load.spritesheet('icyB', 'assets/Yci.png', {frameWidth: 64, frameHeight: 64});
       this.load.spritesheet('icyattack', 'assets/icyattack.png', {frameWidth:64, frameHeight:64});
       this.load.image('bullet', 'assets/bullet.png');
       this.load.spritesheet('malvin', 'assets/malvin.png', {frameWidth: 64, frameHeight: 64});
-//this.load.audio('escMusic', [
-  //       'assets/Fantasy Zone - Keep on the Beat (Remastered).ogg',
-    //     'assets/Fantasy Zone - Keep on the Beat (Remastered).mp3'
+      //this.load.audio('escMusic', [
+      //'assets/sounds/Fantasy Zone - Keep on the Beat (Remastered).ogg',
+      //'assets/sounds/Fantasy Zone - Keep on the Beat (Remastered).mp3'
       // ]);
-      //this.load.audio('hitSound', ['icyHit.mp3']);
+      this.load.audio('hitSound', ['assets/sounds/icyHit.mp3']);
     },
 
     create: function() {
       this.add.image(400,300,'map');
 
       this.blocks = this.physics.add.staticGroup();
-
+      this.trees = this.physics.add.staticGroup();
 
       this.blocks.create(80,65,'valla').setScale(0.95).refreshBody();
       this.blocks.create(410,139,'valla1').setScale(0.95).refreshBody();
@@ -513,10 +523,10 @@
       });
 
       this.generateEnemies(5);
-
+      this.generateTrees(2);
       //Jugadores
-      this.player = new Player(this, 300, 450);
-      this.player2 = new Player(this, 500, 450);
+      this.player = new Player(this, 300, 450, 'icy');
+      this.player2 = new Player(this, 500, 450, 'icyB');
       this.players = [this.player,this.player2];
 
       //Control de colisiones de mundo
@@ -524,9 +534,8 @@
 
       // BOTONES
         var pause = this.add.image(400, 20, 'pause').setInteractive();
-        //var musicAct = this.add.image(10, 300, 'musicActive').setInteractive();
-        //var musicInact = this.add.image(10, 300, 'musicInactive').setInteractive();
-
+        var musicAct = this.add.image(400, 570, 'musicActive').setInteractive();
+        var musicInact = this.add.image(400, 570, 'musicInactive').setInteractive();
         //JUGADORES
         // 1
         this.add.image(100, 30, 'lifeLevel');
@@ -541,25 +550,23 @@
 
 
         //MUSICA
-        /*musicInact.visible = false;
-
-        //this.player.hitSound = this.sound.add('hitSound');
+        musicInact.visible = false;
         var music = this.sound.add('escMusic');
-        //music.play();
+        music.play();
 
         musicAct.on('pointerdown', function () {
-          console.log("Musica desactivada");
-          musicInact.visible = true;
-          musicAct.visible = false;
-          music.stop();
+        console.log("Musica desactivada");
+        musicInact.visible = true;
+        musicAct.visible = false;
+        music.stop();
         });
 
         musicInact.on('pointerdown', function () {
-          console.log("Musica activada");
-          musicInact.visible = false;
-          musicAct.visible = true;
-          music.play();
-        });*/
+        console.log("Musica activada");
+        musicInact.visible = false;
+        musicAct.visible = true;
+        music.play();
+        });
 
         //OPCIONES
         pause.on('pointerdown', function () {
@@ -627,9 +634,24 @@
 
     generateEnemies: function(number) {
       for(var i = 0; i<number ; i++){
-        this.enemies.get(Phaser.Math.Between(100,500),
-        Phaser.Math.Between(100,700), 'malvin');  }
+        this.enemies.get(Phaser.Math.Between(100,700),
+        Phaser.Math.Between(100,500), 'malvin');  }
+    },
+
+    generateTrees: function(number){
+      for(var i = 0; i<number ; i++){
+        this.blocks.create(Phaser.Math.Between(100,700),
+        Phaser.Math.Between(100,500),'arbolB').setScale(0.6).refreshBody();
+        this.blocks.create(Phaser.Math.Between(100,700)
+        ,Phaser.Math.Between(100,500),'arbolN').setScale(0.6).refreshBody();
+        this.blocks.create(Phaser.Math.Between(100,700),
+        Phaser.Math.Between(100,500),'arbolR').setScale(0.6).refreshBody();
+        this.blocks.create(Phaser.Math.Between(100,700),
+        Phaser.Math.Between(100,500),'arbolV').setScale(0.6).refreshBody();
+
     }
+    }
+
 
 
   });
@@ -647,30 +669,30 @@
         this.load.image("sky", "assets/sky.png");
         this.load.image("logo", "assets/logo/LogoI-Scream.png");
         this.load.spritesheet('BotonPlay',
-            'assets/BotonPlay.png',
-            { frameWidth: 64, frameHeight: 64 }
+            'assets/interfaz/BotonPlay.png',
+            { frameWidth: 120, frameHeight: 47 }
         );
     },
     create: function(){
         //this.add.image(this.game.renderer.width/2, this.game.renderer.height*0.20, "star");
         this.add.image(400, 300, "sky");
-        this.add.image(60, 0, "logo").setOrigin(0);
-        this.playButton = this.add.sprite(300, 300, "BotonPlay").setInteractive();
+        this.add.image(150, 50, "logo").setOrigin(0);
+        this.playButton = this.add.sprite(380, 350, "BotonPlay",0).setInteractive();
         this.playButton.scale = 3;
 
         this.playButton.on("pointerup", ()=>{
             console.log("Open the gates")
-            this.scene.start('mainGame');
+            this.scene.start('PantallaCarga');
         })
     },
     update: function(time, delta)
     {
-        this.playButton.on("pointover", ()=>{
-            console.log("Encima del boton")
+        this.playButton.on("pointerover", ()=>{
+            this.playButton.setFrame(1);
         })
 
         this.playButton.on("pointerout", ()=>{
-            console.log("Saliendo del boton")
+            this.playButton.setFrame(0);
         })
 
 
@@ -693,19 +715,6 @@
             }
         });
 
-        //Loader events:
-        //-complete: done loading everything
-        //-progress: loader number of progress in decimal
-
-        //Simulate large load
-        /*
-        for(let i  = 0; i < 100; i++){
-            this.load.spritesheet('BotonPlay',
-            'assets/BotonPlay.png',
-            { frameWidth: 50, frameHeight: 60 });
-        }
-        */
-
         this.load.on("progress", (percent)=>{
             loadingBar.fillRect(0, this.game.renderer.height/2, this.game.renderer.width*percent, 50);
             console.log(percent);
@@ -718,8 +727,98 @@
     },
 
     create: function(){
-        this.scene.start('PantallaInicio'); //esta linea para visualizar directamente Menu Ppal
+        this.scene.start('mainGame'); //esta linea para visualizar directamente Menu Ppal
     }
+  });
+
+  var CharacterSelect = new Phaser.Class({
+    Extends: Phaser.Scene,
+
+    initialize:
+
+    function CharacterSelect(){
+      Phaser.Scene.call(this, {key: 'chSelect'});
+    },
+
+    preload: function(){
+      this.load.image("sky", "assets/sky.png");
+      this.load.spritesheet('player',
+          'assets/icy.png',
+          { frameWidth: 64, frameHeight: 64 }
+      );
+
+    },
+
+    create: function(){
+      //Fondo:
+     this.add.image(400, 300, "sky");
+
+     //Personaje
+     this.player = this.add.sprite(400, 200, "player").setInteractive();
+     this.player.setFrame(3);
+     this.player.scale = 3;
+
+     //Texto jugador:
+     /*
+     const player1 = {
+         x: 320,
+         y: 300,
+         text: 'Player 1',
+         style: {
+             color: '#000000',
+             fontSize: 30
+         }
+     }
+     */
+     this.player1 = this.add.text(300, 300, 'Player 1', {
+         color: '#000000',
+         fontSize: 30,
+         //fontStyle: 'bold',
+         padding: {
+             top: 20,
+             bottom: 0,
+             left: 20,
+             right: 0
+         }
+     }).setInteractive();
+
+
+
+     this.anims.create({
+         key: 'pose',
+         frames: this.anims.generateFrameNumbers('player', {start: 0, end: 4}),
+         frameRate: 10,
+         repeat: -1
+     })
+
+     /*
+     this.nombreJugador = function(p){
+         var nombre = prompt('');
+         p.setText(nombre);
+         document.close();
+     }
+     const keys = Phaser.Input.Keyboard.KeyCodes;
+     this.keyEnter = this.input.keyboard.addKeyy(keys.ENTER);
+     this.keyEnter.on('down', () =>{
+         console.log('Has pulsado enter');
+     })
+     */
+
+   },
+
+   update: function() {
+     this.player.anims.play('pose', true);
+
+      this.player1.on("pointerdown", () =>{
+          console.log("Cambiar nombre")
+          //this.player1.setText(' ');
+          //this.nombreJugador(this.player1);
+      })
+
+      this.player1.on("pointerout", () =>{
+          console.log("Saliendo del boton")
+      })
+   }
   })
 
 
@@ -752,7 +851,7 @@
       'transparent'
     ]
   },
-    scene: [MainGame ]
+    scene: [PantallaInicio,PantallaCarga,MainGame,CharacterSelect]
   };
 
   var game = new Phaser.Game(config);
