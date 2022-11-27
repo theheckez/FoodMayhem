@@ -2,7 +2,7 @@
 
 class EnemyMM extends Phaser.Physics.Arcade.Sprite{
 constructor(newScene, x,y, sprite) {
-  super(newScene, x,y, 'malvin');
+  super(newScene, x,y, sprite);
 
   this.scene = newScene;
   this.dead = false;
@@ -53,7 +53,7 @@ constructor(newScene, x,y, sprite) {
     this.actualTime = this.scene.time.now/1000;
 
     if(this.actualTime>(this.timeSinceLastIncrement+this.attackCooldown)){
-      this.anims.play('malvinAttack', true);
+    //  this.anims.play('malvinAttack', true);
       targets.health-= this.attackDmg;
       console.log(targets.health);
       //targets.lifeBar.setCrop(0, 0, targets.health * 2, 32);
@@ -94,7 +94,6 @@ constructor(newScene, x,y, sprite) {
     }
   }
 }
-
 
 class Malvin extends EnemyMM {
   constructor(newScene, x,y) {
@@ -157,4 +156,37 @@ class Malvin extends EnemyMM {
   }
 }
 
-class
+class DemonBoss extends EnemyMM {
+  constructor(newScene, x,y) {
+    super(newScene, x,y, 'demon');
+
+    this.health = 300;
+    this.speed = 30;
+
+    this.attackDmg = 40;
+    this.attackRange = 30;
+    this.attackCooldown = 6;
+
+    this.timeSinceLastIncrement = -6;
+    this.actualTime;
+
+    this.initAnimations();
+  }
+
+  initAnimations() {
+    this.scene.anims.create({
+      key:'demonIdle',
+      frames: this.scene.anims.generateFrameNumbers('demon', {start:0,end:3}),
+      frameRate: 10,
+      repeat: -1
+    });
+
+    this.scene.anims.create({
+      key:'demonAttack',
+      frames:this.scene.anims.generateFrameNumbers('demon', {start:4,end:7}),
+      frameRate: 10,
+    });
+
+    this.anims.play('demonIdle');
+  }
+}
