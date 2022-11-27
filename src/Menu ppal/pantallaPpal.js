@@ -9,34 +9,36 @@ class PantallaInicio extends Phaser.Scene {
 
     create(){
         //this.add.image(this.game.renderer.width/2, this.game.renderer.height*0.20, "star");
-        this.add.image(400, 300, "sky");
-        this.add.image(150, 50, "logo").setOrigin(0);
+        this.add.image(400, 300, "bg");
+        this.logo = this.add.image(150, 50, "logo").setOrigin(0);
         this.playButton = this.add.sprite(380, 350, "BotonPlay").setInteractive();
         this.playButton.scale = 3;
 
+        //Interaccion botones
+        this.playButton.on("pointerover", ()=>{
+            document.body.style.cursor = "pointer";
+            this.playButton.setFrame(1);
+        })
+        
+        this.playButton.on("pointerout", ()=>{
+            document.body.style.cursor = "auto";
+            this.playButton.setFrame(0);
+        })
+        
+        this.playButton.on("pointerdown", ()=>{
+            this.playButton.setFrame(2); 
+        })
+
+        this.playButton.on("pointerup", ()=>{
+            document.body.style.cursor = "auto";
+            this.scene.start("PantallaSeleccion"); 
+        })
     }
 
     update(time, delta)
     {
-
-        this.playButton.on("pointerover", ()=>{
-            console.log("Encima");
-            this.playButton.setFrame(1);
-        })
-        
-        
-        this.playButton.on("pointerout", ()=>{
-            console.log("Saliendo del boton");
-            this.playButton.setFrame(0);
-        })
-        
-        
-        this.playButton.on("pointerup", ()=>{
-            this.playButton.setFrame(2);
-            console.log("Cambio pantalla")
-            this.scene.start("PantallaSeleccion", "hello from menu"); 
-        })
-        
+        //Logo:
+        //this.logo.container: hover.imagen{-webkit-transform:this.scale(1.3);transform:this.scale(1.3);}
     }
 
     
