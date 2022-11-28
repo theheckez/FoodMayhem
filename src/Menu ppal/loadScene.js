@@ -40,6 +40,12 @@ class PantallaCarga extends Phaser.Scene {
         //Recuadro personaje
         this.load.image("cuadro", "DiseñoInterfaz/elementosInterfaz/eleccionPersonaje.png");
 
+        //Cargar letras:
+        this.add.text(0, 0, '', {fontFamily: 'estilo'});
+        this.add.text(0, 0, '', {fontFamily: 'titulo'});
+        //Cargar fondo:
+        this.load.image('name', 'DiseñoInterfaz/elementosInterfaz/recuadroTexto.png');
+
         //Aceptar
         this.load.spritesheet('aceptar', 
             'DiseñoInterfaz/Botones/botonOk.png',
@@ -56,6 +62,8 @@ class PantallaCarga extends Phaser.Scene {
             'DiseñoInterfaz/Botones/botonPause.png',
             { frameWidth: 80, frameHeight: 47 }
         );
+
+        
         
     }
     create(){

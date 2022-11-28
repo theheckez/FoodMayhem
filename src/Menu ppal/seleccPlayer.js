@@ -10,70 +10,87 @@ class PantallaSeleccion extends Phaser.Scene {
         //Fondo:
         this.add.image(400, 300, "bg");
 
-        //Recuadro personaje
-        this.rec = this.add.image(this.game.renderer.width/2, 150, "cuadro");
+        //Recuadro personaje 1
+        this.rec = this.add.image(200, 150, "cuadro");
         this.rec.scale = 3.5;
+        //Recuadro personaje 2
+        this.rec2 = this.add.image(600, 150, "cuadro");
+        this.rec2.scale = 3.5;
 
-        //Personaje
-        this.player = this.add.sprite(this.game.renderer.width/2, 150, "player").setInteractive();
-        this.player.setFrame(3);
-        this.player.scale = 3;
+        //Personaje 1
+        this.player1 = this.add.sprite(200, 150, "player").setInteractive();
+        this.player1.setFrame(3);
+        this.player1.scale = 3;
+        //Personaje 2
+        this.player2 = this.add.sprite(600, 150, "player").setInteractive();
+        this.player2.setFrame(3);
+        this.player2.scale = 3;
 
-        //Nombre jugador:
-        this.player1 = this.add.text(270, 260, 'Introduce tu nombre', {
-            color: '#000000',
-            fontSize: 30,
-            backgroundColor: '#ffffff',
-            textAlign: 'center',
-            justifyContent: 'center',
-            fontFamily: 'Bell MT',
-            padding: {
-                top: 0,
-                bottom: 0,
-                left: 0,
-                right: 0
+        //Configuracion texto:
+        const configNombres = {
+            origin: 'center',
+            x: 200,
+            y: 270,
+            text: 'Introduce tu nombre:',
+            style: {
+                fontFamily: 'estilo',
+                color: '#000000',
+                fontSize: 20,
+                textAlign: 'center',
+                justifyContent: 'center',
+                backgroundImage: "url('name')"
             }
-        }).setInteractive();
+        }
+        //Nombre jugador 1:
+        this.nombrePly1 = this.make.text(configNombres).setInteractive();
+        //Nombre jugador 2:
+        this.nombrePly2 = this.make.text(configNombres).setInteractive();
+        this.nombrePly2.setPosition(600, 270);
 
-        //Boton aceptar: siguiente pantalla
-        this.aceptar = this.add.sprite(this.game.renderer.width/2, 320, "aceptar").setInteractive();
+        //Botones aceptar: bloquean introducir nombre y van a siguiente pantalla
+        this.aceptar1 = this.add.sprite(200, 320, "aceptar").setInteractive();
+        this.aceptar2 = this.add.sprite(600, 320, "aceptar").setInteractive();
 
         //Boton menu: volver al menu
         this.menu = this.add.sprite(710, 530, "menu").setInteractive();
 
         //Modo de juego:
-        this.add.text(270, 370, 'MODO DE JUEGO', {
-            color: '#000000',
-            fontSize: 30,
-            fontFamily: 'Bell MT'
-        });
+        const confTittle = {
+            origin: 'center',
+            x: this.game.renderer.width/2,
+            y: 380, 
+            text: 'MODO DE JUEGO', 
+            style: {
+                color: '#ffffff',
+                fontSize: 20,
+                fontFamily: 'titulo'
+            }
+        }
+        this.make.text(confTittle);
 
-        this.modoCamp = this.add.text(340, 410, 'Campaña', {
-            color: '#454546',
-            fontSize: 30,
-            textAlign: 'center',
-            justifyContent: 'center',
-            fontFamily: 'Bell MT',
-            fontStyle: 'italic'
-        }).setInteractive();
+        const configModos = {
+            origin: 'center',
+            style: {
+                fontFamily: 'estilo',
+                color: '#ffffff',
+                fontSize: 20,
+                fontStyle: 'italic',
+                textAlign: 'center',
+                justifyContent: 'center',
+            }
+        }
 
-        this.modoVersus = this.add.text(360, 450, 'Versus', {
-            color: '#454546',
-            fontSize: 30,
-            textAlign: 'center',
-            justifyContent: 'center',
-            fontFamily: 'Bell MT',
-            fontStyle: 'italic'
-        }).setInteractive();
+        this.modoCamp = this.make.text(configModos).setInteractive();
+        this.modoCamp.setText('Campaña');
+        this.modoCamp.setPosition(this.game.renderer.width/2, 420);
 
-        this.modoArcade = this.add.text(355, 490, 'Arcade', {
-            color: '#000000',
-            fontSize: 30,
-            textAlign: 'center',
-            justifyContent: 'center',
-            fontFamily: 'Bell MT',
-            fontStyle: 'italic'
-        }).setInteractive();
+        this.modoVersus = this.make.text(configModos).setInteractive();
+        this.modoVersus.setText('Versus');
+        this.modoVersus.setPosition(this.game.renderer.width/2, 455);
+
+        this.modoArc = this.make.text(configModos).setInteractive();
+        this.modoArc.setText('Arcade');
+        this.modoArc.setPosition(this.game.renderer.width/2, 490);
         
         //FUNCIONALIDAD:
         //Animacion personaje
@@ -85,48 +102,80 @@ class PantallaSeleccion extends Phaser.Scene {
         })
 
         //Interaccion texto:
-        //Interaccion botones
-        this.player1.on("pointerover", ()=>{
+        //Jugador1:
+        this.nombrePly1.on("pointerover", ()=>{
             document.body.style.cursor = "text";
         })
-        
-        this.player1.on("pointerout", ()=>{
+        this.nombrePly1.on("pointerout", ()=>{
             document.body.style.cursor = "auto";
         })
-
-        this.player1.on("pointerdown", () =>{
-            console.log("Cambiar nombre")
-            this.player1.setText(' ');
+        this.nombrePly1.on("pointerdown", () =>{
+            this.nombrePly1.setText(' ');
             var n = prompt('Introduce nombre: ', 'Player1');
             console.log(n)
-            if(n == null) this.player1.setText('Player1');
-            else this.player1.setText(n);
-            this.player1.setPosition(350, 260);
+            if(n == null) this.nombrePly1.setText('Player1');
+            else this.nombrePly1.setText(n);
+        })
+        this.nombrePly1.on("pointerup", ()=>{
+            document.body.style.cursor = "auto"; 
         })
 
-        this.player1.on("pointerup", ()=>{
+        //Jugador2
+        this.nombrePly2.on("pointerover", ()=>{
+            document.body.style.cursor = "text";
+        })
+        this.nombrePly2.on("pointerout", ()=>{
+            document.body.style.cursor = "auto";
+        })
+        this.nombrePly2.on("pointerdown", () =>{
+            this.nombrePly2.setText(' ');
+            var n = prompt('Introduce nombre: ', 'Player2');
+            console.log(n)
+            if(n == null) this.nombrePly1.setText('Player2');
+            else this.nombrePly2.setText(n);
+        })
+        this.nombrePly2.on("pointerup", ()=>{
             document.body.style.cursor = "auto"; 
         })
         
 
         //Interaccion botones
-        //ok:
-        this.aceptar.on("pointerover", ()=>{
+        //ok 1:
+        this.aceptar1.on("pointerover", ()=>{
             document.body.style.cursor = "pointer";
         })
-        
-        this.aceptar.on("pointerout", ()=>{
+        this.aceptar1.on("pointerout", ()=>{
             document.body.style.cursor = "auto";
         })
-        
-        this.aceptar.on("pointerdown", ()=>{
-            this.aceptar.setFrame(1); 
+        this.aceptar1.on("pointerdown", ()=>{
+            this.aceptar1.setFrame(1); 
+            if(this.nombrePly1.text == 'Introduce tu nombre:'){
+                this.nombrePly1.setText('Player1');
+            }
+            this.nombrePly1.disableInteractive();
+        })
+        this.aceptar1.on("pointerup", ()=>{
+            document.body.style.cursor = "auto";
         })
 
-        this.aceptar.on("pointerup", ()=>{
-            document.body.style.cursor = "auto";
-            this.scene.start("PantallaPartida"); 
+        //ok 2:
+        this.aceptar2.on("pointerover", ()=>{
+            document.body.style.cursor = "pointer";
         })
+        this.aceptar1.on("pointerout", ()=>{
+            document.body.style.cursor = "auto";
+        })
+        this.aceptar2.on("pointerdown", ()=>{
+            this.aceptar2.setFrame(1); 
+            if(this.nombrePly2.text == 'Introduce tu nombre:'){
+                this.nombrePly2.setText('Player2');
+            }
+            this.nombrePly2.disableInteractive();
+        })
+        this.aceptar2.on("pointerup", ()=>{
+            document.body.style.cursor = "auto";
+        })
+
         //menu:
         //Interaccion botones
         this.menu.on("pointerover", ()=>{
@@ -156,8 +205,9 @@ class PantallaSeleccion extends Phaser.Scene {
 
     }
     update(time, delta){
-        //Animacion personaje en pausa
-        this.player.anims.play('pose', true);
+        //Animacion personajes en pausa
+        this.player1.anims.play('pose', true);
+        this.player2.anims.play('pose', true);
 
         
 
