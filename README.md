@@ -1,12 +1,10 @@
 
 # Proyecto Food Mayhem
 ### Cambio de nombre propuesto -> I-Scream 
-
-## Game Design Document
-
 ![Logo del juego](https://github.com/theheckez/FoodMayhem/blob/main/logo/LogoI-Scream.png)
 
-
+## Game Design Document
+![Inicio](https://github.com/theheckez/FoodMayhem/blob/main/CapturasInterfaz/PantallaInicio.png)
 __Juegos en Red
 Curso 2022/23__
 
@@ -220,88 +218,88 @@ A continuación se muestran las pantallas del Nombre y las transiciones entre el
 
 ### 4.2. Menú Principal
 Lista de los elementos:
-Logo del juego
-Botón Partida Local: lleva a la selección de skin de un jugador
-Botón Partida Multijugador: lleva a la selección de skin de dos jugadores y el modo de juego
-Botón: Tutorial: Lleva a la pantalla del tutorial
-Botón Salir: para salir del juego
-Botón Música: para apagar o activar la música del juego
+- Logo del juego
+- Botón Partida Local: lleva a la selección de skin de un jugador
+- Botón Partida Multijugador: lleva a la selección de skin de dos jugadores y el modo de juego
+- Botón: Tutorial: Lleva a la pantalla del tutorial
+- Botón Salir: para salir del juego
+- Botón Música: para apagar o activar la música del juego
 
 ### 4.2. Créditos
 
 Lista de los elementos.
-Panel: texto con los roles de cada miembro del equipo 
-Botón menú: vuelve al menú principal al pulsarse
+- Panel: texto con los roles de cada miembro del equipo 
+- Botón menú: vuelve al menú principal al pulsarse
 
 ### 4.3. Un jugador: Selección de skin
 
 Lista de los elementos:
-Lista de skins disponibles, pulsando izquierda o derecha se cambia de uno a otro.
-Texto Player 1: indica el jugador que tendrá el skin seleccionado
-Botón Aceptar: Selecciona el skin en el centro de la lista
-Botón Tutorial: Lleva a la pantalla de Tutorial
-Botón Menú: Lleva al menú principal
+- Lista de skins disponibles, pulsando izquierda o derecha se cambia de uno a otro.
+- Texto Player 1: indica el jugador que tendrá el skin seleccionado
+- Botón Aceptar: Selecciona el skin en el centro de la lista
+- Botón Tutorial: Lleva a la pantalla de Tutorial
+- Botón Menú: Lleva al menú principal
 
 #### 4.3.1. Dos jugadores: Selección de skin y modo de juego
 
 Lista de los elementos:
-Listas de skins disponibles, pulsando izquierda o derecha se cambia de uno a otro. Si un jugador tiene seleccionado un skin, el otro no podrá elegir el mismo.
-Textos Player 1 y 2: distinguen los jugadores que tienen cada skin.
-Botones Aceptar: Selecciona el skin en el centro de la lista
-Textos Modo de Juego: para distinguir que en la parte de abajo se selecciona la manera en la que se va a jugar
-Botones Campaña, Versus, Arcade: Se selecciona uno de los tres como modo de juego
-Botón Tutorial: Lleva a la pantalla de tutorial
-Botón de Menú: Lleva al menú principal
+- Listas de skins disponibles, pulsando izquierda o derecha se cambia de uno a otro. Si un jugador tiene seleccionado un skin, el otro no podrá elegir el mismo.
+- Textos Player 1 y 2: distinguen los jugadores que tienen cada skin.
+- Botones Aceptar: Selecciona el skin en el centro de la lista
+- Textos Modo de Juego: para distinguir que en la parte de abajo se selecciona la manera en la que se va a jugar
+- Botones Campaña, Versus, Arcade: Se selecciona uno de los tres como modo de juego
+- Botón Tutorial: Lleva a la pantalla de tutorial
+- Botón de Menú: Lleva al menú principal
 
 ### 4.4. Tutorial
 
 Lista de los elementos:
-Panel Reglas: donde se explican los controles y las reglas del juego
-Botón Aceptar: vuelve a la pantalla anterior
+- Panel Reglas: donde se explican los controles y las reglas del juego
+- Botón Aceptar: vuelve a la pantalla anterior
 
 ### 4.5.  Nivel
 
 Lista de los elementos:
-Escenario: donde se desarrolla toda la acción en el nivel
-Zona izquierda y derecha diferencian entre el jugador 1 y el 2, respectivamente. Para cada uno se dispone de los mismos botones e iconos, por lo que se explicarán los elemento solo del jugador 1 (izquierda) y se asumirá lo mismo para el 2.
-Imagen superior con la cabeza del skin seleccionado por el jugador, junto con su barra de vida. Señala a qué jugador pertenece esa parte del interfaz y la vida que le queda. Conforme aumente la capacidad de vida, la barra se hará más grande.
-Elementos del inventario, distinguidos por el icono de la mochila. La fila será tan larga como objetos haya, con un máximo de 5. Una vez recogidos del escenario, se almacenan aquí. Se podrá clicar encima de cada uno, y dependiendo del tipo de objeto que sea, dará la opción de equiparlo, usarlo, soltarlo, etc.
-Elementos del equipo, distinguidos por el icono del casco.  La fila será tan larga como objetos haya, con un máximo de 3. Se equipan desde el inventario, y en cualquier momento se puede clicar sobre ellos y soltarlos o llevarlos de nuevo al inventario. Solo para elementos como armaduras o armas.
-Botón Más (...) : para ver con más detalle las habilidades de los jugadores, como van progresando, y las características de los objetos que poseen tanto en el inventario como en el equipo. Cuando se clique sobre este, lleva a un menú de pausa a ambos jugadores, por lo que deberán de estar de acuerdo en seleccionarlo.
+- Escenario: donde se desarrolla toda la acción en el nivel
+- Zona izquierda y derecha diferencian entre el jugador 1 y el 2, respectivamente. Para cada uno se dispone de los mismos botones e iconos, por lo que se explicarán los elemento solo del jugador 1 (izquierda) y se asumirá lo mismo para el 2.
+- Imagen superior con la cabeza del skin seleccionado por el jugador, junto con su barra de vida. Señala a qué jugador pertenece esa parte del interfaz y la vida que le queda. Conforme aumente la capacidad de vida, la barra se hará más grande.
+- Elementos del inventario, distinguidos por el icono de la mochila. La fila será tan larga como objetos haya, con un máximo de 5. Una vez recogidos del escenario, se almacenan aquí. Se podrá clicar encima de cada uno, y dependiendo del tipo de objeto que sea, dará la opción de equiparlo, usarlo, soltarlo, etc.
+- Elementos del equipo, distinguidos por el icono del casco.  La fila será tan larga como objetos haya, con un máximo de 3. Se equipan desde el inventario, y en cualquier momento se puede clicar sobre ellos y soltarlos o llevarlos de nuevo al inventario. Solo para elementos como armaduras o armas.
+- Botón Más (...) : para ver con más detalle las habilidades de los jugadores, como van progresando, y las características de los objetos que poseen tanto en el inventario como en el equipo. Cuando se clique sobre este, lleva a un menú de pausa a ambos jugadores, por lo que deberán de estar de acuerdo en seleccionarlo.
 En el caso de un solo jugador, el interfaz sería el mismo pero manteniendo solo los iconos de la izquierda.
 
 #### 4.5.2. Pausa
 
 Lista de los elementos:
-Dos zonas diferenciadas con los mismos componentes. La izquierda para el jugador 1, y la derecha para el jugador 2. Se explicará sólo la izquierda.
-Icono de la skin seleccionada por el jugador, junto con su nombre al lado. Diferencia la zona de la del otro jugador.
-Barras de habilidades. Todas señalan como han mejorado con respecto a su estado inicial, pero solo la de vida indica también cuando de esa barra se ha consumido. El resto no lo señalan porque no se consumen.
-Descripción de los objetos del inventario, primera línea. La fila de un máximo de 5 elementos, lista los objetos y sus características.
-Descripción del equipo, segunda línea. La fila de un máximo de 3 elementos, lista cada elemento equipado y sus características.
-Botón volver (X): para salir de la pantalla de pausa y seguir jugando.
-Botón menú: para salir al menú principal y dejar la partida. Se pierde todo el progreso.
-Botón tutorial: Lleva a la pantalla de tutorial.
+- Dos zonas diferenciadas con los mismos componentes. La izquierda para el jugador 1, y la derecha para el jugador 2. Se explicará sólo la izquierda.
+- Icono de la skin seleccionada por el jugador, junto con su nombre al lado. Diferencia la zona de la del otro jugador.
+- Barras de habilidades. Todas señalan como han mejorado con respecto a su estado inicial, pero solo la de vida indica también cuando de esa barra se ha consumido. El resto no lo señalan porque no se consumen.
+- Descripción de los objetos del inventario, primera línea. La fila de un máximo de 5 elementos, lista los objetos y sus características.
+- Descripción del equipo, segunda línea. La fila de un máximo de 3 elementos, lista cada elemento equipado y sus características.
+- Botón volver (X): para salir de la pantalla de pausa y seguir jugando.
+- Botón menú: para salir al menú principal y dejar la partida. Se pierde todo el progreso.
+- Botón tutorial: Lleva a la pantalla de tutorial.
 
 ### 4.6. Derrota. Fin de nivel.
 
 Lista de los elementos:
-Botón Menú: Lleva al menú principal
-Botón Repetir Nivel: Solo repite el nivel que se ha perdido
-Botón Salir: Sale del juego.
+- Botón Menú: Lleva al menú principal
+- Botón Repetir Nivel: Solo repite el nivel que se ha perdido
+- Botón Salir: Sale del juego.
 
 ### 4.7. Victoria Arcade y Campaña. Fin de partida.
 
 
 Lista de elementos:
-Botón Menú: Lleva al menú principal
-Botón Salir: Sale del juego.
+- Botón Menú: Lleva al menú principal
+- Botón Salir: Sale del juego.
 
 #### 4.7.1. Victoria Versus. Fin de partida.
 
 Lista de los elementos:
-Texto de puntuaciones: indica la experiencia que ha conseguido cada jugador matando solo las hordas de  enemigos, no al jugador contrincante.
-Botón Menú: Lleva al menú principal
-Botón Salir: Sale del juego.
+- Texto de puntuaciones: indica la experiencia que ha conseguido cada jugador matando solo las hordas de  enemigos, no al jugador contrincante.
+- Botón Menú: Lleva al menú principal
+- Botón Salir: Sale del juego.
 
 
 ## 5. Arte
