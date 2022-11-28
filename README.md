@@ -1,9 +1,15 @@
+<style>
+body {
+ text-alignment: center
+	}
+	
+</style>
 <H1>Food Mayhem</h1>
 <H2>Cambio de nombre propuesto -> I-Scream </H2>
 
 Game Design Document
 
-
+<img src ="https://github.com/theheckez/FoodMayhem/blob/main/logo/LogoI-Scream.png"></img>
 
 
 Juegos en Red
