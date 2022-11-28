@@ -51,6 +51,24 @@ class PantallaSeleccion extends Phaser.Scene {
         this.aceptar1 = this.add.sprite(200, 320, "aceptar").setInteractive();
         this.aceptar2 = this.add.sprite(600, 320, "aceptar").setInteractive();
 
+        //Recuadro Modo juego
+        let recuadroMJ = this.add.graphics({
+            fillStyle: {
+                color: 0xa87bc7, //color barra de cargar (CAMBIAR)
+                alpha: 0.5,
+            }
+        })
+
+        recuadroMJ.fillRect(0, 360, this.game.renderer.width, 300);
+        let resaltarMJ = this.add.graphics({
+            fillStyle: {
+                color: 0x734a91, //color barra de cargar (CAMBIAR)
+                alpha: 0.5
+            }
+        })
+        resaltarMJ.fillRect(0, 360, this.game.renderer.width, 35);
+        //resaltarMJ.lineGradientStyle(200, 0, 600, 380, 0);
+
         //Boton menu: volver al menu
         this.menu = this.add.sprite(710, 530, "menu").setInteractive();
 
@@ -91,6 +109,9 @@ class PantallaSeleccion extends Phaser.Scene {
         this.modoArc = this.make.text(configModos).setInteractive();
         this.modoArc.setText('Arcade');
         this.modoArc.setPosition(this.game.renderer.width/2, 490);
+
+        //Interaccion modos de juego:
+        this.flechita = this.add.image(320, 420, "flechita");
         
         //FUNCIONALIDAD:
         //Animacion personaje
@@ -101,7 +122,7 @@ class PantallaSeleccion extends Phaser.Scene {
             repeat: -1
         })
 
-        //Interaccion texto:
+        //Interaccion nombres:
         //Jugador1:
         this.nombrePly1.on("pointerover", ()=>{
             document.body.style.cursor = "text";
@@ -177,7 +198,6 @@ class PantallaSeleccion extends Phaser.Scene {
         })
 
         //menu:
-        //Interaccion botones
         this.menu.on("pointerover", ()=>{
             document.body.style.cursor = "pointer";
         })
@@ -195,13 +215,16 @@ class PantallaSeleccion extends Phaser.Scene {
             this.scene.start("PantallaInicio"); 
         })
         
+        //Interaccion modos de juego:
+
+
+        //Entrada por teclado
+        const key = Phaser.Input.Keyboard.KeyCodes;
         /*
-        const keys = Phaser.Input.Keyboard.KeyCodes;
-        this.keyEnter = this.input.keyboard.addKeyy(keys.ENTER);
+        if(this.key.on())
         this.keyEnter.on('down', () =>{
             console.log('Has pulsado enter');
-        })
-        */
+        })*/
 
     }
     update(time, delta){

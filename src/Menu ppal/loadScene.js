@@ -13,15 +13,6 @@ class PantallaCarga extends Phaser.Scene {
             }
         })
 
-        this.load.on("progress", (percent)=>{
-            loadingBar.fillRect(0, this.game.renderer.height/2, this.game.renderer.width*percent, 50);
-            console.log(percent);
-        })
-
-        this.load.on("complete", ()=>{
-            console.log('done');
-        })
-
         //Menu de Inicio
         this.load.image("bg", "assets/background.jpg");
         this.load.image("logo", "logo/LogoI-Scream.png");
@@ -30,6 +21,7 @@ class PantallaCarga extends Phaser.Scene {
             { frameWidth: 64, frameHeight: 64 }
         );
         
+        //------------------------------------------------------
 
         //Pantalla seleccion personaje
         //Personaje:
@@ -56,6 +48,8 @@ class PantallaCarga extends Phaser.Scene {
             'DiseñoInterfaz/Botones/botonMenu.png',
             { frameWidth: 120, frameHeight: 47 }
         );
+        //flecha modo juego
+        this.load.image("flechita", "DiseñoInterfaz/elementosInterfaz/flechita.png");
 
         //Escenario:
         this.load.spritesheet('pause', 
@@ -63,7 +57,14 @@ class PantallaCarga extends Phaser.Scene {
             { frameWidth: 80, frameHeight: 47 }
         );
 
-        
+        this.load.on("progress", (percent)=>{
+            loadingBar.fillRect(0, this.game.renderer.height/2, this.game.renderer.width*percent, 50);
+            console.log(percent);
+        })
+
+        this.load.on("complete", ()=>{
+            console.log('done');
+        })
         
     }
     create(){
