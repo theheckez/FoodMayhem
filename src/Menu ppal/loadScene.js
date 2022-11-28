@@ -15,9 +15,9 @@ class PantallaCarga extends Phaser.Scene {
 
         //Menu de Inicio
         this.load.image("bg", "DiseñoInterfaz/elementosInterfaz/pantallaInicio.png");
-        this.load.image("logo", "logo/LogoI-Scream.png");
+        this.load.image("logo", "logo/LogoI-ScreamFondoBlanco.png");
         this.load.spritesheet('BotonPlay', 
-            'assets/BotonPlay.png',
+            'assets_Rosa/BotonPlay.png',
             { frameWidth: 64, frameHeight: 64 }
         );
         
@@ -59,9 +59,20 @@ class PantallaCarga extends Phaser.Scene {
         //flecha modo juego
         this.load.image("flechita", "DiseñoInterfaz/elementosInterfaz/flechita.png");
 
+        //-----------------------------------------------------------------------------------
         //Escenario:
         this.load.spritesheet('pause', 
             'DiseñoInterfaz/Botones/botonPause.png',
+            { frameWidth: 80, frameHeight: 47 }
+        );
+
+        //------------------------------------------------------------------------------------
+
+        //Menu Pausa
+        //Botones
+        //x
+        this.load.spritesheet('exit',
+            'DiseñoInterfaz/Botones/botonX.png',
             { frameWidth: 80, frameHeight: 47 }
         );
 
@@ -80,7 +91,7 @@ class PantallaCarga extends Phaser.Scene {
     }
 
     update(time, delta){
-        this.scene.start("PantallaInicio", "hello from loadScene"); //esta linea para visualizar directamente Menu Ppal
+        this.scene.start("PantallaPausa"); //esta linea para visualizar directamente Menu Ppal
     }
 }
 
