@@ -41,10 +41,10 @@ class PantallaSeleccion extends Phaser.Scene {
             }
         }
         //Nombre jugador 1:
-        this.nombrePly1 = this.make.text(configNombres).setInteractive();
+        player1 = this.make.text(configNombres).setInteractive();
         //Nombre jugador 2:
-        this.nombrePly2 = this.make.text(configNombres).setInteractive();
-        this.nombrePly2.setPosition(590, 290);
+        player2 = this.make.text(configNombres).setInteractive();
+        player2.setPosition(590, 290);
 
         //Botones aceptar: bloquean introducir nombre y van a siguiente pantalla
         this.aceptar1 = this.add.sprite(210, 330, "aceptar").setInteractive();
@@ -132,44 +132,45 @@ class PantallaSeleccion extends Phaser.Scene {
 
         //Interaccion nombres:
         //Jugador1:
-        this.nombrePly1.on("pointerover", ()=>{
+        player1.on("pointerover", ()=>{
             document.body.style.cursor = "text";
         })
-        this.nombrePly1.on("pointerout", ()=>{
+        player1.on("pointerout", ()=>{
             document.body.style.cursor = "auto";
         })
-        this.nombrePly1.on("pointerdown", () =>{
-            this.nombrePly1.setText(' ');
+        player1.on("pointerdown", () =>{
+            player1.setText(' ');
             var n = prompt('Introduce nombre: ', 'Player1');
             console.log(n)
-            if(n == null) this.nombrePly1.setText('Player1');
-            else this.nombrePly1.setText(n);
+            if(n == null) player1.setText('Player1');
+            else player1.setText(n);
         })
-        this.nombrePly1.on("pointerup", ()=>{
+        player1.on("pointerup", ()=>{
             document.body.style.cursor = "auto"; 
         })
 
         //Jugador2
-        this.nombrePly2.on("pointerover", ()=>{
+        player2.on("pointerover", ()=>{
             document.body.style.cursor = "text";
         })
-        this.nombrePly2.on("pointerout", ()=>{
+        player2.on("pointerout", ()=>{
             document.body.style.cursor = "auto";
         })
-        this.nombrePly2.on("pointerdown", () =>{
-            this.nombrePly2.setText(' ');
+        player2.on("pointerdown", () =>{
+            player2.setText(' ');
             var n = prompt('Introduce nombre: ', 'Player2');
             console.log(n)
-            if(n == null) this.nombrePly1.setText('Player2');
-            else this.nombrePly2.setText(n);
+            if(n == null) player2.setText('Player2');
+            else player2.setText(n);
         })
-        this.nombrePly2.on("pointerup", ()=>{
+        player2.on("pointerup", ()=>{
             document.body.style.cursor = "auto"; 
         })
         
 
         //Interaccion botones
-        this.ready = 0;
+        this.ready1 = 0;
+        this.ready2 = 0;
         //ok 1:
         this.aceptar1.on("pointerover", ()=>{
             document.body.style.cursor = "pointer";
@@ -179,11 +180,11 @@ class PantallaSeleccion extends Phaser.Scene {
         })
         this.aceptar1.on("pointerdown", ()=>{
             this.aceptar1.setFrame(1); 
-            if(this.nombrePly1.text == 'Introduce tu nombre:'){
-                this.nombrePly1.setText('Player1');
+            if(player1.text == 'Introduce tu nombre:'){
+                player1.setText('Player1');
             }
-            this.nombrePly1.disableInteractive();
-            this.ready++;
+            player1.disableInteractive();
+            this.ready1 = 1;
         })
         this.aceptar1.on("pointerup", ()=>{
             document.body.style.cursor = "auto";
@@ -198,11 +199,11 @@ class PantallaSeleccion extends Phaser.Scene {
         })
         this.aceptar2.on("pointerdown", ()=>{
             this.aceptar2.setFrame(1); 
-            if(this.nombrePly2.text == 'Introduce tu nombre:'){
-                this.nombrePly2.setText('Player2');
+            if(player2.text == 'Introduce tu nombre:'){
+                player2.setText('Player2');
             }
-            this.nombrePly2.disableInteractive();
-            this.ready++;
+            player2.disableInteractive();
+            this.ready2 = 1;
         })
         this.aceptar2.on("pointerup", ()=>{
             document.body.style.cursor = "auto";
@@ -283,7 +284,7 @@ class PantallaSeleccion extends Phaser.Scene {
 
 
         //Cambiar de pantalla:
-        if(this.ready == 2)
+        if(this.ready1 + this.ready2 == 2)
         {
             this.ready = 0;
             console.log('aparece');

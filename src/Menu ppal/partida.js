@@ -31,7 +31,7 @@ class PantallaPartida extends Phaser.Scene {
 
         this.pause.on("pointerup", ()=>{
             document.body.style.cursor = "auto";
-            //this.scene.start("PantallaInicio"); 
+            this.scene.start("PantallaPausa"); 
         })
     }
 }
