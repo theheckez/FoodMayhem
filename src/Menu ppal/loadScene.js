@@ -14,7 +14,7 @@ class PantallaCarga extends Phaser.Scene {
         })
 
         //Menu de Inicio
-        this.load.image("bg", "assets/background.jpg");
+        this.load.image("bg", "DiseñoInterfaz/elementosInterfaz/pantallaInicio.png");
         this.load.image("logo", "logo/LogoI-Scream.png");
         this.load.spritesheet('BotonPlay', 
             'assets/BotonPlay.png',
@@ -24,6 +24,8 @@ class PantallaCarga extends Phaser.Scene {
         //------------------------------------------------------
 
         //Pantalla seleccion personaje
+        //Background
+        this.load.image("bg2", "DiseñoInterfaz/elementosInterfaz/pantallaSeleccion.png");
         //Personaje:
         this.load.spritesheet('player', 
             'SpritesheetJugadores/SpitesheetP1/SpritesheetP1(Andar).png',
@@ -48,6 +50,12 @@ class PantallaCarga extends Phaser.Scene {
             'DiseñoInterfaz/Botones/botonMenu.png',
             { frameWidth: 120, frameHeight: 47 }
         );
+        //Play
+        this.load.spritesheet('play', 
+            'DiseñoInterfaz/Botones/BotonPlay.png',
+            { frameWidth: 120, frameHeight: 47 }
+        );
+
         //flecha modo juego
         this.load.image("flechita", "DiseñoInterfaz/elementosInterfaz/flechita.png");
 

@@ -10,8 +10,8 @@ class PantallaInicio extends Phaser.Scene {
     create(){
         //this.add.image(this.game.renderer.width/2, this.game.renderer.height*0.20, "star");
         this.add.image(400, 300, "bg");
-        this.logo = this.add.image(150, 50, "logo").setOrigin(0);
-        this.playButton = this.add.sprite(380, 350, "BotonPlay").setInteractive();
+        this.logo = this.add.image(this.game.renderer.width/2, 200, "logo").setOriginFromFrame('center');
+        this.playButton = this.add.sprite(this.game.renderer.width/2, 400, "BotonPlay").setInteractive();
         this.playButton.scale = 3;
 
         //Interaccion botones
