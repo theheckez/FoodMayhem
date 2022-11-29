@@ -128,6 +128,24 @@ class PantallaPausa extends Phaser.Scene {
         this.make.text(confDamage).setText('x'+fuerzaP1);
         this.make.text(confDamage).setText('x'+fuerzaP2).setPosition(610, 350);
 
+        //Mensaje abandonar partida
+        //tapar fondo
+        this.niebla = this.add.graphics({
+            fillStyle: {
+                color: 0x828282, //color barra de cargar (CAMBIAR)
+                alpha: 0.4,
+            }
+        })
+        this.niebla.fillRect(0, 0, 800, 600).setVisible(false);
+        this.pestaña = this.add.image(400, 300, 'aviso').setVisible(false);
+        this.abandonar = this.make.text(confVariables).setText(
+            '¿Abandonar la partida?').setPosition(
+                400, 220).setFontSize(25).setVisible(false);
+        //warning
+        //x
+        this.exit2 = this.add.sprite(625, 185, "exit").setInteractive().setVisible(false);
+        this.exit2.scale = 0.6;
+
         //FUNCIONALIDADES
         //exit
         this.exit.on("pointerover", ()=>{
@@ -154,7 +172,14 @@ class PantallaPausa extends Phaser.Scene {
             this.menu.setFrame(1); 
         })
         this.menu.on("pointerup", ()=>{
+            this.menu.setFrame(0);
             document.body.style.cursor = "auto";
+            this.niebla.setVisible(true);
+            this.pestaña.setVisible(true);
+            this.abandonar.setVisible(true);
+            this.exit2.setVisible(true);
+            this.menu.disableInteractive();
+            this.exit.disableInteractive();
         })
 
     }

@@ -95,22 +95,17 @@ class PantallaCarga extends Phaser.Scene {
         this.load.image('nivelVidaJ1', 'InterfazEscenaJuego/barraVidaP1.png');
 
         this.load.on("progress", (percent)=>{
-            /*let start = Date.now();
-            let timer = setInterval(function(){
-                let timePassed = Date.now() - start;
-                if(timePassed >= 2000){
-                    clearInterval(timer);
-                    return;
-                }
-                draw(timePassed);
-            }, 20);*/
             loadingBar.fillRect(100, 350, 600*percent, 40);
             console.log(percent);
-        })
+        }) 
 
         this.load.on("complete", ()=>{
             console.log('done');
         })
+        //Pestaña aviso
+        this.load.image('aviso', 'DiseñoInterfaz/elementosInterfaz/pestañaAviso.png');
+
+
         
     }
     create(){
@@ -120,9 +115,10 @@ class PantallaCarga extends Phaser.Scene {
     }
 
     update(time, delta){
-        //this.scene.PantallaCarga.time.delayedCall(250, () => {
-        //    this.scene.start('PantallaInicio');
-        //  });
+
+        this.time.delayedCall(1000, () => {
+            this.scene.start('PantallaPausa');
+        });
         //this.scene.start("PantallaInicio"); //esta linea para visualizar directamente Menu Ppal
     }
     /*
