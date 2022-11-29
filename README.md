@@ -164,7 +164,14 @@ La lista de atributos que podrán ir mejorando será:
 - Manejo. Controla la destreza del personaje para portar distintas armas.
 
 ### 3.4. Objetos
+_______________________________________________________________________	
+ __Update(28/11/22) - FASE 1__
+ 
+ Se han implementado una espada y una varita. La espada altera el daño cuerpo a cuerpo y la varita aumenta el daño a distancia.
+ ##### Cambios
+	 No hay cambios contemplados.
 
+_______________________________________________________________________
 Habrá una cantidad diversa de objetos de dos categorías distintas: consumibles y armas. Las armas pueden tener distintas características, distintos tipos de ataque y requerir de ciertos atributos para poder usarse.
 Los consumibles pueden incluir pociones para curarse, armas arrojadizas, etc.
 
@@ -241,6 +248,7 @@ Lista de los elementos:
 - Botón Menú: Lleva al menú principal
 
 #### 4.3.1. Dos jugadores: Selección de skin y modo de juego
+![Pantalla de selección de personaje](https://github.com/theheckez/FoodMayhem/blob/main/CapturasInterfaz/PantallaSeleccion.png)
 
 Lista de los elementos:
 - Listas de skins disponibles, pulsando izquierda o derecha se cambia de uno a otro. Si un jugador tiene seleccionado un skin, el otro no podrá elegir el mismo.
