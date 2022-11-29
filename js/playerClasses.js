@@ -6,12 +6,13 @@ constructor(newScene, x,y, sprite) {
 
   this.scene = newScene;
   this.dead = false;
+  this.control = false;
 
   this.health = 100;
   this.lifeBar;
 
 
-  this.attackRange = 30;
+  this.attackRange = 35;
   this.bullets = this.scene.physics.add.group({ classType: Bullet, runChildUpdate: true });
   this.attackHitbox = new Phaser.Physics.Arcade.Image(this.scene,
   this.x + this.width/2, this.y + this.height/2, 'arbolV', 4);
@@ -122,7 +123,7 @@ class P1 extends Actor {
     }, [this.scene, this]);
 
     this.spriteName = {idle: 'idle', down: 'down', up: 'up',left:'left',
-  right: 'right', death: 'death', punch: 'punch'} ;
+  right: 'right', death: 'death', punch: 'punch', distAttack: 'distAttack'} ;
 
 
     this.keys;
@@ -193,6 +194,11 @@ class P1 extends Actor {
           frames: this.scene.anims.generateFrameNumbers('icyattack', { start:18,end:22 }),
           frameRate: 20,
         });
+        this.scene.anims.create({
+              key: 'distAttack',
+              frames: this.scene.anims.generateFrameNumbers('icydistattack', { start:0,end:7 }),
+              frameRate: 20,
+        });
 
   }
 
@@ -207,7 +213,8 @@ class P1 extends Actor {
      'sword': Phaser.Input.Keyboard.KeyCodes.ONE,
      'wand': Phaser.Input.Keyboard.KeyCodes.TWO,
      'attack': Phaser.Input.Keyboard.KeyCodes.C,
-     'distAttack': Phaser.Input.Keyboard.KeyCodes.E
+     'distAttack': Phaser.Input.Keyboard.KeyCodes.E,
+     'esc': Phaser.Input.Keyboard.KeyCodes.ESC
    });
 
  }
@@ -217,14 +224,6 @@ class P1 extends Actor {
     if(!this.dead){
       this.stateMachine.step();
       this.inventory.open(this.keys,this);
-    /*  if(this.scene.input.activePointer.isDown){
-      if(this.scene.input.activePointer.rightButtonDown()){
-            this.distAttack();
-      } else {
-        this.attack();
-      }
-
-    }*/
     }
   }
 }
@@ -242,12 +241,12 @@ class P2 extends Actor {
       }, [this.scene, this]);
 
       this.spriteName = {idle: 'idleB', down: 'downB', up: 'upB',left:'leftB',
-    right: 'rightB', death: 'deathB'} ;
+    right: 'rightB', death: 'deathB', distAttack: 'distAttackB'} ;
 
       this.keys;
       this.pad;
       this.buttons;
-      this.control = false;
+
       this.initAnimations();
       this.initInput();
       this.inventory.init2(this.scene);
@@ -315,8 +314,12 @@ class P2 extends Actor {
               frames: this.scene.anims.generateFrameNumbers('yciattack', { start:18,end:22 }),
               frameRate: 20,
             });
-
-          this.scene.anims.create({
+        this.scene.anims.create({
+              key: 'distAttackB',
+              frames: this.scene.anims.generateFrameNumbers('ycidistattack', { start:0,end:7 }),
+              frameRate: 20,
+        });
+        this.scene.anims.create({
           key: 'getHurt',
           frames: this.scene.anims.generateFrameNumbers('icydmg', { start:0,end:1 }),
           frameRate: 10,
@@ -337,15 +340,25 @@ class P2 extends Actor {
      });
     }
 
-    checkGamepad() {
-      if(this.scene.input.gamepad.total === 1){
+    checkGamepad(scene) {
+      if(scene.input.gamepad.total === 1){
       this.control = true;
+      this.pad = scene.input.gamepad.getPad(0);
       }
   }
 
     move() {
-      this.pad = this.scene.input.gamepad.getPad(0);
+
+
+      if(!this.dead) {
+              this.stateMachine.step();
+              this.inventory.open(this.keys,this);
+
+      }
+      /*
       if(this.control && !this.dead) {
+
+
           if (this.pad.axes.length)
          {
 
@@ -379,17 +392,9 @@ class P2 extends Actor {
             this.distAttack();
           }
 
-          if(this.body.velocity.equals(new Phaser.Math.Vector2(0, 0)) && this.health >0 && !(this.anims.getCurrentKey() === 'punch')){
-            this.anims.play('idleB',true);
-          } else if(this.health <= 0 && !this.dead){
-          this.anims.play('death',true);
-          this.dead = true;
-          }
+
 
        }
-     } else if(!this.dead) {
-             this.stateMachine.step();
-             this.inventory.open(this.keys,this);
-     }
+     } else*/
     }
 }

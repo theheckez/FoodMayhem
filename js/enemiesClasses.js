@@ -57,9 +57,9 @@ class Malvin extends EnemyMM {
     super(newScene, x,y, 'malvin');
 
     this.health = 100;
-    this.speed = 70;
+    this.speed = 30;
 
-    this.attackDmg = 10;
+    this.attackDmg = 5;
     this.attackRange = 50;
     this.attackCooldown = 3;
 
@@ -128,13 +128,13 @@ class DemonBoss extends EnemyMM {
     super(newScene, x,y, 'demon');
 
     this.health = 300;
-    this.speed = 30;
+    this.speed = 10;
 
-    this.attackDmg = 40;
+    this.attackDmg = 20;
     this.attackRange = 30;
-    this.attackCooldown = 6;
+    this.attackCooldown = 4;
 
-    this.timeSinceLastIncrement = -6;
+    this.timeSinceLastIncrement = -4;
     this.actualTime;
 
     this.spriteName = {move: 'demonIdle', attack: 'demonAttack'} ;

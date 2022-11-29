@@ -44,7 +44,6 @@ class IdleState extends State {
   enter(scene,player) {
     player.setVelocity(0);
     player.anims.play(player.spriteName.idle);
-  //  player.anims.stop();
   }
 
   execute(scene, player) {
@@ -57,24 +56,110 @@ class IdleState extends State {
     this.stateMachine.transition('distAttack');
     return;
   }
-    // Transition to swing if pressing space
-  /*  if (space.isDown) {
-      this.stateMachine.transition('swing');
-      return;
-    }
+      if(player.control){
+        if(player.pad.isButtonDown(2)){
+          this.stateMachine.transition('attack');
+          return;
+        }
 
-    // Transition to dash if pressing shift
-    if (shift.isDown) {
-      this.stateMachine.transition('dash');
-      return;
-    }*/
+        if(player.pad.isButtonDown(3)){
+          this.stateMachine.transition('distAttack');
+          return;
+        }
+        if(player.pad.axes.length){
+          this.stateMachine.transition('move');
+          return;
 
+        }
+      }
     // Transition to move if pressing a movement key
     if (player.keys['left'].isDown || player.keys['up'].isDown ||
     player.keys['down'].isDown  || player.keys['right'].isDown ) {
       this.stateMachine.transition('move');
       return;
     }
+  }
+}
+
+
+class MoveState extends State {
+  execute(scene, player) {
+
+    if (Phaser.Input.Keyboard.JustDown(player.keys['attack'])) {
+      this.stateMachine.transition('attack');
+      return;
+    }
+    if (player.keys['distAttack'].isDown) {
+      this.stateMachine.transition('distAttack');
+      return;
+    }
+
+    if(player.control){
+
+    player.setVelocity(0);
+
+    var axisH = player.pad.axes[0].getValue();
+    var axisV = player.pad.axes[1].getValue();
+
+    if(!axisH && !axisV){
+      player.stateMachine.transition('idle');
+      return;
+    }
+
+    if(player.pad.isButtonDown(2)){
+      this.stateMachine.transition('attack');
+      return;
+    }
+
+    if(player.pad.isButtonDown(3)){
+      this.stateMachine.transition('distAttack');
+      return;
+    }
+    player.setVelocityX(player.speed * axisH);
+    player.setVelocityY(player.speed * axisV);
+
+    if(axisH < 0) {
+    player.anims.play('leftB',true);
+    } else if(axisH > 0) {
+    player.anims.play('rightB',true);
+    }
+    else if(axisV<0) {
+     player.anims.play('upB',true);
+    } else if (axisV >0){
+     player.anims.play('downB',true);
+    }
+
+  } else {
+
+    if (!(player.keys['left'].isDown || player.keys['up'].isDown ||
+      player.keys['down'].isDown  || player.keys['right'].isDown)) {
+
+        this.stateMachine.transition('idle');
+        return;
+      }
+
+      player.setVelocity(0);
+
+      if (player.keys['left'].isDown) {
+        player.setVelocityX(-100);
+        player.direction = 'left';
+        player.anims.play(player.spriteName.left, true);
+      } else if (player.keys['right'].isDown) {
+        player.setVelocityX(100);
+        player.direction = 'right';
+        player.anims.play(player.spriteName.right, true);
+      }
+      if (player.keys['up'].isDown) {
+        player.setVelocityY(-player.speed);
+        player.direction = 'up';
+        player.anims.play(player.spriteName.up, true);
+      } else if (player.keys['down'].isDown) {
+        player.setVelocityY(player.speed);
+        player.direction = 'down';
+        player.anims.play(player.spriteName.down, true);
+      }
+  }
+
   }
 }
 
@@ -110,15 +195,13 @@ class IdleEnemyState extends State {
         enemy.setVelocityX((enemy.direction.x/enemy.module) * enemy.speed);
         enemy.setVelocityY((enemy.direction.y/enemy.module) * enemy.speed);
         }
-        //if(enemy.direction.x > 0) {
-          //if(enemy.spriteName.moveR !== undefined)enemy.anims.play(enemy.spriteName.moveR,true);
-        //} else if(enemy.direction.x < 0) {
-          //if(enemy.spriteName.moveL !== undefined)enemy.anims.play(enemy.spriteName.moveL,true);
-        //}
+
         if(enemy.direction.y>0){
           if(enemy.spriteName.move !== undefined)enemy.anims.play(enemy.spriteName.move,true);
         } else if(enemy.direction.y<0) {
-          if(enemy.spriteName.moveU !== undefined)enemy.anims.play(enemy.spriteName.moveU,true);
+          if(enemy.spriteName.moveU !== undefined){enemy.anims.play(enemy.spriteName.moveU,true)}else{
+            enemy.anims.play(enemy.spriteName.move,true)
+          }
         }
 
     }
@@ -189,57 +272,6 @@ class IdleEnemyState extends State {
   }
 
 
-class MoveState extends State {
-  execute(scene, player) {
-    //const {left, right, up, down, space, shift} = scene.keys;
-
-    // Transition to swing if pressing space
-
-    if (Phaser.Input.Keyboard.JustDown(player.keys['attack'])) {
-      this.stateMachine.transition('attack');
-      return;
-    }
-    if (player.keys['distAttack'].isDown) {
-      this.stateMachine.transition('distAttack');
-      return;
-    }
-
-    // Transition to dash if pressing shift
-    /*if (shift.isDown) {
-      this.stateMachine.transition('dash');
-      return;
-    }*/
-
-    // Transition to idle if not pressing movement keys
-    if (!(player.keys['left'].isDown || player.keys['up'].isDown ||
-    player.keys['down'].isDown  || player.keys['right'].isDown)) {
-
-      this.stateMachine.transition('idle');
-      return;
-    }
-
-    player.setVelocity(0);
-
-    if (player.keys['left'].isDown) {
-      player.setVelocityX(-100);
-      player.direction = 'left';
-      player.anims.play(player.spriteName.left, true);
-    } else if (player.keys['right'].isDown) {
-      player.setVelocityX(100);
-      player.direction = 'right';
-      player.anims.play(player.spriteName.right, true);
-    }
-    if (player.keys['up'].isDown) {
-      player.setVelocityY(-player.speed);
-      player.direction = 'up';
-      player.anims.play(player.spriteName.up, true);
-    } else if (player.keys['down'].isDown) {
-      player.setVelocityY(player.speed);
-      player.direction = 'down';
-      player.anims.play(player.spriteName.down, true);
-    }
-  }
-}
 
 class AttackState extends State {
   enter(scene, player) {
@@ -265,13 +297,16 @@ class AttackState extends State {
 
       player.timeSinceLastIncrement = scene.time.now / 1000;
 
+      scene.time.delayedCall(250, () => {
+        player.attackHitbox.body.enable = false;
+        scene.physics.world.remove(player.attackHitbox.body);
+        this.stateMachine.transition('idle');
+      });
+    } else {
+
+            this.stateMachine.transition('idle');
     }
 
-    scene.time.delayedCall(250, () => {
-      player.attackHitbox.body.enable = false;
-      scene.physics.world.remove(player.attackHitbox.body);
-      this.stateMachine.transition('idle');
-    });
 
   }
 }
@@ -281,9 +316,12 @@ class DistAttackState extends State {
     player.actualTime = scene.time.now / 1000;
     player.getTarget(scene.enemies);
       if (player.actualTime > (player.timeSinceLastIncrement + player.attackCooldown)) {
+        player.setVelocityX(0);
+        player.setVelocityY(0);
         // Get bullet from bullets group
         var bullet = player.bullets.get().setActive(true).setVisible(true);
         if (bullet) {
+          player.anims.play(player.spriteName.distAttack);
           bullet.fire(player, player.target);
           scene.physics.add.collider(player.target, bullet, function (target, bull) {
             target.getHurt(player.distAttackDmg);

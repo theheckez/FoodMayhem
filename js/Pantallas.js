@@ -74,7 +74,7 @@ var PantallaCarga = new Phaser.Class({
                color: 0xde72ca
            }
        })
-
+  this.load.image('iconoJ1', 'assets/interfaz/cabezaMorada.png');
 
        //-------------------------------------------------------
 
@@ -99,24 +99,7 @@ var PantallaCarga = new Phaser.Class({
        //------------------------------------------------------------------------------------
 
        //Menu Pausa
-       //Background:
-       this.load.image("stop", "assets/interfaz/pantallaPausa.png");
-       //Botones
-       //x
-       this.load.spritesheet('exit',
-           'assets/interfaz/botonX.png',
-           { frameWidth: 80, frameHeight: 47 }
-       );
 
-       //Iconos:
-       this.load.image('iconoJ1', 'assets/interfaz/cabezaMorada.png');
-       this.load.image('iconoJ2', 'assets/interfaz/cabezaAzul.png');
-
-       //Variables
-       //Barra vida:
-       this.load.image('vidaJ1', 'assets/interfaz/barraVidaP1.png');
-       this.load.image('vidaJ2', 'assets/interfaz/barraVidaP2.png');
-       this.load.image('nivelVidaJ1', 'assets/interfaz/bar1.png');
 
        this.load.on("progress", (percent)=>{
          this.time.delayedCall(1000, () => {
@@ -130,10 +113,6 @@ var PantallaCarga = new Phaser.Class({
            console.log('done');
        })
        //Pestaña aviso
-       this.load.image('aviso', 'assets/interfaz/pestañaAviso.png');
-
-       this.load.spritesheet('yes', 'assets/interfaz/botonYes.png', { frameWidth: 120, frameHeight: 47});
-       this.load.spritesheet('no', 'assets/interfaz/botonNo.png', { frameWidth: 120, frameHeight: 47});
 
 
 
@@ -153,7 +132,35 @@ class PantallaPausa extends Phaser.Scene {
     constructor(){
         super({key: 'PantallaPausa'});
     }
-    init(){
+    preload(){
+      //Background:
+      this.load.image("stop", "assets/interfaz/pantallaPausa.png");
+      //Botones
+      //x
+      this.load.spritesheet('exit',
+          'assets/interfaz/botonX.png',
+          { frameWidth: 80, frameHeight: 47 }
+      );
+
+      //Iconos:
+      this.load.image('iconoJ1', 'assets/interfaz/cabezaMorada.png');
+      this.load.image('iconoJ2', 'assets/interfaz/cabezaAzul.png');
+
+      //Variables
+      //Barra vida:
+      this.load.image('vidaJ1', 'assets/interfaz/fondoBarraP1.png');
+      this.load.image('vidaJ2', 'assets/interfaz/fondoBarraP2.png');
+      this.load.image('p2', 'assets/interfaz/cabezaAzul.png');
+      this.load.image('p1', 'assets/interfaz/cabezaMorada.png');
+      this.load.image('nivelVidaJ1', 'assets/interfaz/bar1.png');
+      this.load.image('aviso', 'assets/interfaz/pestañaAviso.png');
+
+      this.load.spritesheet('yes', 'assets/interfaz/botonYes.png', { frameWidth: 120, frameHeight: 47});
+      this.load.spritesheet('no', 'assets/interfaz/botonNo.png', { frameWidth: 120, frameHeight: 47});
+      this.load.spritesheet('menu',
+          'assets/interfaz/botonMenu.png',
+          { frameWidth: 120, frameHeight: 47 }
+      );
 
     }
     create(){
@@ -165,7 +172,7 @@ class PantallaPausa extends Phaser.Scene {
         //Modo de juego:
         const confTitulo = {
             origin: 'center',
-            x: this.width/2,
+            x: game.renderer.width/2,
             y: 100,
             text: 'PAUSA',
             style: {
@@ -218,7 +225,7 @@ class PantallaPausa extends Phaser.Scene {
         //this.make.text(confJugadores).setText(player1.text); --> PONERLO ASI
         //this.make.text(confJugadores).setText(player2.text).setPosition(this.game.renderer.width*3/4, 150); --> PONERLO ASI
         this.make.text(confJugadores).setText('Player 1');
-        this.make.text(confJugadores).setText('Player 2').setPosition(this.width*3/4, 180);
+        this.make.text(confJugadores).setText('Player 2').setPosition(game.renderer.width*3/4, 180);
         //Iconos jugadores
         this.add.image(140, 180, 'iconoJ1');
         this.add.image(500, 180, 'iconoJ2');
@@ -235,10 +242,10 @@ class PantallaPausa extends Phaser.Scene {
             }
         }
         //Vida
-        this.make.text(confVariables).setText('Vida');
+        this.make.text(confVariables).setText('Health');
         this.add.image(260, 270, 'vidaJ1');
 
-        this.make.text(confVariables).setText('Vida').setPosition(470, 270);
+        this.make.text(confVariables).setText('Health').setPosition(470, 270);
         this.add.image(610, 270, 'vidaJ2');
 
         let vidaJ1 = this.add.graphics({
@@ -247,24 +254,27 @@ class PantallaPausa extends Phaser.Scene {
             }
         })
         //Vida Jugador 1:
-        if(vidaP1 == 100) {
-            vidaJ1.fillRect(214, 265, 132, 10);
-        } else if (vidaP1 < 100 && vidaP1 > 0) {
-            vidaJ1.fillRect(214, 265, (132/100)*vidaP1, 10);
-        } else if (vidaP1 <= 0) {
-            vidaJ1.fillRect(214, 265, 0, 10);
+        if(player1.health == 100) {
+            vidaJ1.fillRect(214, 260, 132, 10);
+        } else if (player1.health < 100 && player1.health > 0) {
+            vidaJ1.fillRect(214, 260, (132/100)*player1.health, 10);
+        } else if (player1.health <= 0) {
+            vidaJ1.fillRect(214, 260, 0, 10);
         }
         //Vida Jugador 2:
-        if(vidaP2 == 100) {
-            vidaJ1.fillRect(657, 265, -132, 10);
-        } else if (vidaP2 < 100 && vidaP1 > 0) {
-            vidaJ1.fillRect(657, 265, -(132/100)*vidaP2, 10);
-        } else if (vidaP2 <= 0) {
-            vidaJ1.fillRect(657, 265, 0, 10);
+        if(player2.health == 100) {
+            vidaJ1.fillRect(657, 260, -132, 10);
+        } else if (player2.health < 100 && player1.health > 0) {
+            vidaJ1.fillRect(657, 260, -(132/100)*player2.health, 10);
+        } else if (player2.health <= 0) {
+            vidaJ1.fillRect(657, 260, 0, 10);
         }
+
+        this.add.image(195, 265, 'p1');
+    this.add.image(675, 265, 'p2');
         //Daño de ataque
-        this.make.text(confVariables).setText('Fuerza').setPosition(140, 350);
-        this.make.text(confVariables).setText('Fuerza').setPosition(490, 350);
+        this.make.text(confVariables).setText('Strength').setPosition(140, 350);
+        this.make.text(confVariables).setText('Strength').setPosition(490, 350);
 
         const confDamage = {
             origin: 'right',
@@ -276,8 +286,8 @@ class PantallaPausa extends Phaser.Scene {
                 fontSize: 30
             }
         }
-        this.make.text(confDamage).setText('x'+fuerzaP1);
-        this.make.text(confDamage).setText('x'+fuerzaP2).setPosition(610, 350);
+        this.make.text(confDamage).setText('x'+player1.attackHitbox.attackDmg);
+        this.make.text(confDamage).setText('x'+player2.attackHitbox.attackDmg).setPosition(610, 350);
 
         //Mensaje abandonar partida
         //tapar fondo
@@ -313,7 +323,8 @@ class PantallaPausa extends Phaser.Scene {
         })
         this.exit.on("pointerup", ()=>{
             document.body.style.cursor = "auto";
-            this.scene.start("PantallaPartida");
+            this.scene.wake("mainGame");
+            this.scene.sleep();
         })
         //menu
         this.menu.on("pointerover", ()=>{
@@ -478,10 +489,10 @@ var CharacterSelect = new Phaser.Class({
              }
          }
          //Nombre jugador 1:
-         player1 = this.make.text(configNombres).setInteractive();
+         player1T = this.make.text(configNombres).setInteractive();
          //Nombre jugador 2:
-         player2 = this.make.text(configNombres).setInteractive();
-         player2.setPosition(590, 290);
+         player2T = this.make.text(configNombres).setInteractive();
+         player2T.setPosition(590, 290);
 
          //Botones aceptar: bloquean introducir nombre y van a siguiente pantalla
          this.aceptar1 = this.add.sprite(210, 330, "aceptar").setInteractive();
@@ -574,38 +585,38 @@ var CharacterSelect = new Phaser.Class({
          })
          //Interaccion nombres:
          //Jugador1:
-         player1.on("pointerover", ()=>{
+         player1T.on("pointerover", ()=>{
              document.body.style.cursor = "text";
          })
-         player1.on("pointerout", ()=>{
+         player1T.on("pointerout", ()=>{
              document.body.style.cursor = "auto";
          })
-         player1.on("pointerdown", () =>{
-             player1.setText(' ');
+         player1T.on("pointerdown", () =>{
+             player1T.setText(' ');
              var n = prompt('Introduce nombre: ', 'Player1');
              console.log(n)
-             if(n == null) player1.setText('Player1');
-             else player1.setText(n);
+             if(n == null) player1T.setText('Player1');
+             else player1T.setText(n);
          })
-         player1.on("pointerup", ()=>{
+         player1T.on("pointerup", ()=>{
              document.body.style.cursor = "auto";
          })
 
          //Jugador2
-         player2.on("pointerover", ()=>{
+         player2T.on("pointerover", ()=>{
              document.body.style.cursor = "text";
          })
-         player2.on("pointerout", ()=>{
+         player2T.on("pointerout", ()=>{
              document.body.style.cursor = "auto";
          })
-         player2.on("pointerdown", () =>{
-             player2.setText(' ');
+         player2T.on("pointerdown", () =>{
+             player2T.setText(' ');
              var n = prompt('Introduce nombre: ', 'Player2');
              console.log(n)
-             if(n == null) player2.setText('Player2');
-             else player2.setText(n);
+             if(n == null) player2T.setText('Player2');
+             else player2T.setText(n);
          })
-         player2.on("pointerup", ()=>{
+         player2T.on("pointerup", ()=>{
              document.body.style.cursor = "auto";
          })
 
@@ -622,10 +633,10 @@ var CharacterSelect = new Phaser.Class({
          })
          this.aceptar1.on("pointerdown", ()=>{
              this.aceptar1.setFrame(1);
-             if(player1.text == 'Introduce tu nombre:'){
-                 player1.setText('Player1');
+             if(player1T.text == 'Introduce tu nombre:'){
+                 player1T.setText('Player1');
              }
-             player1.disableInteractive();
+             player1T.disableInteractive();
              this.ready1 = 1;
          })
          this.aceptar1.on("pointerup", ()=>{
@@ -641,10 +652,10 @@ var CharacterSelect = new Phaser.Class({
          })
          this.aceptar2.on("pointerdown", ()=>{
              this.aceptar2.setFrame(1);
-             if(player2.text == 'Introduce tu nombre:'){
-                 player2.setText('Player2');
+             if(player2T.text == 'Introduce tu nombre:'){
+                 player2T.setText('Player2');
              }
-             player2.disableInteractive();
+             player2T.disableInteractive();
              this.ready2 = 1;
          })
          this.aceptar2.on("pointerup", ()=>{
