@@ -4,6 +4,21 @@
 <head>
   <meta name="" charset="utf-8" content=""/>
   <title>Food Mayhem</title>
+  <style>
+           @font-face{
+               font-family: 'estilo';
+               src: url('./assets/fuentes/serif_pixel-7.ttf');
+           }
+           @font-face{
+               font-family: 'titulo';
+               src: url('./assets/fuentes/04B_30__.TTF');
+           }
+           @font-face{
+               font-family: 'damage';
+               src: url('./assets/fuentes/I-pixel-u.ttf');
+           }
+       </style>
+
     <script src="js/phaser.min.js"></script>
     <script src="js/stateMachinePlayer.js"></script>
     <script src="js/enemiesClasses.js"></script>
@@ -16,8 +31,9 @@
 
 <script type="text/javascript">
 
-var vidaP1;
-var vidaP2;
+
+var player;
+var player2;
 
 var MainGame = new Phaser.Class({
       Extends: Phaser.Scene,
@@ -27,10 +43,10 @@ var MainGame = new Phaser.Class({
         function MainGame() {
           Phaser.Scene.call(this, { key: 'mainGame' });
 
-          this.player;
-          this.player2;
           this.players;
           this.enemies;
+
+          this.level= 0;
 
           this.life1;
 
@@ -77,6 +93,8 @@ var MainGame = new Phaser.Class({
         this.load.spritesheet('icyB', 'assets/players/Yci.png', { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet('yciattack', 'assets/players/yciattack.png', { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet('icyattack', 'assets/players/icyattack.png', { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet('ycidistattack', 'assets/players/ycidistattack.png', { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet('icydistattack', 'assets/players/icydistattack.png', { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet('icydmg', 'assets/players/dmg.png',{ frameWidth: 64, frameHeight: 64 });
 
         //Imágenes de Enemigos
@@ -124,25 +142,25 @@ var MainGame = new Phaser.Class({
         this.generateTrees(2);
 
         //Jugadores
-        this.player = new P1(this, 300, 450);
-        this.player2 = new P2(this, 500, 450);
-        this.players = [this.player, this.player2];
+        player1 = new P1(this, 300, 450);
+        player2 = new P2(this, 500, 450);
+        this.players = [player1, player2];
 
         //Control de colisiones de mundo
         this.initCollisions();
 
         // BOTONES
         var pauseButton = this.add.sprite(400, 22, 'pause', 0).setInteractive();
-      var musicButton = this.add.sprite(400, 570, 'musicButton', 0).setInteractive();
-      var musicBtDown = this.add.sprite(400, 570, 'musicButton', 2).setInteractive().setVisible(false);
+        var musicButton = this.add.sprite(400, 570, 'musicButton', 0).setInteractive();
+        var musicBtDown = this.add.sprite(400, 570, 'musicButton', 2).setInteractive().setVisible(false);
 
         // BARRAS DE VIDA
         this.add.image(100, 35, 'BckBarP1');
-        this.player.lifeBar = new LifeBar(this, 54, 26, 56, 28);
+        player1.lifeBar = new LifeBar(this, 54, 26, 56, 28);
         this.add.image(100, 35, 'lifeBarP1');
 
         this.add.image(700, 35, 'BckBarP2');
-        this.player2.lifeBar = new LifeBar(this, 614, 26, 690, 28);
+        player2.lifeBar = new LifeBar(this, 614, 26, 690, 28);
         this.add.image(700, 35, 'lifeBarP2');
 
         //MUSICA
@@ -193,26 +211,33 @@ var MainGame = new Phaser.Class({
               // aqui se cambia al menu de pausa
             });
 
-        this.physics.add.overlap(this.player.attackHitbox, this.enemies, this.enemiesDamaged, undefined, this)
-        this.physics.add.overlap(this.player2.attackHitbox, this.enemies, this.enemiesDamaged, undefined, this)
-        this.physics.add.overlap(this.player.attackHitbox, this.bosses, this.enemiesDamaged, undefined, this)
-        this.physics.add.overlap(this.player2.attackHitbox, this.bosses, this.enemiesDamaged, undefined, this)
+        this.physics.add.overlap(player1.attackHitbox, this.enemies, this.enemiesDamaged, undefined, this)
+        this.physics.add.overlap(player2.attackHitbox, this.enemies, this.enemiesDamaged, undefined, this)
+        this.physics.add.overlap(player1.attackHitbox, this.bosses, this.enemiesDamaged, undefined, this)
+        this.physics.add.overlap(player2.attackHitbox, this.bosses, this.enemiesDamaged, undefined, this)
       },
 
       update: function () {
 
-        this.player.move(this, this.enemies);
+        player1.move(this, this.enemies);
 
-        this.player2.checkGamepad();
-
-        this.add.existing(this.player2);
-        this.physics.add.existing(this.player2);
-        this.player2.setCollideWorldBounds(true);
-        this.player2.setSize(30, 30);
-        this.player2.setOffset(17, 28);
-        this.player2.move();
+        player2.checkGamepad(this);
 
 
+        player2.move();
+
+        if(player2.control){
+          if(player2.pad.isButtonDown(9)){
+            this.scene.launch("PantallaPausa");
+            this.scene.sleep();
+          }
+        }
+
+      if (Phaser.Input.Keyboard.JustDown(player1.keys['esc'])){
+
+          this.scene.launch("PantallaPausa");
+          this.scene.sleep();
+        }
         this.enemies.children.each(function (enem) {
           enem.initEnemy(this.players);
           enem.setSize(30, 30);
@@ -230,21 +255,26 @@ var MainGame = new Phaser.Class({
       },
 
       initCollisions: function () {
-        this.add.existing(this.player);
-        this.physics.add.existing(this.player);
-        this.player.setCollideWorldBounds(true);
-        this.player.setSize(30, 30);
-        this.player.setOffset(17, 28);
+        this.add.existing(player1);
+        this.physics.add.existing(player1);
+        player1.setCollideWorldBounds(true);
+        player1.setSize(30, 30);
+        player1.setOffset(17, 28);
 
+        this.add.existing(player2);
+        this.physics.add.existing(player2);
+        player2.setCollideWorldBounds(true);
+        player2.setSize(30, 30);
+        player2.setOffset(17, 28);
         //HitBox Enemigos
 
 
         //Colisiones de mundo
 
-        this.physics.add.collider(this.player, this.blocks);
+        this.physics.add.collider(player1, this.blocks);
         this.physics.add.collider(this.enemies, this.enemies);
         this.physics.add.collider(this.enemies, this.blocks);
-        this.physics.add.collider(this.player2, this.blocks);
+        this.physics.add.collider(player2, this.blocks);
         this.physics.add.collider(this.bosses, this.enemies);
         this.physics.add.collider(this.bosses, this.blocks);
 
@@ -277,10 +307,21 @@ var MainGame = new Phaser.Class({
       },
 
       checkforLevel: function() {
-        if(this.enemies.countActive() === 0 && this.bosses.countActive() === 0) {
-          this.generateEnemies(Phaser.Math.Between(3,10), this.enemies, 'malvin');
-          this.generateEnemies(Phaser.Math.Between(0,4), this.bosses, 'demon');
+        if(!player1.dead || !player2.dead){
+          if(this.level<3){
+            if(this.enemies.countActive() === 0 && this.bosses.countActive() === 0 ) {
+              this.generateEnemies(Phaser.Math.Between(3,10), this.enemies, 'malvin');
+              this.generateEnemies(Phaser.Math.Between(0,4), this.bosses, 'demon');
+              this.level++;
+            }
+          } else {
+            console.log("Win")
+          }
+        } else {
+          console.log("Derrota")
         }
+
+
       }
 
     });
@@ -314,7 +355,7 @@ var MainGame = new Phaser.Class({
       'transparent'
     ]
   },
-    scene: [MainGame,PantallaCarga,PantallaInicio,CharacterSelect, PantallaPausa]
+    scene: [PantallaCarga,MainGame,PantallaInicio,CharacterSelect, PantallaPausa]
   };
 
   var game = new Phaser.Game(config);
