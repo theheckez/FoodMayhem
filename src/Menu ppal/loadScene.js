@@ -105,6 +105,9 @@ class PantallaCarga extends Phaser.Scene {
         //Pestaña aviso
         this.load.image('aviso', 'DiseñoInterfaz/elementosInterfaz/pestañaAviso.png');
 
+        this.load.spritesheet('yes', 'DiseñoInterfaz/botones/botonYes.png', { frameWidth: 120, frameHeight: 47});
+        this.load.spritesheet('no', 'DiseñoInterfaz/botones/botonNo.png', { frameWidth: 120, frameHeight: 47});
+
 
         
     }

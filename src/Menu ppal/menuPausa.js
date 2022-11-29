@@ -140,11 +140,14 @@ class PantallaPausa extends Phaser.Scene {
         this.pestaña = this.add.image(400, 300, 'aviso').setVisible(false);
         this.abandonar = this.make.text(confVariables).setText(
             '¿Abandonar la partida?').setPosition(
-                400, 220).setFontSize(25).setVisible(false);
+                400, 230).setFontSize(25).setVisible(false);
         //warning
         //x
-        this.exit2 = this.add.sprite(625, 185, "exit").setInteractive().setVisible(false);
+        this.exit2 = this.add.sprite(625, 185, "exit").setVisible(false);
         this.exit2.scale = 0.6;
+        //yes y no
+        this.yes = this.add.sprite(300, 350, 'yes').setVisible(false);
+        this.no = this.add.sprite(500, 350, 'no').setVisible(false);
 
         //FUNCIONALIDADES
         //exit
@@ -177,9 +180,69 @@ class PantallaPausa extends Phaser.Scene {
             this.niebla.setVisible(true);
             this.pestaña.setVisible(true);
             this.abandonar.setVisible(true);
-            this.exit2.setVisible(true);
+            this.exit2.setVisible(true).setInteractive();
+            this.yes.setVisible(true).setInteractive();
+            this.no.setVisible(true).setInteractive();
             this.menu.disableInteractive();
             this.exit.disableInteractive();
+        })
+        //exit2
+        this.exit2.on("pointerover", ()=>{
+            document.body.style.cursor = "pointer";
+        })
+        this.exit2.on("pointerout", ()=>{
+            document.body.style.cursor = "auto";
+        })
+        this.exit2.on("pointerdown", ()=>{
+            this.exit2.setFrame(1); 
+        })
+        this.exit2.on("pointerup", ()=>{
+            this.exit2.setFrame(0);
+            document.body.style.cursor = "auto";
+            this.niebla.setVisible(false);
+            this.pestaña.setVisible(false);
+            this.abandonar.setVisible(false);
+            this.exit2.setVisible(false).disableInteractive();
+            this.yes.setVisible(false).disableInteractive();
+            this.no.setVisible(false).disableInteractive();
+            this.menu.setInteractive();
+            this.exit.setInteractive();
+        })
+        //yes
+        this.yes.on("pointerover", ()=>{
+            document.body.style.cursor = "pointer";
+        })
+        this.yes.on("pointerout", ()=>{
+            document.body.style.cursor = "auto";
+        })
+        this.yes.on("pointerdown", ()=>{
+            this.yes.setFrame(1); 
+        })
+        this.yes.on("pointerup", ()=>{
+            document.body.style.cursor = "auto";
+            this.scene.start("PantallaInicio");
+        })
+        //no
+        this.no.on("pointerover", ()=>{
+            document.body.style.cursor = "pointer";
+        })
+        this.no.on("pointerout", ()=>{
+            document.body.style.cursor = "auto";
+        })
+        this.no.on("pointerdown", ()=>{
+            this.no.setFrame(1); 
+        })
+        this.no.on("pointerup", ()=>{
+            this.no.setFrame(0);
+            document.body.style.cursor = "auto";
+            this.niebla.setVisible(false);
+            this.pestaña.setVisible(false);
+            this.abandonar.setVisible(false);
+            this.exit2.setVisible(false).disableInteractive();
+            this.yes.setVisible(false).disableInteractive();
+            this.no.setVisible(false).disableInteractive();
+            this.menu.setInteractive();
+            this.exit.setInteractive();
         })
 
     }
