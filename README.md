@@ -332,8 +332,9 @@ A su vez también se ha utilizado arte ajeno para realizar nuestro videojuego.
 #### Demon
 ![demonSpriteSheet](https://github.com/theheckez/FoodMayhem/blob/main/SpritesheetMalvin/demon.png)
 #### Escenario
-![Escenario](https://github.com/theheckez/FoodMayhem/blob/main/mapaNivel1/sueloBase3.0.png)
 Para el escenario se ha utilizado un tileset descargado de it.chio (creado por: Cup Nooble), y se ha usado el programa Tiled para crear el mapa.
+![Escenario](https://github.com/theheckez/FoodMayhem/blob/main/mapaNivel1/sueloBase3.0.png)
+
 
 _______________________________________________________________________
 
