@@ -12,7 +12,7 @@ class PantallaCarga extends Phaser.Scene {
 
         let loadingBar = this.add.graphics({
             fillStyle: {
-                color: 0xffffff 
+                color: 0xde72ca
             }
         })
 
@@ -115,11 +115,15 @@ class PantallaCarga extends Phaser.Scene {
     }
     create(){
         this.add.image(400, 250, 'empresa');
-        this.helado = this.add.image(100, 350, 'iconoJ1');
+        this.helado = this.add.image(100, 370, 'iconoJ1');
+        this.helado.scale = 1.3;
     }
 
     update(time, delta){
-        this.scene.start("PantallaInicio"); //esta linea para visualizar directamente Menu Ppal
+        //this.scene.PantallaCarga.time.delayedCall(250, () => {
+        //    this.scene.start('PantallaInicio');
+        //  });
+        //this.scene.start("PantallaInicio"); //esta linea para visualizar directamente Menu Ppal
     }
     /*
     draw(time)

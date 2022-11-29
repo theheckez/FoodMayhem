@@ -15,7 +15,7 @@ const config = {
   width: 800,
   height: 600,
   parent: 'container',
-  backgroundColor: '#34495E',
+  backgroundColor: '#5B2970',
 
   banner:{
     hidePhaser: true,
