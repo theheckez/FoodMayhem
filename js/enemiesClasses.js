@@ -7,91 +7,47 @@ constructor(newScene, x,y, sprite) {
   this.scene = newScene;
   this.dead = false;
 
+
   this.target;
   this.scene.add.existing(this);
   this.scene.physics.add.existing(this);
   this.setCollideWorldBounds(true);
 }
 
-  hunt(targets) {
-  if(!targets[0].dead || !targets[1].dead ){
-  this.getTarget(targets);
-  if(!this.dead){
-
-    this.direction = new Phaser.Math.Vector2(this.target.x - this.x, this.target.y - this.y);
-    this.module = this.direction.length();
-
-  /*  if(this.direction.x > 0 && !(this.anims.getCurrentKey() === 'malvinUp' || this.anims.getCurrentKey() === 'malvinDown') ) {
-      this.anims.play('malvinRight',true);
-    } else if(this.direction.x < 0 && !(this.anims.getCurrentKey() === 'malvinUp' || this.anims.getCurrentKey() === 'malvinDown') ) {
-      this.anims.play('malvinLeft',true);
-    };
-
-    if(this.direction.y>0 && !(this.anims.getCurrentKey() === 'malvinattack')) {
-      this.anims.play('malvinDown',true)
-    } else if(this.direction.y <0 && !(this.anims.getCurrentKey() === 'malvinattack')) {
-      this.anims.play('malvinUp',true);
-    }*/
-
-    if(this.module < this.attackRange) {
-      this.setVelocityX(0);
-      this.setVelocityY(0);
-      this.attack(this.target);
-      } else{
-      this.setVelocityX((this.direction.x/this.module) * this.speed);
-      this.setVelocityY((this.direction.y/this.module) * this.speed);
-      }
-      }
-      } else{
-      this.setVelocityX(0);
-      this.setVelocityY(0);
-      this.anims.stop();
-      }
-  }
-
-  attack(targets) {
-    this.actualTime = this.scene.time.now/1000;
-
-    if(this.actualTime>(this.timeSinceLastIncrement+this.attackCooldown)){
-    //  this.anims.play('malvinAttack', true);
-      targets.health-= this.attackDmg;
-      console.log(targets.health);
-      //targets.lifeBar.setCrop(0, 0, targets.health * 2, 32);
-      this.timeSinceLastIncrement = this.scene.time.now/1000;
-    }
-
-  }
-
-  getTarget(targets) {
+  getTarget(){
     var distances = [];
     var i;
     var bestDistance;
-
-    distances[0] = Phaser.Math.Distance.Between(this.x, this.y, targets[0].x, targets[0].y);
+    var deadTarget;
+    distances[0] = Phaser.Math.Distance.Between(this.x, this.y, this.targets[0].x, this.targets[0].y);
     bestDistance = distances[0];
-    if(!targets[0].dead){
-      this.target = targets[0];
-    }
+    if(!this.targets[0].dead){
+      this.target = this.targets[0];
+      deadTarget = false;
+    } else {deadTarget= true;}
 
-    for(i = 1; i<targets.length; i++){
-      distances[i] = Phaser.Math.Distance.Between(this.x, this.y, targets[i].x, targets[i].y);
-      if(bestDistance > distances[i] || this.target.dead){
+    for(i = 1; i<this.targets.length; i++){
+      distances[i] = Phaser.Math.Distance.Between(this.x, this.y, this.targets[i].x, this.targets[i].y);
+      if(bestDistance > distances[i] || deadTarget){
         bestDistance = distances[i];
-        if(!targets[i].dead){
-          this.target = targets[i];
+        if(!this.targets[i].dead){
+          this.target = this.targets[i];
         }
       }
     }
+    if(this.target != undefined) {
+      this.stateMachine.transition('move');
+    }
   }
 
-  getHurt() {
-    console.log("Reciben daño")
-    this.health -= 10;
-    if(this.health === 0 && !this.dead){
-      console.log("Se mueren")
-      this.dead = true;
-      this.destroy();
-    }
+  getHurt(attack) {
+    this.attackerDmg = attack;
+    this.stateMachine.transition('getHurt');
+  }
+
+  initEnemy(targets) {
+    this.targets = targets;
+    this.stateMachine.step();
   }
 }
 
@@ -108,6 +64,17 @@ class Malvin extends EnemyMM {
 
     this.timeSinceLastIncrement = -3;
     this.actualTime;
+
+    this.spriteName = {move: 'malvinDown', moveU:'malvinUp', moveL:'malvinLeft',
+    moveR:'malvinRight',death: 'malvinDeath', attack: 'malvinAttack'} ;
+
+    this.stateMachine = new StateMachine('idle', {
+      idle: new IdleEnemyState(),
+      move: new HuntState(),
+      attack: new EnemyAttackState(),
+      getHurt: new GetHurtState(),
+    }, [this.scene, this]);
+
 
     this.initAnimations();
   }
@@ -141,18 +108,17 @@ class Malvin extends EnemyMM {
       repeat: -1
     })
 
-    this.scene.anims.create({
-        key: 'malvinDie',
-        frames: this.scene.anims.generateFrameNumbers('icyattack', { start: 36, end: 44 }),
-        frameRate: 10,
-      });
-
       this.scene.anims.create({
           key: 'malvinAttack',
           frames: this.scene.anims.generateFrameNumbers('malvinattack', { start: 0, end: 3 }),
           frameRate: 10,
         });
 
+      this.scene.anims.create({
+            key: 'malvinDeath',
+            frames: this.scene.anims.generateFrameNumbers('malvindeath', { start: 0, end: 10 }),
+            frameRate: 10,
+          });
   }
 }
 
@@ -169,6 +135,15 @@ class DemonBoss extends EnemyMM {
 
     this.timeSinceLastIncrement = -6;
     this.actualTime;
+
+    this.spriteName = {move: 'demonIdle', attack: 'demonAttack'} ;
+
+    this.stateMachine = new StateMachine('idle', {
+      idle: new IdleEnemyState(),
+      move: new HuntState(),
+      attack: new EnemyAttackState(),
+      getHurt: new GetHurtState(),
+    }, [this.scene, this]);
 
     this.initAnimations();
   }

@@ -40,113 +40,19 @@ class State {
   }
 }
 
-/*
-const config = {
-  type: Phaser.AUTO,
-  width: 400,
-  height: 300,
-  pixelArt: true,
-  zoom: 2,
-  physics: {
-    default: 'arcade'
-  },
-  scene: {
-    preload() {
-      this.load.spritesheet('hero', 'https://cdn.glitch.com/59aa1c5f-c16d-41a1-bfd2-09072e84a538%2Fhero.png?1551136698770', {
-        frameWidth: 32,
-        frameHeight: 32,
-      });
-      this.load.image('bg', 'https://cdn.glitch.com/59aa1c5f-c16d-41a1-bfd2-09072e84a538%2Fbg.png?1551136995353');
-    },
-
-    create() {
-      this.keys = this.input.keyboard.createCursorKeys();
-
-      // Static background
-      this.add.image(200, 200, 'bg');
-
-      // The movable character
-      this.hero = this.physics.add.sprite(200, 150, 'hero', 0);
-      this.hero.direction = 'down';
-
-      // The state machine managing the hero
-      this.stateMachine = new StateMachine('idle', {
-        idle: new IdleState(),
-        move: new MoveState(),
-        swing: new SwingState(),
-        dash: new DashState(),
-      }, [this, this.hero]);
-
-
-      // Animation definitions
-      this.anims.create({
-        key: 'walk-down',
-        frameRate: 8,
-        repeat: -1,
-        frames: this.anims.generateFrameNumbers('hero', {start: 0, end: 3}),
-      });
-      this.anims.create({
-        key: 'walk-right',
-        frameRate: 8,
-        repeat: -1,
-        frames: this.anims.generateFrameNumbers('hero', {start: 4, end: 7}),
-      });
-      this.anims.create({
-        key: 'walk-up',
-        frameRate: 8,
-        repeat: -1,
-        frames: this.anims.generateFrameNumbers('hero', {start: 8, end: 11}),
-      });
-      this.anims.create({
-        key: 'walk-left',
-        frameRate: 8,
-        repeat: -1,
-        frames: this.anims.generateFrameNumbers('hero', {start: 12, end: 15}),
-      });
-
-      // NOTE: Sword animations do not repeat
-      this.anims.create({
-        key: 'swing-down',
-        frameRate: 8,
-        repeat: 0,
-        frames: this.anims.generateFrameNumbers('hero', {start: 16, end: 19}),
-      });
-      this.anims.create({
-        key: 'swing-up',
-        frameRate: 8,
-        repeat: 0,
-        frames: this.anims.generateFrameNumbers('hero', {start: 20, end: 23}),
-      });
-      this.anims.create({
-        key: 'swing-right',
-        frameRate: 8,
-        repeat: 0,
-        frames: this.anims.generateFrameNumbers('hero', {start: 24, end: 27}),
-      });
-      this.anims.create({
-        key: 'swing-left',
-        frameRate: 8,
-        repeat: 0,
-        frames: this.anims.generateFrameNumbers('hero', {start: 28, end: 31}),
-      });
-    },
-
-    update() {
-      this.stateMachine.step();
-    },
-  }
-};*/
-
 class IdleState extends State {
   enter(scene,player) {
     player.setVelocity(0);
-    player.anims.play('idle');
+    player.anims.play(player.spriteName.idle);
   //  player.anims.stop();
   }
 
   execute(scene, player) {
-  //  const {left, right, up, down, space, shift} = player.keys;
 
+  if (player.keys['attack'].isDown) {
+    this.stateMachine.transition('attack');
+    return;
+  }
     // Transition to swing if pressing space
   /*  if (space.isDown) {
       this.stateMachine.transition('swing');
@@ -168,18 +74,128 @@ class IdleState extends State {
   }
 }
 
+class IdleEnemyState extends State {
+  enter(scene, enemy) {
+    enemy.setVelocity(0);
+    enemy.anims.play(enemy.spriteName.move);
+    enemy.anims.stop();
+  }
+
+  execute(scene,enemy){
+      this.stateMachine.transition('move');
+  }
+  }
+
+  class HuntState extends State {
+    execute(scene, enemy) {
+
+      if(enemy.targets[0].dead && enemy.targets[1].dead ) {
+      this.stateMachine.transition('idle');
+      return;
+      }
+      enemy.getTarget();
+      enemy.direction = new Phaser.Math.Vector2(enemy.target.x - enemy.x, enemy.target.y - enemy.y);
+      enemy.module = enemy.direction.length();
+
+      if(enemy.module < enemy.attackRange) {
+        enemy.setVelocityX(0);
+        enemy.setVelocityY(0);
+        this.stateMachine.transition('attack');
+        return;
+        } else{
+        enemy.setVelocityX((enemy.direction.x/enemy.module) * enemy.speed);
+        enemy.setVelocityY((enemy.direction.y/enemy.module) * enemy.speed);
+        }
+        //if(enemy.direction.x > 0) {
+          //if(enemy.spriteName.moveR !== undefined)enemy.anims.play(enemy.spriteName.moveR,true);
+        //} else if(enemy.direction.x < 0) {
+          //if(enemy.spriteName.moveL !== undefined)enemy.anims.play(enemy.spriteName.moveL,true);
+        //}
+        if(enemy.direction.y>0){
+          if(enemy.spriteName.move !== undefined)enemy.anims.play(enemy.spriteName.move,true);
+        } else if(enemy.direction.y<0) {
+          if(enemy.spriteName.moveU !== undefined)enemy.anims.play(enemy.spriteName.moveU,true);
+        }
+
+    }
+  }
+
+  class EnemyAttackState extends State {
+    enter(scene, enemy) {
+      enemy.actualTime = enemy.scene.time.now/1000;
+
+      if(enemy.actualTime>(enemy.timeSinceLastIncrement+enemy.attackCooldown)){
+        enemy.anims.play('malvinAttack', true);
+        enemy.target.getHurt(enemy.attackDmg);
+
+        enemy.timeSinceLastIncrement = scene.time.now/1000;
+      }
+
+      scene.time.delayedCall(250, () => {
+        this.stateMachine.transition('move');
+      });
+
+    }
+  }
+
+
+    class PlayerGetHurtState extends State {
+      enter(scene, player) {
+
+        player.health -= player.attackerDmg;
+        player.lifeBar.draw(player.health);
+        player.anims.play('getHurt',true);
+        if(player.health <= 0 && !player.dead){
+          player.setVelocity(0);
+          player.dead = true;
+          player.anims.play(player.spriteName.death,true);
+        }
+
+        if(!player.dead){
+          scene.time.delayedCall(200, () => {
+            this.stateMachine.transition('move');
+          });
+        }
+
+
+      }
+    }
+
+  class GetHurtState extends State {
+    enter(scene, enemy) {
+
+      enemy.health -= enemy.attackerDmg;
+
+      if(enemy.health <= 0 && !enemy.dead){
+        enemy.setVelocity(0);
+        enemy.dead = true;
+        enemy.anims.play('malvinDeath',true);
+      }
+
+      if(enemy.dead){
+        scene.time.delayedCall(1000, () => {
+          enemy.destroy();
+        });
+      } else {
+          this.stateMachine.transition('move');
+      }
+    }
+  }
+
+
 class MoveState extends State {
   execute(scene, player) {
     //const {left, right, up, down, space, shift} = scene.keys;
 
     // Transition to swing if pressing space
-  /*  if (space.isDown) {
-      this.stateMachine.transition('swing');
+
+    if (Phaser.Input.Keyboard.JustDown(player.keys['attack'])) {
+      this.stateMachine.transition('attack');
       return;
     }
 
     // Transition to dash if pressing shift
-    if (shift.isDown) {
+    /*if (shift.isDown) {
       this.stateMachine.transition('dash');
       return;
     }*/
@@ -197,32 +213,62 @@ class MoveState extends State {
     if (player.keys['left'].isDown) {
       player.setVelocityX(-100);
       player.direction = 'left';
+      player.anims.play(player.spriteName.left, true);
     } else if (player.keys['right'].isDown) {
       player.setVelocityX(100);
       player.direction = 'right';
+      player.anims.play(player.spriteName.right, true);
     }
     if (player.keys['up'].isDown) {
       player.setVelocityY(-player.speed);
       player.direction = 'up';
+      player.anims.play(player.spriteName.up, true);
     } else if (player.keys['down'].isDown) {
       player.setVelocityY(player.speed);
       player.direction = 'down';
+      player.anims.play(player.spriteName.down, true);
+    }
+  }
+}
+
+class AttackState extends State {
+  enter(scene, player) {
+    player.actualTime = scene.time.now / 1000;
+
+    if (player.actualTime > (player.timeSinceLastIncrement + player.attackCooldown)) {
+
+      player.setVelocityX(0);
+      player.setVelocityY(0);
+
+      if(player.spriteName.punch !== undefined){player.anims.play(`punch-${player.direction}`)}
+      else {
+          player.anims.play(`punchB-${player.direction}`)
+      };
+
+      player.attackHitbox.x = player.x + player.body.halfWidth/2;
+      player.attackHitbox.y = player.y + player.body.halfHeight/2;
+
+      scene.physics.add.existing(player.attackHitbox);
+      player.attackHitbox.setCircle(player.attackRange)
+
+      player.hitSound.play();
+
+      player.timeSinceLastIncrement = scene.time.now / 1000;
+
     }
 
-
-    player.anims.play(player.direction, true);
-  }
-}
-
-class SwingState extends State {
-  enter(scene, hero) {
-    hero.setVelocity(0);
-    hero.anims.play(`swing-${hero.direction}`);
-    hero.once('animationcomplete', () => {
+    scene.time.delayedCall(250, () => {
+      player.attackHitbox.body.enable = false;
+      scene.physics.world.remove(player.attackHitbox.body);
       this.stateMachine.transition('idle');
     });
+
   }
 }
+
+
+
+
 
 class DashState extends State {
   enter(scene, hero) {
