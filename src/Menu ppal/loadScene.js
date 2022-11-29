@@ -7,18 +7,23 @@ class PantallaCarga extends Phaser.Scene {
     }
     preload(){
         //Pantalla de carga
+        
+        this.load.image("empresa", 'logo/BakeryStudiosLogo.png');
+
         let loadingBar = this.add.graphics({
             fillStyle: {
-                color: 0xffffff //color barra de cargar (CAMBIAR)
+                color: 0xffffff 
             }
         })
+
+        //-------------------------------------------------------
 
         //Menu de Inicio
         this.load.image("bg", "DiseñoInterfaz/elementosInterfaz/pantallaInicio.png");
         this.load.image("logo", "logo/LogoI-ScreamFondoBlanco.png");
         this.load.spritesheet('BotonPlay', 
-            'assets_Rosa/BotonPlay.png',
-            { frameWidth: 64, frameHeight: 64 }
+            'DiseñoInterfaz/Botones/BotonPlay.png',
+            { frameWidth: 120, frameHeight: 47 }
         );
         
         //------------------------------------------------------
@@ -37,6 +42,7 @@ class PantallaCarga extends Phaser.Scene {
         //Cargar letras:
         this.add.text(0, 0, '', {fontFamily: 'estilo'});
         this.add.text(0, 0, '', {fontFamily: 'titulo'});
+        this.add.text(0, 0, '', {fontFamily: 'damage'});
         //Cargar fondo:
         this.load.image('name', 'DiseñoInterfaz/elementosInterfaz/recuadroTexto.png');
 
@@ -69,6 +75,8 @@ class PantallaCarga extends Phaser.Scene {
         //------------------------------------------------------------------------------------
 
         //Menu Pausa
+        //Background:
+        this.load.image("stop", "DiseñoInterfaz/elementosInterfaz/pantallaPausa.png");
         //Botones
         //x
         this.load.spritesheet('exit',
@@ -76,8 +84,27 @@ class PantallaCarga extends Phaser.Scene {
             { frameWidth: 80, frameHeight: 47 }
         );
 
+        //Iconos:
+        this.load.image('iconoJ1', 'DiseñoInterfaz/elementosInterfaz/cabezaMorada.png');
+        this.load.image('iconoJ2', 'DiseñoInterfaz/elementosInterfaz/cabezaAzul.png');
+
+        //Variables
+        //Barra vida:
+        this.load.image('vidaJ1', 'assets_Rosa/interfaz/barraVidaP1.png');
+        this.load.image('vidaJ2', 'assets_Rosa/interfaz/barraVidaP2.png');
+        this.load.image('nivelVidaJ1', 'InterfazEscenaJuego/barraVidaP1.png');
+
         this.load.on("progress", (percent)=>{
-            loadingBar.fillRect(0, this.game.renderer.height/2, this.game.renderer.width*percent, 50);
+            /*let start = Date.now();
+            let timer = setInterval(function(){
+                let timePassed = Date.now() - start;
+                if(timePassed >= 2000){
+                    clearInterval(timer);
+                    return;
+                }
+                draw(timePassed);
+            }, 20);*/
+            loadingBar.fillRect(100, 350, 600*percent, 40);
             console.log(percent);
         })
 
@@ -87,12 +114,18 @@ class PantallaCarga extends Phaser.Scene {
         
     }
     create(){
-        
+        this.add.image(400, 250, 'empresa');
+        this.helado = this.add.image(100, 350, 'iconoJ1');
     }
 
     update(time, delta){
-        this.scene.start("PantallaPausa"); //esta linea para visualizar directamente Menu Ppal
+        this.scene.start("PantallaInicio"); //esta linea para visualizar directamente Menu Ppal
     }
+    /*
+    draw(time)
+    {
+        this.helado.style.left = time/5 + 'px';
+    }*/
 }
 
 export default PantallaCarga;
