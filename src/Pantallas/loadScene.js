@@ -92,8 +92,8 @@ class PantallaCarga extends Phaser.Scene {
 
         //Variables
         //Barra vida:
-        this.load.image('vidaJ1', 'assets_Rosa/interfaz/barraVidaP1.png');
-        this.load.image('vidaJ2', 'assets_Rosa/interfaz/barraVidaP2.png');
+        this.load.image('vidaJ1', 'assets/interfaz/barraVidaP1.png');
+        this.load.image('vidaJ2', 'assets/interfaz/barraVidaP2.png');
         this.load.image('nivelVidaJ1', 'InterfazEscenaJuego/barraVidaP1.png');
 
         this.load.on("progress", (percent)=>{
@@ -127,7 +127,7 @@ class PantallaCarga extends Phaser.Scene {
     update(time, delta){
 
         this.time.delayedCall(1000, () => {
-            this.scene.start('PantallaInicio'); 
+            this.scene.start('PantallaPausa'); 
         });
         //this.scene.start("PantallaInicio"); //esta linea para visualizar directamente Menu Ppal
     }
