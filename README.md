@@ -224,6 +224,20 @@ En esta sección se describe detalladamente cada una de las pantallas que compon
 A continuación se muestran las pantallas del Nombre y las transiciones entre ellas.
 
 ### 4.2. Menú Principal
+
+_______________________________________________________________________	
+ __Update(28/11/22) - FASE 1__
+ 
+ La pantalla de Inicio no tiene todos los elementos desarrollados por el momento.
+ 
+ ##### Cambios
+	 Se ha añadido una pantalla de carga.
+_______________________________________________________________________	
+#### Pantalla Carga
+![PantallaCarga](https://github.com/theheckez/FoodMayhem/blob/main/CapturasInterfaz/PantallaCarga.JPG)
+#### Pantalla Inicio
+![PantallaInicio](https://github.com/theheckez/FoodMayhem/blob/main/CapturasInterfaz/PantallaInicio.png)
+
 Lista de los elementos:
 - Logo del juego
 - Botón Partida Local: lleva a la selección de skin de un jugador
@@ -266,7 +280,7 @@ Lista de los elementos:
 - Botón Aceptar: vuelve a la pantalla anterior
 
 ### 4.5.  Nivel
-
+![PantallaIngame](https://github.com/theheckez/FoodMayhem/blob/main/CapturasInterfaz/PantallaInGame.JPG)
 Lista de los elementos:
 - Escenario: donde se desarrolla toda la acción en el nivel
 - Zona izquierda y derecha diferencian entre el jugador 1 y el 2, respectivamente. Para cada uno se dispone de los mismos botones e iconos, por lo que se explicarán los elemento solo del jugador 1 (izquierda) y se asumirá lo mismo para el 2.
@@ -277,7 +291,7 @@ Lista de los elementos:
 En el caso de un solo jugador, el interfaz sería el mismo pero manteniendo solo los iconos de la izquierda.
 
 #### 4.5.2. Pausa
-
+![PantallaPausa](https://github.com/theheckez/FoodMayhem/blob/main/CapturasInterfaz/PantallaPausa.JPG)
 Lista de los elementos:
 - Dos zonas diferenciadas con los mismos componentes. La izquierda para el jugador 1, y la derecha para el jugador 2. Se explicará sólo la izquierda.
 - Icono de la skin seleccionada por el jugador, junto con su nombre al lado. Diferencia la zona de la del otro jugador.
