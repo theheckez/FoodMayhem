@@ -16,6 +16,8 @@
 
 <script type="text/javascript">
 
+var vidaP1;
+var vidaP2;
 
 var MainGame = new Phaser.Class({
       Extends: Phaser.Scene,
@@ -48,6 +50,9 @@ var MainGame = new Phaser.Class({
 
         this.load.image('lifeBarP1', 'assets/interfaz/barraVidaP1.png');
         this.load.image('lifeBarP2', 'assets/interfaz/barraVidaP2.png');
+        this.load.image('BckBarP1', 'assets/interfaz/fondoBarraP1.png');
+        this.load.image('BckBarP2', 'assets/interfaz/fondoBarraP2.png');
+
 
         //Inventario
         this.load.image('inventoryOpenP1', 'assets/interfaz/inventarioAbierto.png');
@@ -60,11 +65,11 @@ var MainGame = new Phaser.Class({
         this.load.image('wandSelec', 'assets/players/weapon_select.png');
 
         this.load.image('bolaP1', 'assets/players/bola.png');
-        this.load.image('bolaP2', 'assets/players/bola.png');
+        this.load.image('bolaP2', 'assets/players/bolaP2.png');
 
 
-        this.load.image('musicActive', 'assets/interfaz/BotonActMusica.png');
-        this.load.image('musicInactive', 'assets/interfaz/BotonDesactMusica.png');
+        this.load.spritesheet('musicButton', 'assets/interfaz/BotonMutearMusica-sheet.png',
+         { frameWidth: 57, frameHeight: 41 });
 
 
         //Imágenes de Icy
@@ -79,7 +84,7 @@ var MainGame = new Phaser.Class({
         this.load.spritesheet('demon', 'assets/enemies/demon.png', { frameWidth: 32, frameHeight: 32 })
         this.load.spritesheet('malvinattack', 'assets/enemies/malvinattack.png', { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet('malvindeath', 'assets/enemies/malvinDeath.png', { frameWidth: 64, frameHeight: 64 });
-        this.load.image('pause', 'assets/star.png');
+        this.load.spritesheet('pause', 'assets/interfaz/botonPause.png', { frameWidth: 80, frameHeight: 47 });
 
 
         //Sounds
@@ -117,7 +122,7 @@ var MainGame = new Phaser.Class({
         this.generateEnemies(5, this.enemies, 'malvin');
         this.generateEnemies(1, this.bosses, 'demon');
         this.generateTrees(2);
-        
+
         //Jugadores
         this.player = new P1(this, 300, 450);
         this.player2 = new P2(this, 500, 450);
@@ -127,43 +132,66 @@ var MainGame = new Phaser.Class({
         this.initCollisions();
 
         // BOTONES
-        var pause = this.add.image(400, 20, 'pause').setInteractive();
-        var musicAct = this.add.image(400, 570, 'musicActive').setInteractive();
-        var musicInact = this.add.image(400, 570, 'musicInactive').setInteractive();
+        var pauseButton = this.add.sprite(400, 22, 'pause', 0).setInteractive();
+      var musicButton = this.add.sprite(400, 570, 'musicButton', 0).setInteractive();
+      var musicBtDown = this.add.sprite(400, 570, 'musicButton', 2).setInteractive().setVisible(false);
 
         // BARRAS DE VIDA
-        this.add.image(100, 30, 'lifeBarP1');
-        this.player.lifeBar = new LifeBar(this, 53, 24);
+        this.add.image(100, 35, 'BckBarP1');
+        this.player.lifeBar = new LifeBar(this, 54, 26, 56, 28);
+        this.add.image(100, 35, 'lifeBarP1');
 
-        this.add.image(700, 30, 'lifeBarP2');
-        this.player2.lifeBar = new LifeBar(this, 614, 24);
-
+        this.add.image(700, 35, 'BckBarP2');
+        this.player2.lifeBar = new LifeBar(this, 614, 26, 690, 28);
+        this.add.image(700, 35, 'lifeBarP2');
 
         //MUSICA
-        musicInact.visible = false;
-        var music = this.sound.add('escMusic');
-        music.play();
+        var music = this.sound.add('escMusic', {loop: true});
+  music.play();
 
-        musicAct.on('pointerdown', function () {
-          console.log("Musica desactivada");
-          musicInact.visible = true;
-          musicAct.visible = false;
-          music.stop();
-        });
+  musicButton.on("pointerover", function () {
+    musicButton.setFrame(1);
+  })
+  musicButton.on("pointerout", function () {
+    musicButton.setFrame(0);
+  })
+  musicButton.on('pointerdown', function () {
+    console.log("Musica desactivada");
+    musicBtDown.visible = true;
+    musicButton.visible = false;
+    musicBtDown.setFrame(1);
+    music.stop()
+  })
 
-        musicInact.on('pointerdown', function () {
-          console.log("Musica activada");
-          musicInact.visible = false;
-          musicAct.visible = true;
-          music.play();
-        });
+  musicBtDown.on("pointerover", function () {
+    musicBtDown.setFrame(1);
+  })
+  musicBtDown.on("pointerout", function () {
+    musicBtDown.setFrame(2);
+  })
+  musicBtDown.on('pointerdown', function () {
+    console.log("Musica activada");
+    musicBtDown.visible = false;
+    musicButton.visible = true;
+    musicButton.setFrame(1);
+    music.play();
+
+  })
+
 
         //OPCIONES
-        pause.on('pointerdown', function () {
-          console.log("Pausa");
+            pauseButton.on("pointerover", function () {
+              pauseButton.setFrame(1);
+            })
+            pauseButton.on("pointerout", function () {
+              pauseButton.setFrame(0);
+            })
 
-          // aqui se cambia al menu de pausa
-        });
+            pauseButton.on('pointerdown', function () {
+              console.log("Pausa");
+
+              // aqui se cambia al menu de pausa
+            });
 
         this.physics.add.overlap(this.player.attackHitbox, this.enemies, this.enemiesDamaged, undefined, this)
         this.physics.add.overlap(this.player2.attackHitbox, this.enemies, this.enemiesDamaged, undefined, this)
@@ -187,14 +215,14 @@ var MainGame = new Phaser.Class({
 
         this.enemies.children.each(function (enem) {
           enem.initEnemy(this.players);
-          //enem.hunt(this.players);
+          enem.setSize(30, 30);
           enem.update();
         }, this);
 
         this.bosses.children.each(function (enem) {
           enem.setScale(2);
           enem.initEnemy(this.players);
-          //enem.hunt(this.players);
+
         }, this);
 
         this.checkforLevel();
@@ -245,7 +273,7 @@ var MainGame = new Phaser.Class({
 
       },
       enemiesDamaged: function (player, enemy) {
-        enemy.getHurt(player.attackDmg);
+        enemy.getHurt(player.attackDmg, player.playerKills);
       },
 
       checkforLevel: function() {
@@ -269,7 +297,7 @@ var MainGame = new Phaser.Class({
       default: 'arcade',
       arcade: {
         gravity: {y: 0},
-        debug: false
+        debug: true
       }
     },
 
@@ -286,7 +314,7 @@ var MainGame = new Phaser.Class({
       'transparent'
     ]
   },
-    scene: [MainGame,PantallaCarga,PantallaInicio,CharacterSelect]
+    scene: [MainGame,PantallaCarga,PantallaInicio,CharacterSelect, PantallaPausa]
   };
 
   var game = new Phaser.Game(config);
