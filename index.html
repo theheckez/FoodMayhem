@@ -2,538 +2,22 @@
 <html lang="es">
 
 <head>
-  <meta name="" charset="utf-8" content="" />
+  <meta name="" charset="utf-8" content=""/>
   <title>Food Mayhem</title>
-  <script src="js/phaser.min.js"></script>
-  <script src="js/stateMachinePlayer.js"></script>
-  <script src="js/enemiesClasses.js"></script>
-  <script src="js/playerClasses.js"></script>
+    <script src="js/phaser.min.js"></script>
+    <script src="js/stateMachinePlayer.js"></script>
+    <script src="js/enemiesClasses.js"></script>
+    <script src="js/playerClasses.js"></script>
+    <script src="js/Pantallas.js"></script>
+    <script src="js/misc.js"></script>
 </head>
 
 <body style="text-align:center">
 
-  <script type="text/javascript">
+<script type="text/javascript">
 
-    var Player = new Phaser.Class({
-      Extends: Phaser.Physics.Arcade.Sprite,
-      initialize:
 
-        function Player(newScene, x, y, sprite, p1) {
-          Phaser.Physics.Arcade.Sprite.call(this, newScene, x, y, sprite);
-
-          this.timeSinceLastIncrement = -1;
-          this.player1 = p1;
-          this.health = 100;
-          this.lifeBar;
-          this.dead = false;
-
-          this.attackDmg = 20;
-          this.distAttackDmg = 10;
-          this.attackRange = 50;
-          this.direction = 'down';
-          this.attackHitbox = new Phaser.Physics.Arcade.Image(newScene, this.x, this.y, 'icyattack', 4);
-
-          this.invOpen;
-          this.invClosed;
-          this.swordButtonSelec;
-          this.swordButton;
-          this.swordSelected = false;
-          this.wandButtonSelec;
-          this.wandButton;
-          this.wandSelected = false;
-
-          this.stateMachine = new StateMachine('idle', {
-            idle: new IdleState(),
-            move: new MoveState(),
-            swing: new SwingState(),
-            dash: new DashState(),
-          }, [newScene, this]);
-          //newScene.physics.add.existing(this.attackHitbox);
-          //this.attackHitbox.enable = false;
-
-          this.attackCooldown = 1;
-          this.bullets = this.scene.physics.add.group({ classType: Bullet, runChildUpdate: true });
-
-          this.speed = 100;
-
-          this.scene = newScene;
-
-          this.control = false;
-          this.keys;
-          this.cursors
-          this.pad;
-          this.buttons;
-          this.hitSound = this.scene.sound.add('hitSound', { loop: false });
-
-          if (this.player1) {
-            this.initAnimations();
-            this.initInput();
-          } else {
-            this.initAnimationsP2();
-            this.initInputP2();
-          }
-
-        },
-
-      move: function (scene, enemies) {
-        this.pad = this.scene.input.gamepad.getPad(0);
-        if (!this.control && !this.dead) {
-          this.stateMachine.step();
-
-          if (this.scene.input.activePointer.isDown) {
-            if (this.scene.input.activePointer.rightButtonDown()) {
-              this.distAttack(this.scene.input.activePointer, enemies);
-            } else {
-              this.attack();
-            }
-
-          }
-
-          if (this.body.velocity.equals(new Phaser.Math.Vector2(0, 0)) && this.health > 0 && !(this.anims.getCurrentKey() === 'punch')) {
-            this.anims.play('idle', true);
-          } else if (this.health < 0 && !this.dead) {
-            this.anims.play('death', true);
-            this.dead = true;
-          }
-
-
-          if (Phaser.Input.Keyboard.JustDown(this.keys['inventory'])) {
-            if (this.swordSelected) {
-              if (!this.invOpen.visible) {
-                console.log("Abre el inventario")
-                this.invOpen.visible = true;
-                this.invClosed.visible = false;
-                this.swordButtonSelec.visible = true;
-                this.swordButton.visible = false;
-                this.wandButtonSelec.visible = false;
-                this.wandButton.visible = true;
-              }
-              else if (this.invOpen.visible) {
-                console.log("ierra el inventario")
-                this.invClosed.visible = true;
-                this.invOpen.visible = false;
-                this.swordButtonSelec.visible = false;
-                this.swordButton.visible = false;
-                this.wandButtonSelec.visible = false;
-                this.wandButton.visible = false;
-              }
-            }
-            else if (this.wandSelected) {
-              if (!this.invOpen.visible) {
-                console.log("Abre el inventario")
-                this.invOpen.visible = true;
-                this.invClosed.visible = false;
-                this.swordButtonSelec.visible = false;
-                this.swordButton.visible = true;
-                this.wandButtonSelec.visible = true;
-                this.wandButton.visible = false;
-              }
-              else if (this.invOpen.visible) {
-                console.log("ierra el inventario")
-                this.invClosed.visible = true;
-                this.invOpen.visible = false;
-                this.swordButtonSelec.visible = false;
-                this.swordButton.visible = false;
-                this.wandButtonSelec.visible = false;
-                this.wandButton.visible = false;
-              }
-            }
-            else if (!this.wandSelected && !this.swordSelected) {
-              if (!this.invOpen.visible) {
-                console.log("Abre el inventario")
-                this.invOpen.visible = true;
-                this.invClosed.visible = false;
-                this.swordButtonSelec.visible = false;
-                this.swordButton.visible = true;
-                this.wandButtonSelec.visible = false;
-                this.wandButton.visible = true;
-              }
-              else if (this.invOpen.visible) {
-                console.log("ierra el inventario")
-                this.invClosed.visible = true;
-                this.invOpen.visible = false;
-                this.swordButtonSelec.visible = false;
-                this.swordButton.visible = false;
-                this.wandButtonSelec.visible = false;
-                this.wandButton.visible = false;
-              }
-            }
-          }
-
-          if (Phaser.Input.Keyboard.JustDown(this.keys['sword'])) {
-            if (this.invOpen.visible) {
-              if (!this.swordButtonSelec.visible) {
-                this.swordButtonSelec.visible = true;
-                this.swordButton.visible = false;
-                this.wandButtonSelec.visible = false;
-                this.wandButton.visible = true;
-                this.swordSelected = true;
-                this.wanddSelected = false;
-              } else if (this.swordButtonSelec.visible) {
-                this.swordButtonSelec.visible = false;
-                this.swordButton.visible = true;
-                //this.wandButtonSelec.visible = false;
-               // this.wanddButton.visible = true;
-                this.swordSelected = false;
-              }
-            }
-          }
-
-          if (Phaser.Input.Keyboard.JustDown(this.keys['wand'])) {
-            if (this.invOpen.visible) {
-              if (!this.wandButtonSelec.visible) {
-                this.swordButtonSelec.visible = false;
-                this.swordButton.visible = true;
-                this.wandButtonSelec.visible = true;
-                this.wandButton.visible = false;
-                this.swordSelected = false;
-                this.wanddSelected = true;
-              } else if (this.wanddButtonSelec.visible) {
-                //this.swordButtonSelec.visible = false;
-                //this.swordButton.visible = true;
-                this.wandButtonSelec.visible = false;
-                this.wandButton.visible = true;
-                this.wandSelected = false;
-              }
-            }
-          }
-
-          if(this.swordSelected){
-            this.attackDmg = 30;
-          }
-          if(this.wandSelected){
-            this.distAttackDmg = 30;
-          }
-
-        } /*else if (this.control && !this.dead) {
-          if (this.pad.axes.length) {
-
-            var axisH = this.pad.axes[0].getValue();
-            var axisV = this.pad.axes[1].getValue();
-
-            this.setVelocityX(this.speed * axisH);
-            this.setVelocityY(this.speed * axisV);
-
-            if (axisH < 0) {
-
-              if (!(this.anims.getCurrentKey() === 'up' || this.anims.getCurrentKey() === 'down'))
-                this.anims.play('left', true);
-            } else if (axisH > 0) {
-
-              if (!(this.anims.getCurrentKey() === 'up' || this.anims.getCurrentKey() === 'down'))
-                this.anims.play('right', true);
-            }
-
-            else if (axisV < 0) {
-              this.anims.play('up', true);
-            } else if (axisV > 0) {
-              this.anims.play('down', true);
-            }
-
-            if (this.pad.isButtonDown(2)) {
-              this.attack();
-            }
-
-            if (this.pad.isButtonDown(3)) {
-              this.distAttack(this.scene.input.activePointer, enemies);
-            }
-
-            if (this.body.velocity.equals(new Phaser.Math.Vector2(0, 0)) && this.health > 0 && !(this.anims.getCurrentKey() === 'punch')) {
-              this.anims.play('idle', true);
-            } else if (this.health < 0 && !this.dead) {
-              this.anims.play('death', true);
-              this.dead = true;
-            }
-
-          }
-        }*/
-      },
-
-      attack: function (targets) {
-        this.actualTime = this.scene.time.now / 1000;
-
-        if (this.actualTime > (this.timeSinceLastIncrement + this.attackCooldown)) {
-
-          if (this.player1) {
-            this.anims.play('punch', true);
-          } else {
-            //this.anims.play('P2punch', true);
-          }
-          //console.log(this.attackHitbox)
-          this.setVelocityX(0);
-          this.setVelocityY(0);
-          this.attackHitbox.x = this.x;
-          this.attackHitbox.y = this.y + 20;
-          this.attackHitbox.enable = true;
-          this.attackHitbox.attackDmg = this.attackDmg;
-          this.scene.physics.add.existing(this.attackHitbox);
-          this.hitSound.play();
-          // console.log(this.attackHitbox)
-          console.log("Enemigo dañado");
-
-          this.timeSinceLastIncrement = this.scene.time.now / 1000;
-
-        }
-
-        this.on('animationcomplete', function () {
-          console.log("animación completada");
-          //this.knightStateMachine.setState('idle')
-
-          this.attackHitbox.body.enable = false;
-          this.scene.physics.world.remove(this.attackHitbox.body);
-        });
-      },
-
-      distAttack: function (pointer, enemies) {
-        this.actualTime = this.scene.time.now / 1000;
-
-        console.log("Right pointer Down")
-        if (this.actualTime > (this.timeSinceLastIncrement + this.attackCooldown)) {
-
-          // Get bullet from bullets group
-          var bullet = this.bullets.get().setActive(true).setVisible(true);
-          if (bullet) {
-            bullet.fire(this, pointer);
-            var damage = this.distAttackDmg;
-            this.scene.physics.add.collider(enemies, bullet, function (enemyHit, bull) {
-              console.log('Daño de la bala' + damage);
-              enemyHit.getHurt(damage);
-
-              // Destroy bullet
-              bull.destroy();
-            });
-
-            this.timeSinceLastIncrement = this.scene.time.now / 1000;
-
-          }
-        }
-
-      },
-
-      checkGamepad: function () {
-        if (this.scene.input.gamepad.total === 1) {
-          this.control = true;
-        }
-
-
-      },
-
-      initAnimations: function () {
-
-        this.scene.anims.create({
-          key: 'down',
-          frames: this.scene.anims.generateFrameNumbers('icy', { start: 7, end: 12 }),
-          frameRate: 10,
-          repeat: -1
-        });
-
-        this.scene.anims.create({
-          key: 'idle',
-          frames: this.scene.anims.generateFrameNumbers('icy', { start: 0, end: 4 }),
-          frameRate: 10,
-          repeat: -1
-        });
-
-        this.scene.anims.create({
-          key: 'up',
-          frames: this.scene.anims.generateFrameNumbers('icy', { start: 14, end: 19 }),
-          frameRate: 10,
-          repeat: -1
-        });
-
-        this.scene.anims.create({
-          key: 'left',
-          frames: this.scene.anims.generateFrameNumbers('icy', { start: 28, end: 32 }),
-          frameRate: 15,
-          repeat: -1
-        });
-
-        this.scene.anims.create({
-          key: 'right',
-          frames: this.scene.anims.generateFrameNumbers('icy', { start: 21, end: 25 }),
-          frameRate: 15,
-          repeat: -1
-        });
-
-        this.scene.anims.create({
-          key: 'death',
-          frames: this.scene.anims.generateFrameNumbers('icyattack', { start: 36, end: 44 }),
-          frameRate: 10
-        });
-
-        this.scene.anims.create({
-          key: 'punch',
-          frames: this.scene.anims.generateFrameNumbers('icyattack', { frames: [0, 1, 2, 3, 4, 5] }),
-          frameRate: 20,
-        });
-      },
-
-      initAnimationsP2: function () {
-        this.scene.anims.create({
-          key: 'down',
-          frames: this.scene.anims.generateFrameNumbers('icyB', { start: 7, end: 12 }),
-          frameRate: 10,
-          repeat: -1
-        });
-
-        this.scene.anims.create({
-          key: 'idle',
-          frames: this.scene.anims.generateFrameNumbers('icyB', { start: 0, end: 4 }),
-          frameRate: 10,
-          repeat: -1
-        });
-
-        this.scene.anims.create({
-          key: 'up',
-          frames: this.scene.anims.generateFrameNumbers('icyB', { start: 14, end: 19 }),
-          frameRate: 10,
-          repeat: -1
-        });
-
-        this.scene.anims.create({
-          key: 'left',
-          frames: this.scene.anims.generateFrameNumbers('icyB', { start: 28, end: 32 }),
-          frameRate: 15,
-          repeat: -1
-        });
-
-        this.scene.anims.create({
-          key: 'right',
-          frames: this.scene.anims.generateFrameNumbers('icyB', { start: 21, end: 25 }),
-          frameRate: 15,
-          repeat: -1
-        });
-
-        this.scene.anims.create({
-          key: 'death',
-          frames: this.scene.anims.generateFrameNumbers('icyattack', { start: 36, end: 44 }),
-          frameRate: 10
-        });
-
-        this.scene.anims.create({
-          key: 'punch',
-          frames: this.scene.anims.generateFrameNumbers('icyattack', { frames: [0, 1, 2, 3, 4, 5] }),
-          frameRate: 10,
-        });
-      },
-
-      initInput: function () {
-
-        this.keys = this.scene.input.keyboard.addKeys({
-          'up': Phaser.Input.Keyboard.KeyCodes.W,
-          'down': Phaser.Input.Keyboard.KeyCodes.S,
-          'left': Phaser.Input.Keyboard.KeyCodes.A,
-          'right': Phaser.Input.Keyboard.KeyCodes.D,
-          'inventory': Phaser.Input.Keyboard.KeyCodes.Q,
-          'sword': Phaser.Input.Keyboard.KeyCodes.ONE,
-          'wand': Phaser.Input.Keyboard.KeyCodes.TWO
-        });
-
-      },
-
-      initInputP2: function () {
-
-        this.keys = this.scene.input.keyboard.addKeys({
-          'up': Phaser.Input.Keyboard.KeyCodes.UP,
-          'down': Phaser.Input.Keyboard.KeyCodes.DOWN,
-          'left': Phaser.Input.Keyboard.KeyCodes.LEFT,
-          'right': Phaser.Input.Keyboard.KeyCodes.RIGHT,
-          'inventory': Phaser.Input.Keyboard.KeyCodes.NUMPAD_ZERO,
-          'sword': Phaser.Input.Keyboard.KeyCodes.NUMPAD_ONE,
-          'wand': Phaser.Input.Keyboard.KeyCodes.NUMPAD_TWO
-        });
-
-      },
-
-    });
-
-    var Bullet = new Phaser.Class({
-
-      Extends: Phaser.GameObjects.Image,
-
-      initialize:
-
-        // Bullet Constructor
-        function Bullet(scene) {
-          Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bolaP1');
-          this.speed = 1;
-          this.born = 0;
-          this.direction = 0;
-          this.xSpeed = 0;
-          this.ySpeed = 0;
-          this.setSize(12, 12, true);
-        },
-
-      fire: function (shooter, target) {
-        this.setPosition(shooter.x, shooter.y); // Initial position
-        this.direction = Math.atan((target.x - this.x) / (target.y - this.y));
-
-        // Calculate X and y velocity of bullet to moves it from shooter to target
-        if (target.y >= this.y) {
-          this.xSpeed = this.speed * Math.sin(this.direction);
-          this.ySpeed = this.speed * Math.cos(this.direction);
-        }
-        else {
-          this.xSpeed = -this.speed * Math.sin(this.direction);
-          this.ySpeed = -this.speed * Math.cos(this.direction);
-        }
-
-        this.rotation = shooter.rotation; // angle bullet with shooters rotation
-        this.born = 0; // Time since new bullet spawned
-
-        // this.setActive(false);
-        // this.setVisible(false);
-
-      },
-
-      update: function (time, delta) {
-        this.x += this.xSpeed * delta / 2;
-        this.y += this.ySpeed * delta / 2;
-        this.born += delta;
-        if (this.born > 1800) {
-          this.setActive(false);
-          this.setVisible(false);
-        }
-      }
-
-    });
-
-
-    var LifeBar = new Phaser.Class({
-
-      initialize:
-
-        function LifeBar(scene, x, y) {
-          this.bar = new Phaser.GameObjects.Graphics(scene);
-
-          this.x = x;
-          this.y = y;
-
-          this.draw(100);
-
-          scene.add.existing(this.bar);
-        },
-
-      draw(playerHp) {
-        this.bar.clear();
-
-        //  BG
-        if (playerHp == 100) {
-          this.bar.fillStyle(0x32C93B);
-          this.bar.fillRect(this.x, this.y, 132, 10);
-        }
-        else if (playerHp < 100 && playerHp > 0) {
-          var width = (132 / 100) * playerHp;
-          this.bar.fillStyle(0x32C93B);
-          this.bar.fillRect(this.x, this.y, width, 10);
-        }
-        else if (playerHp <= 0) {
-          this.bar.fillRect(this.x, this.y, 0, 0);
-        }
-      },
-    });
-
-    var MainGame = new Phaser.Class({
+var MainGame = new Phaser.Class({
       Extends: Phaser.Scene,
 
       initialize:
@@ -565,13 +49,14 @@
         this.load.image('lifeBarP1', 'assets/interfaz/barraVidaP1.png');
         this.load.image('lifeBarP2', 'assets/interfaz/barraVidaP2.png');
 
-        this.load.image('inventoryOpenP1', 'assets/Interfaz/inventarioAbierto.png');
-        this.load.image('inventoryClosedP1', 'assets/Interfaz/inventarioCerrado.png');
-        this.load.image('inventoryOpenP2', 'assets/Interfaz/inventarioAbiertoP2.png');
-        this.load.image('inventoryClosedP2', 'assets/Interfaz/inventarioCerradoP2.png');
+        //Inventario
+        this.load.image('inventoryOpenP1', 'assets/interfaz/inventarioAbierto.png');
+        this.load.image('inventoryClosedP1', 'assets/interfaz/inventarioCerrado.png');
+        this.load.image('inventoryOpenP2', 'assets/interfaz/inventarioAbiertoP2.png');
+        this.load.image('inventoryClosedP2', 'assets/interfaz/inventarioCerradoP2.png');
         this.load.image('sword', 'assets/players/espada.png');
         this.load.image('swordSelec', 'assets/players/espadaSelec.png');
-        this.load.image('wand', 'assets/players/weapon_red_magic_staff.png');
+        this.load.image('wand', 'assets/players/varitaSauco.png');
         this.load.image('wandSelec', 'assets/players/weapon_select.png');
 
         this.load.image('bolaP1', 'assets/players/bola.png');
@@ -585,12 +70,15 @@
         //Imágenes de Icy
         this.load.spritesheet('icy', 'assets/players/icy.png', { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet('icyB', 'assets/players/Yci.png', { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet('yciattack', 'assets/players/yciattack.png', { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet('icyattack', 'assets/players/icyattack.png', { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet('icydmg', 'assets/players/dmg.png',{ frameWidth: 64, frameHeight: 64 });
 
         //Imágenes de Enemigos
         this.load.spritesheet('malvin', 'assets/enemies/malvin.png', { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet('demon', 'assets/enemies/demon.png', { frameWidth: 32, frameHeight: 32 })
         this.load.spritesheet('malvinattack', 'assets/enemies/malvinattack.png', { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet('malvindeath', 'assets/enemies/malvinDeath.png', { frameWidth: 64, frameHeight: 64 });
         this.load.image('pause', 'assets/star.png');
 
 
@@ -602,7 +90,7 @@
       },
 
       create: function () {
-        this.add.image(400, 300, 'map');
+        this.add.image(400, 380, 'map');
         this.input.mouse.disableContextMenu();
 
         this.blocks = this.physics.add.staticGroup();
@@ -626,16 +114,14 @@
           runChildUpdate: false
         });
 
-
-
         this.generateEnemies(5, this.enemies, 'malvin');
         this.generateEnemies(1, this.bosses, 'demon');
         this.generateTrees(2);
+        
         //Jugadores
-        this.player = new Player(this, 300, 450, 'icy', true);
-        this.player2 = new Player(this, 500, 450, 'icyB', false);
+        this.player = new P1(this, 300, 450);
+        this.player2 = new P2(this, 500, 450);
         this.players = [this.player, this.player2];
-        this.handleStateMachines();
 
         //Control de colisiones de mundo
         this.initCollisions();
@@ -644,21 +130,6 @@
         var pause = this.add.image(400, 20, 'pause').setInteractive();
         var musicAct = this.add.image(400, 570, 'musicActive').setInteractive();
         var musicInact = this.add.image(400, 570, 'musicInactive').setInteractive();
-
-        // INVENTARIO
-        this.player.invOpen = this.add.image(120, 560, 'inventoryOpenP1').setVisible(false);
-        this.player.invClosed = this.add.image(49, 560, 'inventoryClosedP1');
-        this.player.swordButtonSelec = this.add.image(100, 560, 'swordSelec').setVisible(false);
-        this.player.swordButton = this.add.image(100, 560, 'sword').setVisible(false);
-        this.player.wandButtonSelec = this.add.image(130, 560, 'wandSelec').setVisible(false);
-        this.player.wandButton = this.add.image(130, 560, 'wand').setVisible(false);
-
-        this.player2.invOpen = this.add.image(680, 560, 'inventoryOpenP2').setVisible(false);
-        this.player2.invClosed = this.add.image(750, 560, 'inventoryClosedP2');
-        this.player2.swordButtonSelec = this.add.image(700, 560, 'swordSelec').setVisible(false);
-        this.player2.swordButton = this.add.image(700, 560, 'sword').setVisible(false);
-        this.player2.wandButtonSelec = this.add.image(670, 560, 'wandSelec').setVisible(false);
-        this.player2.wandButton = this.add.image(670, 560, 'wand').setVisible(false);
 
         // BARRAS DE VIDA
         this.add.image(100, 30, 'lifeBarP1');
@@ -696,6 +167,8 @@
 
         this.physics.add.overlap(this.player.attackHitbox, this.enemies, this.enemiesDamaged, undefined, this)
         this.physics.add.overlap(this.player2.attackHitbox, this.enemies, this.enemiesDamaged, undefined, this)
+        this.physics.add.overlap(this.player.attackHitbox, this.bosses, this.enemiesDamaged, undefined, this)
+        this.physics.add.overlap(this.player2.attackHitbox, this.bosses, this.enemiesDamaged, undefined, this)
       },
 
       update: function () {
@@ -703,36 +176,28 @@
         this.player.move(this, this.enemies);
 
         this.player2.checkGamepad();
-        // if (this.player2.control) {
+
         this.add.existing(this.player2);
         this.physics.add.existing(this.player2);
         this.player2.setCollideWorldBounds(true);
         this.player2.setSize(30, 30);
         this.player2.setOffset(17, 28);
         this.player2.move();
-        //  }
+
 
         this.enemies.children.each(function (enem) {
-          enem.hunt(this.players);
+          enem.initEnemy(this.players);
+          //enem.hunt(this.players);
           enem.update();
         }, this);
 
         this.bosses.children.each(function (enem) {
           enem.setScale(2);
-          enem.hunt(this.players);
+          enem.initEnemy(this.players);
+          //enem.hunt(this.players);
         }, this);
 
-        //Jugador 2
-
-
-        //  this.life1.setCrop(0, 0, this.width, 32);
-        //this.life1.setCrop(0, 0, (this.player.health * this.width)/100, 32);
-
-        //console.log(this.life1.width);
-        //console.log((this.player.health * this.width)/100);
-        //console.log(this.player.health);
-        //console.log("Tamaño actualizado" + this.life1.width + " vs. Tamaño estático: " + this.width);
-
+        this.checkforLevel();
 
       },
 
@@ -744,18 +209,16 @@
         this.player.setOffset(17, 28);
 
         //HitBox Enemigos
-        this.enemies.children.each(function (enem) {
-          enem.setSize(30, 30);
-          enem.setOffset(17, 28);
-        }, this);
+
 
         //Colisiones de mundo
-        this.physics.add.collider(this.player, this.enemies);
+
         this.physics.add.collider(this.player, this.blocks);
         this.physics.add.collider(this.enemies, this.enemies);
         this.physics.add.collider(this.enemies, this.blocks);
-        this.physics.add.collider(this.player2, this.enemies);
         this.physics.add.collider(this.player2, this.blocks);
+        this.physics.add.collider(this.bosses, this.enemies);
+        this.physics.add.collider(this.bosses, this.blocks);
 
       },
 
@@ -785,214 +248,50 @@
         enemy.getHurt(player.attackDmg);
       },
 
-      handleStateMachines: function () {
-
+      checkforLevel: function() {
+        if(this.enemies.countActive() === 0 && this.bosses.countActive() === 0) {
+          this.generateEnemies(Phaser.Math.Between(3,10), this.enemies, 'malvin');
+          this.generateEnemies(Phaser.Math.Between(0,4), this.bosses, 'demon');
+        }
       }
-
-
 
     });
 
-    var PantallaInicio = new Phaser.Class({
-      Extends: Phaser.Scene,
-
-      initialize:
-
-        function PantallaInicio() {
-          Phaser.Scene.call(this, { key: 'PantallaInicio' });
-        },
-
-      preload: function () {
-        this.load.image("sky", "assets/sky.png");
-        this.load.image("logo", "assets/interfaz/LogoI-Scream.png");
-        this.load.spritesheet('BotonPlay',
-          'assets/interfaz/BotonPlay.png',
-          { frameWidth: 120, frameHeight: 47 }
-        );
-      },
-      create: function () {
-        //this.add.image(this.game.renderer.width/2, this.game.renderer.height*0.20, "star");
-        this.add.image(400, 300, "sky");
-        this.add.image(150, 50, "logo").setOrigin(0);
-        this.playButton = this.add.sprite(380, 350, "BotonPlay", 0).setInteractive();
-        this.playButton.scale = 3;
-
-        this.playButton.on("pointerup", () => {
-          console.log("Open the gates")
-          this.scene.start('PantallaCarga');
-        })
-      },
-      update: function (time, delta) {
-        this.playButton.on("pointerover", () => {
-          this.playButton.setFrame(1);
-        })
-
-        this.playButton.on("pointerout", () => {
-          this.playButton.setFrame(0);
-        })
-
-
+  const config = {
+    type: Phaser.Auto,
+    width: 800,
+    height: 600,
+    input: {
+      gamepad: true
+    },
+    pixelArt: true,
+    physics: {
+      default: 'arcade',
+      arcade: {
+        gravity: {y: 0},
+        debug: false
       }
-    });
+    },
 
-    var PantallaCarga = new Phaser.Class({
-      Extends: Phaser.Scene,
+    parent: 'container',
+    backgroundColor: '#34495E',
 
-      initialize:
+    banner:{
+    hidePhaser: false,
+    text: '#000000',
+    background: [
+      'red',
+      'yellow',
+      'red',
+      'transparent'
+    ]
+  },
+    scene: [MainGame,PantallaCarga,PantallaInicio,CharacterSelect]
+  };
 
-        function PantallaCarga() {
-          Phaser.Scene.call(this, { key: 'PantallaCarga' });
-        },
+  var game = new Phaser.Game(config);
 
-      preload: function () {
-        let loadingBar = this.add.graphics({
-          fillStyle: {
-            color: 0xffffff //color barra de cargar (CAMBIAR)
-          }
-        });
-
-        this.load.on("progress", (percent) => {
-          loadingBar.fillRect(0, this.game.renderer.height / 2, this.game.renderer.width * percent, 50);
-          console.log(percent);
-        });
-
-        this.load.on("complete", () => {
-          console.log('done');
-        });
-
-      },
-
-      create: function () {
-        this.scene.start('mainGame'); //esta linea para visualizar directamente Menu Ppal
-      }
-    });
-
-    var CharacterSelect = new Phaser.Class({
-      Extends: Phaser.Scene,
-
-      initialize:
-
-        function CharacterSelect() {
-          Phaser.Scene.call(this, { key: 'chSelect' });
-        },
-
-      preload: function () {
-        this.load.image("sky", "assets/sky.png");
-        this.load.spritesheet('player',
-          'assets/players/icy.png',
-          { frameWidth: 64, frameHeight: 64 }
-        );
-
-      },
-
-      create: function () {
-        //Fondo:
-        this.add.image(400, 300, "sky");
-
-        //Personaje
-        this.player = this.add.sprite(400, 200, "player").setInteractive();
-        this.player.setFrame(3);
-        this.player.scale = 3;
-
-        //Texto jugador:
-        /*
-        const player1 = {
-            x: 320,
-            y: 300,
-            text: 'Player 1',
-            style: {
-                color: '#000000',
-                fontSize: 30
-            }
-        }
-        */
-        this.player1 = this.add.text(300, 300, 'Player 1', {
-          color: '#000000',
-          fontSize: 30,
-          //fontStyle: 'bold',
-          padding: {
-            top: 20,
-            bottom: 0,
-            left: 20,
-            right: 0
-          }
-        }).setInteractive();
-
-
-
-        this.anims.create({
-          key: 'pose',
-          frames: this.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
-          frameRate: 10,
-          repeat: -1
-        })
-
-        /*
-        this.nombreJugador = function(p){
-            var nombre = prompt('');
-            p.setText(nombre);
-            document.close();
-        }
-        const keys = Phaser.Input.Keyboard.KeyCodes;
-        this.keyEnter = this.input.keyboard.addKeyy(keys.ENTER);
-        this.keyEnter.on('down', () =>{
-            console.log('Has pulsado enter');
-        })
-        */
-
-      },
-
-      update: function () {
-        this.player.anims.play('pose', true);
-
-        this.player1.on("pointerdown", () => {
-          console.log("Cambiar nombre")
-          //this.player1.setText(' ');
-          //this.nombreJugador(this.player1);
-        })
-
-        this.player1.on("pointerout", () => {
-          console.log("Saliendo del boton")
-        })
-      }
-    })
-
-
-    const config = {
-      type: Phaser.Auto,
-      width: 800,
-      height: 600,
-      input: {
-        gamepad: true
-      },
-      pixelArt: true,
-      physics: {
-        default: 'arcade',
-        arcade: {
-          gravity: { y: 0 },
-          debug: true
-        }
-      },
-
-      parent: 'container',
-      backgroundColor: '#34495E',
-
-      banner: {
-        hidePhaser: false,
-        text: '#000000',
-        background: [
-          'red',
-          'yellow',
-          'red',
-          'transparent'
-        ]
-      },
-      scene: [PantallaInicio, PantallaCarga, MainGame, CharacterSelect]
-    };
-
-    var game = new Phaser.Game(config);
-
-  </script>
+</script>
 </body>
 
 
