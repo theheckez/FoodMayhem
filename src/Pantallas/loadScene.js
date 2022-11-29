@@ -24,6 +24,7 @@ class PantallaCarga extends Phaser.Scene {
             'DiseñoInterfaz/Botones/BotonPlay.png',
             { frameWidth: 120, frameHeight: 47 }
         );
+        this.load.image('marco', "DiseñoInterfaz/elementosInterfaz/recuadroBoton.png");
         
         //------------------------------------------------------
 
@@ -32,9 +33,11 @@ class PantallaCarga extends Phaser.Scene {
         this.load.image("bg2", "DiseñoInterfaz/elementosInterfaz/pantallaSeleccion.png");
         //Personaje:
         this.load.spritesheet('player', 
-            'SpritesheetJugadores/SpitesheetP1/SpritesheetP1(Andar).png',
-            { frameWidth: 64, frameHeight: 64 }
-        );
+            'SpritesheetJugadores/SpritesheetP1/SpritesheetP1(Andar).png',
+            { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet('player2',
+            'SpritesheetJugadores/SpritesheetP2/SpritesheetP2Azul(Andar).png',
+            { frameWidth: 64, frameHeight: 64 });
         //Recuadro personaje
         this.load.image("cuadro", "DiseñoInterfaz/elementosInterfaz/eleccionPersonaje.png");
 

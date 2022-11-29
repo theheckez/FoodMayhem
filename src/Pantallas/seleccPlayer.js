@@ -17,13 +17,13 @@ class PantallaSeleccion extends Phaser.Scene {
         this.rec2.scale = 3.5;
 
         //Personaje 1
-        this.player1 = this.add.sprite(210, 170, "player").setInteractive();
-        this.player1.setFrame(3);
-        this.player1.scale = 3;
+        this.p1 = this.add.sprite(210, 170, "player").setInteractive();
+        this.p1.setFrame(3);
+        this.p1.scale = 3;
         //Personaje 2
-        this.player2 = this.add.sprite(590, 170, "player").setInteractive();
-        this.player2.setFrame(3);
-        this.player2.scale = 3;
+        this.p2 = this.add.sprite(590, 170, "player2").setInteractive();
+        this.p2.setFrame(3);
+        this.p2.scale = 3;
 
         //Configuracion texto:
         const configNombres = {
@@ -48,9 +48,13 @@ class PantallaSeleccion extends Phaser.Scene {
 
         //Botones aceptar: bloquean introducir nombre y van a siguiente pantalla
         this.aceptar1 = this.add.sprite(210, 330, "aceptar").setInteractive();
-        this.aceptar2 = this.add.sprite(590, 330, "aceptar").setInteractive();
+        this.marco1 = this.add.image(210, 330, 'marco').setVisible(false);
+        this.marco1.scale = 1.2;
 
-        
+        this.aceptar2 = this.add.sprite(590, 330, "aceptar").setInteractive();
+        this.marco2 = this.add.image(590, 330, 'marco').setVisible(false);
+        this.marco2.scale = 1.2;
+ 
         //Recuadro Modo juego
         let recuadroMJ = this.add.graphics({
             fillStyle: {
@@ -72,10 +76,12 @@ class PantallaSeleccion extends Phaser.Scene {
 
         //Boton menu: volver al menu
         this.menu = this.add.sprite(695, 525, "menu").setInteractive();
+        this.marcoMenu = this.add.image(695, 525, 'marco').setVisible(false);
 
         //Boton play
         this.play = this.add.sprite(695, 480, "play").setInteractive();
         this.play.setVisible(false);
+        this.marcoPlay = this.add.image(695, 480, 'marco').setVisible(false);
 
         //Modo de juego:
         const confTittle = {
@@ -128,6 +134,12 @@ class PantallaSeleccion extends Phaser.Scene {
             frameRate: 10,
             repeat: -1
         })
+        this.anims.create({
+            key: 'pose2',
+            frames: this.anims.generateFrameNumbers('player2', {start: 0, end: 4}),
+            frameRate: 10,
+            repeat: -1
+        })
 
 
         //Interaccion nombres:
@@ -173,12 +185,18 @@ class PantallaSeleccion extends Phaser.Scene {
         this.ready2 = 0;
         //ok 1:
         this.aceptar1.on("pointerover", ()=>{
-            document.body.style.cursor = "pointer";
+            if(this.ready1 != 1)
+            {
+                document.body.style.cursor = "pointer";
+                this.marco1.setVisible(true);
+            } 
         })
         this.aceptar1.on("pointerout", ()=>{
             document.body.style.cursor = "auto";
+            this.marco1.setVisible(false);
         })
         this.aceptar1.on("pointerdown", ()=>{
+            this.marco1.setVisible(false);
             this.aceptar1.setFrame(1); 
             if(player1.text == 'Introduce tu nombre:'){
                 player1.setText('Player1');
@@ -192,13 +210,19 @@ class PantallaSeleccion extends Phaser.Scene {
 
         //ok 2:
         this.aceptar2.on("pointerover", ()=>{
-            document.body.style.cursor = "pointer";
+            if(this.ready2 != 1)
+            {
+                document.body.style.cursor = "pointer";
+                this.marco2.setVisible(true);
+            }
         })
-        this.aceptar1.on("pointerout", ()=>{
+        this.aceptar2.on("pointerout", ()=>{
             document.body.style.cursor = "auto";
+            this.marco2.setVisible(false);
         })
         this.aceptar2.on("pointerdown", ()=>{
             this.aceptar2.setFrame(1); 
+            this.marco2.setVisible(false);
             if(player2.text == 'Introduce tu nombre:'){
                 player2.setText('Player2');
             }
@@ -212,13 +236,16 @@ class PantallaSeleccion extends Phaser.Scene {
         //menu:
         this.menu.on("pointerover", ()=>{
             document.body.style.cursor = "pointer";
+            this.marcoMenu.setVisible(true);
         })
         
         this.menu.on("pointerout", ()=>{
             document.body.style.cursor = "auto";
+            this.marcoMenu.setVisible(false);
         })
         
         this.menu.on("pointerdown", ()=>{
+            this.marcoMenu.setVisible(false);
             this.menu.setFrame(1); 
         })
 
@@ -267,12 +294,15 @@ class PantallaSeleccion extends Phaser.Scene {
         //Boton play
         this.play.on("pointerover", ()=>{
             document.body.style.cursor = "pointer";
+            this.marcoPlay.setVisible(true);
         })
         
         this.play.on("pointerout", ()=>{
             document.body.style.cursor = "auto";
+            this.marcoPlay.setVisible(false);
         })
         this.play.on("pointerdown", ()=>{
+            this.marcoPlay.setVisible(false);
             this.play.setFrame(1); 
         })
         this.play.on('pointerup', ()=>{
@@ -283,8 +313,8 @@ class PantallaSeleccion extends Phaser.Scene {
     }
     update(time, delta){
         //Animacion personajes en pausa
-        this.player1.anims.play('pose', true);
-        this.player2.anims.play('pose', true);
+        this.p1.anims.play('pose', true);
+        this.p2.anims.play('pose2', true);
 
         //Modos juego
         if(this.flechita.y == 420) this.modoCamp.setFontSize(22);

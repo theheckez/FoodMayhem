@@ -1,8 +1,10 @@
-import PantallaCarga from './Menu ppal/loadScene.js'
-import PantallaInicio from './Menu ppal/pantallaPpal.js'
-import PantallaSeleccion from './Menu ppal/seleccPlayer.js';
-import PantallaPartida from './Menu ppal/partida.js';
-import PantallaPausa from './Menu ppal/menuPausa.js';
+import PantallaCarga from './Pantallas/loadScene.js'
+import PantallaInicio from './Pantallas/pantallaPpal.js'
+import PantallaSeleccion from './Pantallas/seleccPlayer.js';
+import PantallaPartida from './Pantallas/partida.js';
+import PantallaPausa from './Pantallas/menuPausa.js';
+import ResultadoVictoria from './Pantallas/victoria.js';
+import ResultadoDerrota from './Pantallas/derrota.js';
 
 const config = {
   title: 'FoodMayhem',
@@ -28,7 +30,7 @@ const config = {
     ]
   },
   //ESCENAS:
-  scene: [PantallaCarga, PantallaInicio, PantallaSeleccion, PantallaPartida, PantallaPausa]
+  scene: [PantallaCarga, PantallaInicio, PantallaSeleccion, PantallaPartida, PantallaPausa, ResultadoVictoria, ResultadoDerrota]
 };
 
 //Instancia del juego
