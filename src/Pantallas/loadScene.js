@@ -127,7 +127,7 @@ class PantallaCarga extends Phaser.Scene {
     update(time, delta){
 
         this.time.delayedCall(1000, () => {
-            this.scene.start('PantallaPausa'); 
+            this.scene.start('PantallaInicio'); 
         });
         //this.scene.start("PantallaInicio"); //esta linea para visualizar directamente Menu Ppal
     }

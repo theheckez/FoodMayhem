@@ -65,10 +65,10 @@ class PantallaPausa extends Phaser.Scene {
                 justifyContent: 'center',
             }
         }
-        //this.make.text(confJugadores).setText(player1.text); 
-        //this.make.text(confJugadores).setText(player2.text).setPosition(this.game.renderer.width*3/4, 180); 
-        this.make.text(confJugadores).setText('Player 1');
-        this.make.text(confJugadores).setText('Player 2').setPosition(this.game.renderer.width*3/4, 180);
+        this.make.text(confJugadores).setText(player1.text); 
+        this.make.text(confJugadores).setText(player2.text).setPosition(this.game.renderer.width*3/4, 180); 
+        //this.make.text(confJugadores).setText('Player 1');
+        //this.make.text(confJugadores).setText('Player 2').setPosition(this.game.renderer.width*3/4, 180);
         //Iconos jugadores
         this.add.image(140, 180, 'iconoJ1');
         this.add.image(500, 180, 'iconoJ2');
