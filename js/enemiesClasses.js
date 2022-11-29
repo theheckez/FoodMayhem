@@ -40,8 +40,9 @@ constructor(newScene, x,y, sprite) {
     }
   }
 
-  getHurt(attack) {
+  getHurt(attack, kills) {
     this.attackerDmg = attack;
+    this.attackerKills = kills;
     this.stateMachine.transition('getHurt');
   }
 

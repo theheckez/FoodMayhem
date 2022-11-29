@@ -54,13 +54,25 @@ var LifeBar = new Phaser.Class({
 
   initialize:
 
-    function LifeBar(scene, x, y) {
+    function LifeBar(scene, x, y, xCount, yCount) {
       this.bar = new Phaser.GameObjects.Graphics(scene);
-
+      this.killCount = scene.add.text(xCount, yCount, '0', {
+            color: '#000000',
+            fontSize: 20,
+            //fontStyle: 'bold',
+            padding: {
+              top: 20,
+              bottom: 0,
+              left: 20,
+              right: 0
+            }
+          });
       this.x = x;
       this.y = y;
 
+
       this.draw(100);
+      this.count(0);
 
       scene.add.existing(this.bar);
     },
@@ -82,6 +94,10 @@ var LifeBar = new Phaser.Class({
       this.bar.fillRect(this.x, this.y, 0, 0);
     }
   },
+
+  count(kills) {
+    this.killCount.text = kills;
+  }
 });
 
 var Inventory = new Phaser.Class({

@@ -53,6 +53,10 @@ class IdleState extends State {
     this.stateMachine.transition('attack');
     return;
   }
+  if (player.keys['distAttack'].isDown) {
+    this.stateMachine.transition('distAttack');
+    return;
+  }
     // Transition to swing if pressing space
   /*  if (space.isDown) {
       this.stateMachine.transition('swing');
@@ -173,6 +177,8 @@ class IdleEnemyState extends State {
       }
 
       if(enemy.dead){
+        enemy.attackerKills++;
+        enemy.target.lifeBar.count(enemy.attackerKills);
         scene.time.delayedCall(1000, () => {
           enemy.destroy();
         });
@@ -191,6 +197,10 @@ class MoveState extends State {
 
     if (Phaser.Input.Keyboard.JustDown(player.keys['attack'])) {
       this.stateMachine.transition('attack');
+      return;
+    }
+    if (player.keys['distAttack'].isDown) {
+      this.stateMachine.transition('distAttack');
       return;
     }
 
@@ -263,6 +273,30 @@ class AttackState extends State {
       this.stateMachine.transition('idle');
     });
 
+  }
+}
+
+class DistAttackState extends State {
+  enter(scene, player) {
+    player.actualTime = scene.time.now / 1000;
+    player.getTarget(scene.enemies);
+      if (player.actualTime > (player.timeSinceLastIncrement + player.attackCooldown)) {
+        // Get bullet from bullets group
+        var bullet = player.bullets.get().setActive(true).setVisible(true);
+        if (bullet) {
+          bullet.fire(player, player.target);
+          scene.physics.add.collider(player.target, bullet, function (target, bull) {
+            target.getHurt(player.distAttackDmg);
+            // Destroy bullet
+            bull.setActive(false).setVisible(false);
+          });
+
+          player.timeSinceLastIncrement = scene.time.now / 1000;
+        }
+      }
+      scene.time.delayedCall(250, () => {
+        this.stateMachine.transition('idle');
+      });
   }
 }
 

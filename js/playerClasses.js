@@ -10,12 +10,15 @@ constructor(newScene, x,y, sprite) {
   this.health = 100;
   this.lifeBar;
 
-  this.attackRange = 30;
 
+  this.attackRange = 30;
+  this.bullets = this.scene.physics.add.group({ classType: Bullet, runChildUpdate: true });
   this.attackHitbox = new Phaser.Physics.Arcade.Image(this.scene,
   this.x + this.width/2, this.y + this.height/2, 'arbolV', 4);
 
-  this.attackHitbox.attackDmg =20;
+  this.distAttackDmg = 10
+  this.attackHitbox.attackDmg = 20;
+  this.attackHitbox.playerKills = 0;
 
   this.attackCooldown = 1;
   this.timeSinceLastIncrement = -1;
@@ -25,6 +28,8 @@ constructor(newScene, x,y, sprite) {
 
   this.direction = 'down';
   this.speed = 100;
+
+  this.target;
 
   this.spriteName = {idle: 'idleStand', down: 'downAnim',}
 
@@ -69,6 +74,34 @@ distAttack(targets) {
     this.attackerDmg = damage;
     this.stateMachine.transition('getHurt');
 }
+
+  getTarget(targets){
+  var distances = [];
+  var i;
+  var bestDistance;
+  var deadTarget;
+  distances[0] = Phaser.Math.Distance.Between(this.x, this.y, targets.getFirstAlive().x, targets.getFirstAlive().y);
+  bestDistance = distances[0];
+  this.target = targets.getFirstAlive();
+  /*if(!targets[0].dead){
+
+    deadTarget = false;
+  } else {deadTarget= true;}
+*//*
+  for(i = 1; i<targets.length; i++){
+    distances[i] = Phaser.Math.Distance.Between(this.x, this.y, targets[i].x, targets[i].y);
+    if(bestDistance > distances[i] || deadTarget){
+      bestDistance = distances[i];
+      if(!targets[i].dead){
+        this.target = targets[i];
+      }
+    }
+  }
+  if(this.target != undefined) {
+    this.stateMachine.transition('move');
+  }
+  */
+}
   initSounds() {
       this.hitSound = this.scene.sound.add('hitSound', { loop: false });
     }
@@ -84,6 +117,7 @@ class P1 extends Actor {
       idle: new IdleState(),
       move: new MoveState(),
       attack: new AttackState(),
+      distAttack: new DistAttackState(),
       getHurt: new PlayerGetHurtState(),
     }, [this.scene, this]);
 
@@ -172,7 +206,8 @@ class P1 extends Actor {
      'inventory': Phaser.Input.Keyboard.KeyCodes.Q,
      'sword': Phaser.Input.Keyboard.KeyCodes.ONE,
      'wand': Phaser.Input.Keyboard.KeyCodes.TWO,
-     'attack': Phaser.Input.Keyboard.KeyCodes.C
+     'attack': Phaser.Input.Keyboard.KeyCodes.C,
+     'distAttack': Phaser.Input.Keyboard.KeyCodes.E
    });
 
  }
@@ -202,6 +237,7 @@ class P2 extends Actor {
         idle: new IdleState(),
         move: new MoveState(),
         attack: new AttackState(),
+        distAttack: new DistAttackState(),
         getHurt: new PlayerGetHurtState(),
       }, [this.scene, this]);
 
@@ -296,7 +332,8 @@ class P2 extends Actor {
        'inventory': Phaser.Input.Keyboard.KeyCodes.NUMPAD_ZERO,
        'sword': Phaser.Input.Keyboard.KeyCodes.NUMPAD_ONE,
        'wand': Phaser.Input.Keyboard.KeyCodes.NUMPAD_TWO,
-       'attack': Phaser.Input.Keyboard.KeyCodes.J
+       'attack': Phaser.Input.Keyboard.KeyCodes.J,
+       'distAttack': Phaser.Input.Keyboard.KeyCodes.K
      });
     }
 
