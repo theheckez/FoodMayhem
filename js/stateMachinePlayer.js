@@ -232,10 +232,12 @@ class IdleEnemyState extends State {
         player.health -= player.attackerDmg;
         player.lifeBar.draw(player.health);
         player.anims.play('getHurt',true);
+        player.hurtSound.play();
         if(player.health <= 0 && !player.dead){
           player.setVelocity(0);
           player.dead = true;
           player.anims.play(player.spriteName.death,true);
+
         }
 
         if(!player.dead){
@@ -260,9 +262,15 @@ class IdleEnemyState extends State {
       }
 
       if(enemy.dead){
-        enemy.attackerKills++;
-        enemy.target.lifeBar.count(enemy.attackerKills);
+        enemy.death.play();
         scene.time.delayedCall(1000, () => {
+          if(enemy.attackerID === 0) {
+            player1.lifeBar.kills++;
+            player1.lifeBar.count();
+          } else if(enemy.attackerID === 1) {
+            player2.lifeBar.kills++;
+            player2.lifeBar.count();
+          }
           enemy.destroy();
         });
       } else {
@@ -315,6 +323,11 @@ class DistAttackState extends State {
   enter(scene, player) {
     player.actualTime = scene.time.now / 1000;
     player.getTarget(scene.enemies);
+        console.log(player.target)
+    if(player.target === undefined) {
+
+              this.stateMachine.transition('idle');
+    }
       if (player.actualTime > (player.timeSinceLastIncrement + player.attackCooldown)) {
         player.setVelocityX(0);
         player.setVelocityY(0);

@@ -17,9 +17,9 @@ constructor(newScene, x,y, sprite) {
   this.attackHitbox = new Phaser.Physics.Arcade.Image(this.scene,
   this.x + this.width/2, this.y + this.height/2, 'arbolV', 4);
 
-  this.distAttackDmg = 10
+  this.distAttackDmg = 10;
   this.attackHitbox.attackDmg = 20;
-  this.attackHitbox.playerKills = 0;
+
 
   this.attackCooldown = 1;
   this.timeSinceLastIncrement = -1;
@@ -40,36 +40,6 @@ constructor(newScene, x,y, sprite) {
 
 }
 
-distAttack(targets) {
- this.actualTime = this.scene.time.now / 1000;
-
-   if (this.actualTime > (this.timeSinceLastIncrement + this.attackCooldown)) {
-     // Get bullet from bullets group
-     var bullet = this.bullets.get().setActive(true).setVisible(true);
-     if (bullet) {
-       bullet.fire(this, targets);
-       this.scene.physics.add.collider(targets, bullet, function (target, bull) {
-         target.health -= 10;
-         console.log("Enemigo dañado por bala");
-         console.log("Vida restante = " + target.health);
-
-         // Kill enemy if health = 0
-         if (target.health == 0) {
-           target.anims.play('malvinDie');
-           target.dead = true;
-           target.destroy();
-         }
-
-         // Destroy bullet
-         bull.setActive(false).setVisible(false);
-       });
-
-       this.timeSinceLastIncrement = this.scene.time.now / 1000;
-
-     }
-   }
-
-}
 
   getHurt(damage){
     this.attackerDmg = damage;
@@ -81,9 +51,13 @@ distAttack(targets) {
   var i;
   var bestDistance;
   var deadTarget;
-  distances[0] = Phaser.Math.Distance.Between(this.x, this.y, targets.getFirstAlive().x, targets.getFirstAlive().y);
+  var target = targets.getFirstAlive();
+  if(target === undefined) {
+    return;
+  }
+  distances[0] = Phaser.Math.Distance.Between(this.x, this.y, target.x, target.y);
   bestDistance = distances[0];
-  this.target = targets.getFirstAlive();
+  this.target = target;
   /*if(!targets[0].dead){
 
     deadTarget = false;
@@ -105,6 +79,7 @@ distAttack(targets) {
 }
   initSounds() {
       this.hitSound = this.scene.sound.add('hitSound', { loop: false });
+      this.hurtSound = this.scene.sound.add('plHurtSound', {loop:false});
     }
 
 }
@@ -125,7 +100,7 @@ class P1 extends Actor {
     this.spriteName = {idle: 'idle', down: 'down', up: 'up',left:'left',
   right: 'right', death: 'death', punch: 'punch', distAttack: 'distAttack'} ;
 
-
+    this.attackHitbox.ID = 0;
     this.keys;
     this.initInput();
     this.initAnimations();
@@ -209,10 +184,10 @@ class P1 extends Actor {
      'down': Phaser.Input.Keyboard.KeyCodes.S,
      'left': Phaser.Input.Keyboard.KeyCodes.A,
      'right': Phaser.Input.Keyboard.KeyCodes.D,
-     'inventory': Phaser.Input.Keyboard.KeyCodes.Q,
+     'inventory': Phaser.Input.Keyboard.KeyCodes.C,
      'sword': Phaser.Input.Keyboard.KeyCodes.ONE,
      'wand': Phaser.Input.Keyboard.KeyCodes.TWO,
-     'attack': Phaser.Input.Keyboard.KeyCodes.C,
+     'attack': Phaser.Input.Keyboard.KeyCodes.Q,
      'distAttack': Phaser.Input.Keyboard.KeyCodes.E,
      'esc': Phaser.Input.Keyboard.KeyCodes.ESC
    });
@@ -242,6 +217,8 @@ class P2 extends Actor {
 
       this.spriteName = {idle: 'idleB', down: 'downB', up: 'upB',left:'leftB',
     right: 'rightB', death: 'deathB', distAttack: 'distAttackB'} ;
+
+      this.attackHitbox.ID = 1;
 
       this.keys;
       this.pad;

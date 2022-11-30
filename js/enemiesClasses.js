@@ -7,7 +7,8 @@ constructor(newScene, x,y, sprite) {
   this.scene = newScene;
   this.dead = false;
 
-
+  this.death = this.scene.sound.add('mlvDeadSound', { loop: false });
+  
   this.target;
   this.scene.add.existing(this);
   this.scene.physics.add.existing(this);
@@ -40,9 +41,9 @@ constructor(newScene, x,y, sprite) {
     }
   }
 
-  getHurt(attack, kills) {
+  getHurt(attack, id) {
     this.attackerDmg = attack;
-    this.attackerKills = kills;
+    this.attackerID = id;
     this.stateMachine.transition('getHurt');
   }
 
@@ -62,6 +63,8 @@ class Malvin extends EnemyMM {
     this.attackDmg = 5;
     this.attackRange = 50;
     this.attackCooldown = 3;
+
+
 
     this.timeSinceLastIncrement = -3;
     this.actualTime;
