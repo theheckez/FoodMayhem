@@ -816,6 +816,8 @@ class ResultadoVictoria extends Phaser.Scene {
                 justifyContent: 'center',
             }
         }
+        this.make.text(confKills).setText('Score');
+        this.make.text(confKills).setText('Score').setPosition(500, 390);
 
         this.make.text(confnKills).setText(player1.lifeBar.kills);
         this.make.text(confnKills).setText(player2.lifeBar.kills).setPosition(500, 340);
