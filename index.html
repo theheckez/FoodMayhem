@@ -19,7 +19,7 @@
            }
        </style>
 
-    <script src="js/phaser.min.js"></script>
+    <script src="js/phaser.js"></script>
     <script src="js/stateMachinePlayer.js"></script>
     <script src="js/enemiesClasses.js"></script>
     <script src="js/playerClasses.js"></script>
@@ -165,7 +165,7 @@ var MainGame = new Phaser.Class({
 
         //MUSICA
         var music = this.sound.add('escMusic', {loop: true});
-  music.play();
+        music.play();
 
   musicButton.on("pointerover", function () {
     musicButton.setFrame(1);
@@ -198,18 +198,19 @@ var MainGame = new Phaser.Class({
 
 
         //OPCIONES
-            pauseButton.on("pointerover", function () {
+            pauseButton.on("pointerover", ()=>{
               pauseButton.setFrame(1);
             })
-            pauseButton.on("pointerout", function () {
+            pauseButton.on("pointerout", ()=>{
               pauseButton.setFrame(0);
             })
 
-            pauseButton.on('pointerdown', function () {
+            pauseButton.on('pointerup', ()=>{
               console.log("Pausa");
-
-              // aqui se cambia al menu de pausa
-            });
+              music.stop();
+              //this.scene.launch("PantallaPausa");
+              this.scene.start('ResultadoDerrota');
+            })
 
         this.physics.add.overlap(player1.attackHitbox, this.enemies, this.enemiesDamaged, undefined, this)
         this.physics.add.overlap(player2.attackHitbox, this.enemies, this.enemiesDamaged, undefined, this)
@@ -316,6 +317,7 @@ var MainGame = new Phaser.Class({
             }
           } else {
             console.log("Win")
+            this.scene.start('ResultadoVictoria');
           }
         } else {
           console.log("Derrota")
@@ -327,7 +329,7 @@ var MainGame = new Phaser.Class({
     });
 
   const config = {
-    type: Phaser.Auto,
+    type: Phaser.AUTO,
     width: 800,
     height: 600,
     input: {
@@ -343,7 +345,7 @@ var MainGame = new Phaser.Class({
     },
 
     parent: 'container',
-    backgroundColor: '#34495E',
+    backgroundColor: '#5B2970',
 
     banner:{
     hidePhaser: false,
@@ -355,7 +357,9 @@ var MainGame = new Phaser.Class({
       'transparent'
     ]
   },
-    scene: [PantallaCarga,MainGame,PantallaInicio,CharacterSelect, PantallaPausa]
+    scene: [PantallaCarga, MainGame,
+      PantallaInicio, CharacterSelect, PantallaPausa, 
+      ResultadoVictoria, ResultadoDerrota]
   };
 
   var game = new Phaser.Game(config);
