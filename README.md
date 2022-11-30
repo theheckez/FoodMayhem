@@ -222,6 +222,8 @@ En esta sección se describe detalladamente cada una de las pantallas que compon
 
 ### 4.1. Diagrama de flujo
 A continuación se muestran las pantallas del Nombre y las transiciones entre ellas.
+![Mi primer tablero](https://user-images.githubusercontent.com/74424503/204675154-224d0f20-4a37-4e8a-ad7f-6e4913c37792.jpg)
+
 
 ### 4.2. Menú Principal
 
