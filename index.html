@@ -19,7 +19,7 @@
            }
        </style>
 
-    <script src="js/phaser.js"></script>
+    <script src="js/phaser.min.js"></script>
     <script src="js/stateMachinePlayer.js"></script>
     <script src="js/enemiesClasses.js"></script>
     <script src="js/playerClasses.js"></script>
@@ -34,6 +34,11 @@
 
 var player;
 var player2;
+
+var music;
+var nxtSound;
+var victoryMusic;
+var defMusic;
 
 var MainGame = new Phaser.Class({
       Extends: Phaser.Scene,
@@ -78,7 +83,7 @@ var MainGame = new Phaser.Class({
         this.load.image('sword', 'assets/players/espada.png');
         this.load.image('swordSelec', 'assets/players/espadaSelec.png');
         this.load.image('wand', 'assets/players/varitaSauco.png');
-        this.load.image('wandSelec', 'assets/players/weapon_select.png');
+        this.load.image('wandSelec', 'assets/players/varitaSaucoMarcada.png');
 
         this.load.image('bolaP1', 'assets/players/bola.png');
         this.load.image('bolaP2', 'assets/players/bolaP2.png');
@@ -110,6 +115,11 @@ var MainGame = new Phaser.Class({
           'assets/sounds/musicEsc.mp3'
         ]);
         this.load.audio('hitSound', ['assets/sounds/icyHit.mp3']);
+       this.load.audio('nxtSound', [ 'assets/sounds/Success3.wav']);
+       this.load.audio('vicMusic', [ 'assets/sounds/Good_Time.mp3']);
+       this.load.audio('defMusic', [ 'assets/sounds/GameOver2.wav']);
+       this.load.audio('plHurtSound', [ 'assets/sounds/OuchSound.mp3']);
+       this.load.audio('mlvDeadSound', [ 'assets/sounds/Fire2.wav']);
       },
 
       create: function () {
@@ -150,67 +160,69 @@ var MainGame = new Phaser.Class({
         this.initCollisions();
 
         // BOTONES
-        var pauseButton = this.add.sprite(400, 22, 'pause', 0).setInteractive();
+        pauseButton = this.add.sprite(400, 22, 'pause', 0).setInteractive();
         var musicButton = this.add.sprite(400, 570, 'musicButton', 0).setInteractive();
         var musicBtDown = this.add.sprite(400, 570, 'musicButton', 2).setInteractive().setVisible(false);
 
         // BARRAS DE VIDA
         this.add.image(100, 35, 'BckBarP1');
-        player1.lifeBar = new LifeBar(this, 54, 26, 56, 28);
+        player1.lifeBar = new LifeBar(this, 54, 26, 53, 30);
         this.add.image(100, 35, 'lifeBarP1');
 
         this.add.image(700, 35, 'BckBarP2');
-        player2.lifeBar = new LifeBar(this, 614, 26, 690, 28);
+        player2.lifeBar = new LifeBar(this, 614, 26, 687, 30);
         this.add.image(700, 35, 'lifeBarP2');
 
         //MUSICA
-        var music = this.sound.add('escMusic', {loop: true});
+        music = this.sound.add('escMusic', {loop: true});
+       nxtSound = this.sound.add('nxtSound', { loop: false})
+         victoryMusic = this.sound.add('vicMusic', { loop: true});
+         defMusic = this.sound.add('defMusic', { loop: false});
+
         music.play();
 
-  musicButton.on("pointerover", function () {
-    musicButton.setFrame(1);
-  })
-  musicButton.on("pointerout", function () {
-    musicButton.setFrame(0);
-  })
-  musicButton.on('pointerdown', function () {
-    console.log("Musica desactivada");
-    musicBtDown.visible = true;
-    musicButton.visible = false;
-    musicBtDown.setFrame(1);
-    music.stop()
-  })
+        musicButton.on("pointerover", function () {
+          musicButton.setFrame(1);
+        })
+        musicButton.on("pointerout", function () {
+          musicButton.setFrame(0);
+        })
+        musicButton.on('pointerdown', function () {
+          console.log("Musica desactivada");
+          musicBtDown.visible = true;
+          musicButton.visible = false;
+          musicBtDown.setFrame(1);
+          music.stop()
+        })
 
-  musicBtDown.on("pointerover", function () {
-    musicBtDown.setFrame(1);
-  })
-  musicBtDown.on("pointerout", function () {
-    musicBtDown.setFrame(2);
-  })
-  musicBtDown.on('pointerdown', function () {
-    console.log("Musica activada");
-    musicBtDown.visible = false;
-    musicButton.visible = true;
-    musicButton.setFrame(1);
-    music.play();
+        musicBtDown.on("pointerover", function () {
+          musicBtDown.setFrame(1);
+        })
+        musicBtDown.on("pointerout", function () {
+          musicBtDown.setFrame(2);
+        })
+        musicBtDown.on('pointerdown', function () {
+          console.log("Musica activada");
+          musicBtDown.visible = false;
+          musicButton.visible = true;
+          musicButton.setFrame(1);
+          music.play();
 
-  })
+        })
 
 
         //OPCIONES
-            pauseButton.on("pointerover", ()=>{
+         pauseButton.on("pointerover", function () {
               pauseButton.setFrame(1);
-            })
-            pauseButton.on("pointerout", ()=>{
-              pauseButton.setFrame(0);
-            })
+           })
+           pauseButton.on("pointerout", function () {
+             pauseButton.setFrame(0);
+          })
 
-            pauseButton.on('pointerup', ()=>{
-              console.log("Pausa");
-              music.stop();
-              //this.scene.launch("PantallaPausa");
-              this.scene.start('ResultadoDerrota');
-            })
+            pauseButton.on("pointerdown", ()=>{
+                this.scene.launch("PantallaPausa");
+                 this.scene.sleep();
+           })
 
         this.physics.add.overlap(player1.attackHitbox, this.enemies, this.enemiesDamaged, undefined, this)
         this.physics.add.overlap(player2.attackHitbox, this.enemies, this.enemiesDamaged, undefined, this)
@@ -304,7 +316,8 @@ var MainGame = new Phaser.Class({
 
       },
       enemiesDamaged: function (player, enemy) {
-        enemy.getHurt(player.attackDmg, player.playerKills);
+        enemy.getHurt(player.attackDmg, player.ID);
+
       },
 
       checkforLevel: function() {
@@ -314,22 +327,30 @@ var MainGame = new Phaser.Class({
               this.generateEnemies(Phaser.Math.Between(3,10), this.enemies, 'malvin');
               this.generateEnemies(Phaser.Math.Between(0,4), this.bosses, 'demon');
               this.level++;
+              nxtSound.play();
             }
           } else {
             console.log("Win")
+            music.stop();
+            if(!victoryMusic.isPlaying){
+                    victoryMusic.play();
+            }
             this.scene.start('ResultadoVictoria');
           }
         } else {
           console.log("Derrota")
+          music.stop();
+          if(!defMusic.isPlaying){
+                  defMusic.play();
+          }
+          this.scene.start('ResultadoDerrota');
         }
-
-
       }
 
     });
 
   const config = {
-    type: Phaser.AUTO,
+    type: Phaser.Auto,
     width: 800,
     height: 600,
     input: {
@@ -340,12 +361,12 @@ var MainGame = new Phaser.Class({
       default: 'arcade',
       arcade: {
         gravity: {y: 0},
-        debug: true
+        debug: false
       }
     },
 
     parent: 'container',
-    backgroundColor: '#5B2970',
+    backgroundColor: '#34495E',
 
     banner:{
     hidePhaser: false,
@@ -357,9 +378,7 @@ var MainGame = new Phaser.Class({
       'transparent'
     ]
   },
-    scene: [PantallaCarga, MainGame,
-      PantallaInicio, CharacterSelect, PantallaPausa, 
-      ResultadoVictoria, ResultadoDerrota]
+    scene: [PantallaCarga,MainGame,PantallaInicio,CharacterSelect, PantallaPausa, ResultadoDerrota, ResultadoVictoria]
   };
 
   var game = new Phaser.Game(config);
