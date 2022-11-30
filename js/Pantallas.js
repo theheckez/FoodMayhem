@@ -788,12 +788,15 @@ class ResultadoVictoria extends Phaser.Scene {
         filtro.fillRect(0, 0, 800, 600);
         this.add.image(400, 300, 'vic').setScale(1.2);
         //Victoria
+        //Iconos jugadores
+        this.add.image(300, 230, 'iconoJ1');
+        this.add.image(500, 230, 'iconoJ2');
 
-        //Kills jugadores
-        const confKills = {
+        //Jugadores
+        const confN = {
             origin: 'center',
             x: 300,
-            y: 230,
+            y: 270,
             style: {
                 fontFamily: 'estilo',
                 color: '#ffffff',
@@ -803,6 +806,24 @@ class ResultadoVictoria extends Phaser.Scene {
                 justifyContent: 'center',
             }
         }
+        this.make.text(confN).setText(player1T.text);
+        this.make.text(confN).setText(player2T.text).setPosition(500, 270);
+
+        //Kills
+        const confKills = {
+            origin: 'center',
+            x: 300,
+            y: 390,
+            style: {
+                fontFamily: 'estilo',
+                color: '#ffffff',
+                fontSize: 20,
+                textAlign: 'center',
+                justifyContent: 'center',
+            }
+        }
+        this.make.text(confKills).setText('Score');
+        this.make.text(confKills).setText('Score').setPosition(500, 390);
 
         const confnKills = {
             origin: 'center',
@@ -816,18 +837,8 @@ class ResultadoVictoria extends Phaser.Scene {
                 justifyContent: 'center',
             }
         }
-        this.make.text(confKills).setText('Score');
-        this.make.text(confKills).setText('Score').setPosition(500, 390);
-
         this.make.text(confnKills).setText(player1.lifeBar.kills);
         this.make.text(confnKills).setText(player2.lifeBar.kills).setPosition(500, 340);
-        //this.make.text(confJugadores).setText(player1.text); --> PONERLO ASI
-        //this.make.text(confJugadores).setText(player2.text).setPosition(this.game.renderer.width*3/4, 150); --> PONERLO ASI
-        this.make.text(confKills).setText('Player 1');
-        this.make.text(confKills).setText('Player 2').setPosition(520, 230);
-        //Iconos jugadores
-        this.add.image(190, 230, 'iconoJ1');
-        this.add.image(420, 230, 'iconoJ2');
 
         //Salir
         this.salir = this.add.sprite(400, 500, "aceptar").setInteractive();
