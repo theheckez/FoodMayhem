@@ -1,4 +1,6 @@
 //const Phaser = require("phaser");
+const MAX_HIGH_SCORES = 6;
+const HIGH_SCORES = 'highScores';
 
 var PantallaCarga = new Phaser.Class({
     Extends: Phaser.Scene,
@@ -1572,6 +1574,12 @@ class ResultadoVictoria extends Phaser.Scene {
 class BorradorVictoria extends Phaser.Scene {
     constructor(){
         super({key: 'BorradorVictoria'});
+        /*
+        this.player1T = "Player 1";
+        this.player2T = "Player 2";
+        this.player1K = 30;
+        this.player2K = 10;
+        */
     }
     preload()
     {
@@ -1614,24 +1622,6 @@ class BorradorVictoria extends Phaser.Scene {
         this.add.image(300, 230, 'iconoJ1');
         this.add.image(500, 230, 'iconoJ2');
 
-        var player1T = "Player 1";
-        var player2T = "Player 2";
-        var player1K = 30;
-        var player2K = 10;
-
-        const username = document
-        const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
-
-        //Variables:
-        const dataPlayer1 = {
-            score: player1K,
-            name: player1T
-        }
-        const dataPlayer2 = {
-            score: player2K,
-            name: player2T
-        }
-
         //Jugadores
         const confN = {
             origin: 'center',
@@ -1646,8 +1636,8 @@ class BorradorVictoria extends Phaser.Scene {
                 justifyContent: 'center',
             }
         }
-        this.make.text(confN).setText(player1T); 
-        this.make.text(confN).setText(player2T).setPosition(500, 270);
+        this.make.text(confN).setText(player1T.value); 
+        this.make.text(confN).setText(player2T.value).setPosition(500, 270);
         
         //Kills
         const confKills = {
@@ -1677,8 +1667,8 @@ class BorradorVictoria extends Phaser.Scene {
                 justifyContent: 'center',
             }
         }
-        this.make.text(confnKills).setText(player1K); 
-        this.make.text(confnKills).setText(player2K).setPosition(500, 340); 
+        this.make.text(confnKills).setText(player1.lifeBar.kills); 
+        this.make.text(confnKills).setText(player2.lifeBar.kills).setPosition(500, 340); 
 
         //Salir
         //this.salir = this.add.sprite(400, 450, "aceptar").setInteractive();
@@ -1790,23 +1780,67 @@ class BorradorVictoria extends Phaser.Scene {
             this.salir.setInteractive();
         })
 
-        //SCORES
-        //Guardar Score
-        saveHighScore(event) = e =>{
-        const score = {
-            score: mostRecentScore,
-            name: username.value
-        }
-            //Jugador 1
-            highScores.push(dataPlayer1.score);
-            //highScores.sort(a,b) => b.dataPlayer1.score - a.dataPlayer1
-            highScores.push(player)
-        }
+        console.log(player1T.value, player1.lifeBar.kills);
+        localStorage.clear();
+
+        this.checkHighScore(player1T.value, player1.lifeBar.kills);
+        
     }
     update(time, date)
     {
 
     }
+
+    //SCORES
+    //Guardar Score
+    checkHighScore(name, score)
+    {
+        //const finalScore = document.getElementById('finalScore');
+        //const mostRecentScore = localStorage.getItem('mostRecentScore');
+
+        console.log("chequeando score");
+        const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
+
+        //finalScore.innerText=mostRecentScore;
+
+        //Mirar el valor mas peque de la lista
+        const lowestScore = highScores[MAX_HIGH_SCORES-1]?.player1K??0;
+        if(score > lowestScore)
+        {
+            this.saveHighScores(name, score, highScores);
+            this.showHighScores();
+        }
+        
+    }
+    saveHighScores(name, score, highScores)
+    {
+        const data = {
+            name: name,
+            score: score
+        }
+        console.log("salvando score");
+
+        //Add to list
+        highScores.push(data);
+
+        //Sort the list
+        highScores.sort((a,b) => b.score - a.score);
+
+        //Select new list
+        highScores.splice(MAX_HIGH_SCORES);
+
+        //Save to local
+        localStorage.setItem(HIGH_SCORES, JSON.stringify(highScores));    
+    }
+    showHighScores()
+    {
+        const highScores = JSON.parse(localStorage.getItem(HIGH_SCORES)) || [];
+        const highScoresList = document.getElementById(HIGH_SCORES);
+
+        highScoresList.innerHTML = highScores.map((score) => `<li>${score.score}-${score.name}`).join("");
+        console.log(highScoresList);
+    }
+    
 }
 
 class HighScoresScreen extends Phaser.Scene{
