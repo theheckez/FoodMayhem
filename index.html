@@ -33,6 +33,7 @@
 
   <div class="bs-intro-text" id="introTextoP1">
     <input id="namebar" name="player1T" class="nk-namebar-input" type="text" placeholder="Introduce your name...">
+    <input id="namebar2" name="player2T" class="nk-namebar-input" type="text" placeholder="Introduce your name...">
     <span class="nk-namebar-indicator"></span>
   </div>
 <script type="text/javascript">
@@ -45,6 +46,10 @@ var music;
 var nxtSound;
 var victoryMusic;
 var defMusic;
+
+const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
+//localStorage.setItem("hidhScores", JSON.stringify([]));
+//console.log(JSON.parse(localStorage.getItem("highScores")));
 
 var MainGame = new Phaser.Class({
       Extends: Phaser.Scene,
@@ -181,16 +186,18 @@ var MainGame = new Phaser.Class({
 
         //MUSICA
         music = this.sound.add('escMusic', {loop: true});
-       nxtSound = this.sound.add('nxtSound', { loop: false})
-         victoryMusic = this.sound.add('vicMusic', { loop: true});
-         defMusic = this.sound.add('defMusic', { loop: false});
+        nxtSound = this.sound.add('nxtSound', { loop: false})
+        victoryMusic = this.sound.add('vicMusic', { loop: true});
+        defMusic = this.sound.add('defMusic', { loop: false});
 
         music.play();
 
         musicButton.on("pointerover", function () {
+          document.body.style.cursor = "pointer";
           musicButton.setFrame(1);
         })
         musicButton.on("pointerout", function () {
+          document.body.style.cursor = "auto";
           musicButton.setFrame(0);
         })
         musicButton.on('pointerdown', function () {
@@ -219,9 +226,11 @@ var MainGame = new Phaser.Class({
 
         //OPCIONES
          pauseButton.on("pointerover", function () {
+              document.body.style.cursor = "pointer";
               pauseButton.setFrame(1);
            })
            pauseButton.on("pointerout", function () {
+             document.body.style.cursor = "auto";
              pauseButton.setFrame(0);
           })
 
@@ -384,7 +393,7 @@ var MainGame = new Phaser.Class({
       'transparent'
     ]
   },
-    scene: [PantallaCarga,MainGame,PantallaInicio,CharacterSelect, PantallaPausa, ResultadoDerrota, ResultadoVictoria]
+    scene: [BorradorVictoria, PantallaCarga, MainGame, PantallaInicio, PantallaCreditos, TwoCharacterSelect, PantallaPausa, ResultadoDerrota, ResultadoVictoria]
   };
 
   var game = new Phaser.Game(config);
