@@ -1,6 +1,5 @@
 //const Phaser = require("phaser");
-const MAX_HIGH_SCORES = 6;
-const HIGH_SCORES = 'highScores';
+
 
 var PantallaCarga = new Phaser.Class({
     Extends: Phaser.Scene,
@@ -1368,7 +1367,7 @@ class ResultadoVictoria extends Phaser.Scene {
 
         //x
         this.load.spritesheet('exit',
-            'DiseñoInterfaz/Botones/botonX.png',
+            'assets/interfaz/botonX.png',
             { frameWidth: 80, frameHeight: 47 }
         );
     }
@@ -1438,7 +1437,7 @@ class ResultadoVictoria extends Phaser.Scene {
             }
         }
         this.make.text(confnKills).setText(player1.lifeBar.kills); 
-        this.make.text(confnKills).setText(player2.lifeBbar.kills).setPosition(500, 390); 
+        this.make.text(confnKills).setText(player2.lifeBar.kills).setPosition(500, 390); 
 
         //Salir
         this.salir = this.add.sprite(400, 450, "aceptar").setInteractive();
@@ -1550,20 +1549,8 @@ class ResultadoVictoria extends Phaser.Scene {
         })
 
         //SCORES
-        
-        const dataPlayer1 = {
-            score: player1.lifeBar.kills,
-            name: player1T
-        }
-        const dataPlayer2 = {
-            score: player2.lifeBar.kills,
-            name: player2T
-        }
-
-        //Aviso de nuevo High Score
-        HighScores.forEach(element =>{
-            if(dataPlayer1.score > element) console.log("New High Score");
-        })
+        this.guardarHS1 = new HighScoreClass(player1T.value, player1.lifeBar.kills);
+        this.guardarHS1.checkHighScore();
     }
     update(time, date)
     {
@@ -1780,10 +1767,11 @@ class BorradorVictoria extends Phaser.Scene {
             this.salir.setInteractive();
         })
 
-        console.log(player1T.value, player1.lifeBar.kills);
-        localStorage.clear();
+        //console.log(player1T.value, player1.lifeBar.kills);
+        //localStorage.clear();
 
-        this.checkHighScore(player1T.value, player1.lifeBar.kills);
+        //this.checkHighScore(player1T.value, player1.lifeBar.kills);
+
         
     }
     update(time, date)
