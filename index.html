@@ -5,36 +5,53 @@
   <meta name="" charset="utf-8" content=""/>
   <title>Food Mayhem</title>
   <style>
-    @font-face{
-      font-family: 'estilo';
-      src: url('./assets/fuentes/serif_pixel-7.ttf');
-    }
-    @font-face{
-      font-family: 'titulo';
-      src: url('./assets/fuentes/04B_30__.TTF');
-    }
-    @font-face{
-      font-family: 'damage';
-      src: url('./assets/fuentes/I-pixel-u.ttf');
-    }
-  </style>
+           @font-face{
+               font-family: 'estilo';
+               src: url('./assets/fuentes/serif_pixel-7.ttf');
+           }
+           @font-face{
+               font-family: 'titulo';
+               src: url('./assets/fuentes/04B_30__.TTF');
+           }
+           @font-face{
+               font-family: 'damage';
+               src: url('./assets/fuentes/I-pixel-u.ttf');
+           }
+       </style>
 
-  <script src="js/phaser.min.js"></script>
-  <script src="js/stateMachinePlayer.js"></script>
-  <script src="js/enemiesClasses.js"></script>
-  <script src="js/playerClasses.js"></script>
-  <script src="js/Pantallas.js"></script>
-  <script src="js/misc.js"></script>
+    <script src="js/phaser.min.js"></script>
+    <script src="js/stateMachinePlayer.js"></script>
+    <script src="js/enemiesClasses.js"></script>
+    <script src="js/playerClasses.js"></script>
+    <script src="js/Pantallas.js"></script>
+    <script src="js/misc.js"></script>
+    <script src="js/highScore.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"> </script>
 
-  <link rel="stylesheet" media="all" href="./css/stylesheet.css">
+    <link rel="stylesheet" media="all" href="./css/stylesheet.css">
 </head>
 
 <body style="text-align:center">
-
+  
   <div class="bs-intro-text" id="introTextoP1">
     <input id="namebar" name="player1T" class="nk-namebar-input" type="text" placeholder="Introduce your name...">
     <input id="namebar2" name="player2T" class="nk-namebar-input" type="text" placeholder="Introduce your name...">
     <span class="nk-namebar-indicator"></span>
+  </div>
+  <div id="hS">
+    <h1 id="finalScore"></h1>
+    <ul id="highScores"></ul>
+  </div>
+</div>
+
+  <div class="flex-container">
+    <div id="content"></div>
+    <div id="chatContainer">
+      <div class="chatArea">
+        <ul id="messages" class="messages"></ul>
+      </div>
+      <input id="inputMessage" class="inputMessage" placeholder="Type here..." type="text">
+    </div>
   </div>
 <script type="text/javascript">
 
@@ -48,8 +65,80 @@ var victoryMusic;
 var defMusic;
 
 const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
-//localStorage.setItem("hidhScores", JSON.stringify([]));
-//console.log(JSON.parse(localStorage.getItem("highScores")));
+const inputMessage = document.getElementById('inputMessage');
+const messages = document.getElementById('messages');
+const player1Name = document.getElementById('namebar');
+
+window.addEventListener('keydown', event => {
+  if (event.which === 13) {
+    sendMessage();
+  }
+  if (event.which === 32) {
+    if (document.activeElement === inputMessage) {
+      inputMessage.value = inputMessage.value + ' ';
+    }
+  }
+});
+
+$(document).ready(function()
+{ 
+  updateChat();  
+});
+
+
+function sendMessage() {
+
+  let message = inputMessage.value;
+  let nick = player1Name.value;
+
+  if (message && nick) {
+    inputMessage.value = '';
+    $.ajax({
+        type: "POST",
+        async:false,
+        headers: {
+            'Accept': 'application/json',
+            'Content-type' : 'application/json'
+        },
+        url: '/chats',
+        data: JSON.stringify( { nick: nick+': ', message: ""+ message } ),
+        dataType: "json", error: function(xhr) {
+        console.log(xhr);
+      } 
+    })
+  }
+}
+
+function updateChat(){
+  messages.innerHTML = '';
+  $.ajax({ 
+    url: '/chats',
+  }).done(function(data) 
+  { 
+    for(var k in data) {
+      const usernameSpan = document.createElement('span');
+      const usernameText = document.createTextNode(data[k].nick);
+      usernameSpan.className = 'username';
+      usernameSpan.appendChild(usernameText);
+      const messageBodySpan = document.createElement('span');
+      const messageBodyText = document.createTextNode(data[k].message);
+      messageBodySpan.className = 'messageBody';
+      messageBodySpan.appendChild(messageBodyText);
+      const messageLi = document.createElement('li');
+      messageLi.setAttribute('username', data[k].nick);
+      messageLi.append(usernameSpan);
+      messageLi.append(messageBodySpan);
+      addMessageElement(messageLi); 
+    }
+ })
+
+    setTimeout(updateChat, 5000);
+}
+
+function addMessageElement(el) {
+  messages.append(el);
+  //messages.lastChild.scrollIntoView();
+}
 
 var MainGame = new Phaser.Class({
       Extends: Phaser.Scene,
@@ -64,11 +153,13 @@ var MainGame = new Phaser.Class({
 
           this.level= 0;
 
-          this.life1;
+          this.life1; 
+
 
         },
 
       preload: function () {
+    
         //Imágenes de escenario
         this.load.image('map', 'assets/map1.png');
         this.load.image('valla', 'assets/vallas/valla1.png');
@@ -186,18 +277,16 @@ var MainGame = new Phaser.Class({
 
         //MUSICA
         music = this.sound.add('escMusic', {loop: true});
-        nxtSound = this.sound.add('nxtSound', { loop: false})
-        victoryMusic = this.sound.add('vicMusic', { loop: true});
-        defMusic = this.sound.add('defMusic', { loop: false});
+       nxtSound = this.sound.add('nxtSound', { loop: false})
+         victoryMusic = this.sound.add('vicMusic', { loop: true});
+         defMusic = this.sound.add('defMusic', { loop: false});
 
         music.play();
 
         musicButton.on("pointerover", function () {
-          document.body.style.cursor = "pointer";
           musicButton.setFrame(1);
         })
         musicButton.on("pointerout", function () {
-          document.body.style.cursor = "auto";
           musicButton.setFrame(0);
         })
         musicButton.on('pointerdown', function () {
@@ -226,11 +315,9 @@ var MainGame = new Phaser.Class({
 
         //OPCIONES
          pauseButton.on("pointerover", function () {
-              document.body.style.cursor = "pointer";
               pauseButton.setFrame(1);
            })
            pauseButton.on("pointerout", function () {
-             document.body.style.cursor = "auto";
              pauseButton.setFrame(0);
           })
 
@@ -247,6 +334,7 @@ var MainGame = new Phaser.Class({
 
       update: function () {
 
+        updateChat();
         player1.move(this, this.enemies);
 
         player2.checkGamepad(this);
@@ -379,9 +467,11 @@ var MainGame = new Phaser.Class({
         debug: false
       }
     },
-
+    dom:{
+      createContainer: true
+    },
     parent: 'container',
-    backgroundColor: '#5B2970',
+    backgroundColor: '#34495E',
 
     banner:{
     hidePhaser: false,
@@ -393,7 +483,7 @@ var MainGame = new Phaser.Class({
       'transparent'
     ]
   },
-    scene: [BorradorVictoria, PantallaCarga, MainGame, PantallaInicio, PantallaCreditos, TwoCharacterSelect, PantallaPausa, ResultadoDerrota, ResultadoVictoria]
+  scene: [PantallaCarga, MainGame, PantallaInicio, PantallaCreditos, TwoCharacterSelect, PantallaPausa, ResultadoDerrota, ResultadoVictoria, HighScoresScreen]
   };
 
   var game = new Phaser.Game(config);

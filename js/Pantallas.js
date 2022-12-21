@@ -1,5 +1,3 @@
-//const Phaser = require("phaser");
-
 
 var PantallaCarga = new Phaser.Class({
     Extends: Phaser.Scene,
@@ -75,25 +73,11 @@ var PantallaInicio = new Phaser.Class({
   },
 
   create: function(){
-    //this.add.image(this.game.renderer.width/2, this.game.renderer.height*0.20, "star");
+   
     this.add.image(400, 300, "bg");
     this.logo = this.add.image(game.renderer.width/2, 200, "logo").setOriginFromFrame('center');
     this.logo.setScale(1.2);
-    /*
-    //Modo de juego:
-    const confTittle = {
-        origin: 'center',
-        x: game.renderer.width/2,
-        y: 360,
-        text: 'MODO DE JUEGO',
-        style: {
-            color: '#ffffff',
-            fontSize: 20,
-            fontFamily: 'titulo'
-        }
-    }
-    this.make.text(confTittle);
-    */
+   
     this.modoLocal = this.add.image(game.renderer.width/2, 360, "local").setInteractive();
     this.modoLocal.setScale(0.8);
     //this.modoCamp.setAlpha(0.5);
@@ -110,11 +94,6 @@ var PantallaInicio = new Phaser.Class({
     this.marcador = this.add.image(game.renderer.width/2, 500, "marcador").setVisible(false);
     this.marcador.setScale(2);
     
-    /*
-    this.playButton = this.add.sprite(400, 600, "BotonPlay").setInteractive();
-    this.marco = this.add.image(400, 600, 'marco').setVisible(false);
-    this.marco.setScale(1.2);
-    */
 
     //Interaccion botones
     //Modo Local
@@ -156,8 +135,6 @@ var PantallaInicio = new Phaser.Class({
     })
   
     this.modoOnline.on("pointerdown", ()=>{
-        //this.playButton.setFrame(1);
-        //this.marco.setVisible(false);
         this.modoOnline.setAlpha(0.8);
     })
   
@@ -180,8 +157,6 @@ var PantallaInicio = new Phaser.Class({
     })
   
     this.modoCredits.on("pointerdown", ()=>{
-        //this.playButton.setFrame(1);
-        //this.marco.setVisible(false);
         this.modoCredits.setAlpha(0.8);
     })
   
@@ -189,26 +164,7 @@ var PantallaInicio = new Phaser.Class({
         document.body.style.cursor = "auto";
         this.scene.start("PantallaCreditos");
     })
-    /*
-    this.playButton.on("pointerover", ()=>{
-      document.body.style.cursor = "pointer";
-      this.marco.setVisible(true);
-    })
-
-    this.playButton.on("pointerout", ()=>{
-      document.body.style.cursor = "auto";
-      this.marco.setVisible(false);
-    })
-
-    this.playButton.on("pointerdown", ()=>{
-      this.playButton.setFrame(1);
-      this.marco.setVisible(false);
-    })
-
-    this.playButton.on("pointerup", ()=>{
-      document.body.style.cursor = "auto";
-      this.scene.start("chSelect");
-    })*/
+   
     },
 });
 
@@ -243,10 +199,10 @@ var TwoCharacterSelect = new Phaser.Class({
         this.load.image("bg2", "assets/interfaz/pantallaSeleccion.png");
         //Personajes:
         this.load.spritesheet('player',
-          'assets/players/SpritesheetJugadores/SpritesheetP1/SpritesheetP1(Andar).png',
+          'assets/players/icy.png',
           { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet('player2',
-          'assets/players/SpritesheetJugadores/SpritesheetP2/SpritesheetP2Azul(Andar).png',
+          'assets/players/Yci.png',
           { frameWidth: 64, frameHeight: 64 });
         //Recuadro
         this.load.image("cuadro", "assets/interfaz/eleccionPersonaje.png");
@@ -403,42 +359,7 @@ var TwoCharacterSelect = new Phaser.Class({
             document.body.style.cursor = "auto";
             this.scene.start("PantallaInicio");
         })
-  
-        //Interaccion modos de juego:
-        //Entrada por teclado
-        /*
-        const keyCodes = Phaser.Input.Keyboard.KeyCodes;
-        this.teclasJ1 = this.input.keyboard.addKeys({
-            w: keyCodes.W,
-            a: keyCodes.A,
-            d: keyCodes.D,
-            s: keyCodes.S
-        });
-        this.teclasJ2 = this.input.keyboard.addKeys({
-            up: keyCodes.UP, 
-            left: keyCodes.LEFT, 
-            right: keyCodes.RIGHT, 
-            down: keyCodes.DOWN
-        });*/
-        /*
-        this.teclasJ1.w.on('down', () =>{
-            if(this.flechita.y > 420)
-                this.flechita.setPosition(320, this.flechita.y-40);
-        })
-        this.teclasJ1.s.on('down', () =>{
-            if(this.flechita.y < 500)
-                this.flechita.setPosition(320, this.flechita.y+40);
-        })
 
-        this.teclasJ2.up.on('down', () =>{
-            if(this.flechita.y > 420)
-                this.flechita.setPosition(320, this.flechita.y-40);
-        })
-        this.teclasJ2.down.on('down', () =>{
-            if(this.flechita.y < 500)
-                this.flechita.setPosition(320, this.flechita.y+40);
-        })
-        */
         
         //Boton play
         this.play.on("pointerover", ()=>{
@@ -459,17 +380,6 @@ var TwoCharacterSelect = new Phaser.Class({
             player1T.style.visibility = "hidden";
             player2T.style.visibility = "hidden";
         })
-
-        //Modos juego
-        /*
-        if(this.flechita.y == 420) this.modoCamp.setFontSize(22);
-        if(this.flechita.y != 420) this.modoCamp.setFontSize(20);
-  
-        if(this.flechita.y == 460) this.modoVersus.setFontSize(22);
-        if(this.flechita.y != 460) this.modoVersus.setFontSize(20);
-  
-        if(this.flechita.y == 500) this.modoArc.setFontSize(22);
-        if(this.flechita.y != 500) this.modoArc.setFontSize(20);*/
     },
 
     update: function(time, delta){
@@ -483,25 +393,6 @@ var TwoCharacterSelect = new Phaser.Class({
             this.ready = 0;
             this.play.setVisible(true);;
         }
-        /*
-
-        if(this.teclasJ1.w.JustDown == true){
-            if(this.flechita.y > 420)
-                this.flechita.setPosition(320, this.flechita.y-40);
-        }
-        if(this.teclasJ1.s.isDown){
-            if(this.flechita.y < 500)
-                this.flechita.setPosition(320, this.flechita.y+40);
-        }
-
-        if(this.teclasJ2.up.isDown){
-            if(this.flechita.y > 420)
-                this.flechita.setPosition(320, this.flechita.y-40);
-        }
-        if(this.teclasJ2.down.isDown){
-            if(this.flechita.y < 500)
-                this.flechita.setPosition(320, this.flechita.y+40);
-        }*/
     }
 });
 
@@ -519,7 +410,7 @@ var OneCharacterSelect = new Phaser.Class({
         this.load.image("bg2", "assets/interfaz/pantallaSeleccion.png");
         //Personajes:
         this.load.spritesheet('player',
-          'assets/players/SpritesheetJugadores/SpritesheetP1/SpritesheetP1(Andar).png',
+          'assets/players/icy.png',
           { frameWidth: 64, frameHeight: 64 });
         //Recuadro
         this.load.image("cuadro", "assets/interfaz/eleccionPersonaje.png");
@@ -558,58 +449,15 @@ var OneCharacterSelect = new Phaser.Class({
         this.player1.setFrame(3);
         this.player1.setScale(3);
   
-        /*
-        //Configuracion texto:
-        const configNombres = {
-            origin: 'center',
-            x: 210,
-            y: 290,
-            text: 'Introduce tu nombre:',
-            style: {
-                fontFamily: 'estilo',
-                color: '#000000',
-                fontSize: 20,
-                textAlign: 'center',
-                justifyContent: 'center',
-                backgroundImage: "url('name')"
-            }
-        }*/
+      
         document.getElementById("namebar").style.visibility = "visible";
         document.getElementById("namebar").style.marginLeft = '-130px';
-        /*
-        //Nombre jugador 1:
-        player1T = this.make.text(configNombres).setInteractive();
-        //Nombre jugador 2:
-        player2T = this.make.text(configNombres).setInteractive();
-        player2T.setPosition(590, 290);
-        */
+       
         //Botones aceptar: bloquean introducir nombre y van a siguiente pantalla
         this.aceptar1 = this.add.sprite(400, 360, "aceptar").setInteractive();
         this.marco1 = this.add.image(400, 360, 'marco').setVisible(false);
         this.marco1.setScale(1.2);
-        /*
-        this.aceptar2 = this.add.sprite(590, 330, "aceptar").setInteractive();
-        this.marco2 = this.add.image(590, 330, 'marco').setVisible(false);
-        this.marco2.setScale(1.2);
-        */
-        //Recuadro Modo juego
-        /*
-        let recuadroMJ = this.add.graphics({
-            fillStyle: {
-                color: 0xa87bc7,
-                alpha: 0.5,
-            }
-        })
-        recuadroMJ.fillRect(46, 360, 705, 195);
-           
-        let resaltarMJ = this.add.graphics({
-            fillStyle: {
-                color: 0x734a91, //color barra de cargar (CAMBIAR)
-                alpha: 0.5
-            }
-        })
-        resaltarMJ.fillRect(46, 360, 705, 35);
-        */
+       
         //Boton menu: volver al menu
         this.menu = this.add.sprite(695, 525, "menu").setInteractive();
         this.marcoMenu = this.add.image(695, 525, 'marco').setVisible(false);
@@ -619,50 +467,7 @@ var OneCharacterSelect = new Phaser.Class({
         this.play.setVisible(false);
         this.marcoPlay = this.add.image(695, 480, 'marco').setVisible(false);
   
-        /*
-        //Modo de juego:
-        const confTittle = {
-            origin: 'center',
-            x: game.renderer.width/2,
-            y: 380,
-            text: 'MODO DE JUEGO',
-            style: {
-                color: '#ffffff',
-                fontSize: 20,
-                fontFamily: 'titulo'
-            }
-        }
-        this.make.text(confTittle);
-  
-        const configModos = {
-            origin: 'center',
-            style: {
-                fontFamily: 'estilo',
-                color: '#ffffff',
-                fontSize: 20,
-                fontStyle: 'italic',
-                textAlign: 'center',
-                justifyContent: 'center',
-            }
-        }
-  
-        this.modoCamp = this.make.text(configModos).setInteractive();
-        this.modoCamp.setText('Campaña');
-        this.modoCamp.setAlpha(0.5);
-        this.modoCamp.setPosition(game.renderer.width/2, 420);
-  
-        this.modoVersus = this.make.text(configModos).setInteractive();
-        this.modoVersus.setText('Versus');
-        this.modoVersus.setAlpha(0.5);
-        this.modoVersus.setPosition(game.renderer.width/2, 460);
-  
-        this.modoArc = this.make.text(configModos).setInteractive();
-        this.modoArc.setText('Arcade');
-        this.modoArc.setPosition(game.renderer.width/2, 500);
-  
-        //Interaccion modos de juego:
-        this.flechita = this.add.image(320, 500, "flechita");
-        */
+
         //FUNCIONALIDAD:
         //Animacion personajes
         this.anims.create({
@@ -671,33 +476,7 @@ var OneCharacterSelect = new Phaser.Class({
             frameRate: 10,
             repeat: -1
         })
-        /*
-        this.anims.create({
-            key: 'pose2',
-            frames: this.anims.generateFrameNumbers('player2', {start: 0, end: 4}),
-            frameRate: 10,
-            repeat: -1
-        })*/
-
-        /*
-        player1T.on("pointerover", ()=>{
-            document.body.style.cursor = "text";
-        })
-        player1T.on("pointerout", ()=>{
-            document.body.style.cursor = "auto";
-        })
-        player1T.on("pointerdown", () =>{
-            //player1T.setText(' ');
-            //document.getElementById('namebar').setVisible;
-            introduceName(player1T);
-            //var n = prompt('Introduce nombre: ', 'Player1');
-            //console.log(n)
-            //if(n == null) player1T.setText('Player1');
-            //else player1T.setText(n);
-        })
-        player1T.on("pointerup", ()=>{
-            document.body.style.cursor = "auto";
-        })*/
+    
   
         //Interaccion botones
         this.ready1 = 0;
@@ -745,41 +524,7 @@ var OneCharacterSelect = new Phaser.Class({
             this.scene.start("PantallaInicio");
         })
   
-        //Interaccion modos de juego:
-        //Entrada por teclado
-        /*
-        const keyCodes = Phaser.Input.Keyboard.KeyCodes;
-        this.teclasJ1 = this.input.keyboard.addKeys({
-            w: keyCodes.W,
-            a: keyCodes.A,
-            d: keyCodes.D,
-            s: keyCodes.S
-        });
-        this.teclasJ2 = this.input.keyboard.addKeys({
-            up: keyCodes.UP, 
-            left: keyCodes.LEFT, 
-            right: keyCodes.RIGHT, 
-            down: keyCodes.DOWN
-        });*/
-        /*
-        this.teclasJ1.w.on('down', () =>{
-            if(this.flechita.y > 420)
-                this.flechita.setPosition(320, this.flechita.y-40);
-        })
-        this.teclasJ1.s.on('down', () =>{
-            if(this.flechita.y < 500)
-                this.flechita.setPosition(320, this.flechita.y+40);
-        })
-
-        this.teclasJ2.up.on('down', () =>{
-            if(this.flechita.y > 420)
-                this.flechita.setPosition(320, this.flechita.y-40);
-        })
-        this.teclasJ2.down.on('down', () =>{
-            if(this.flechita.y < 500)
-                this.flechita.setPosition(320, this.flechita.y+40);
-        })
-        */
+       
         
         //Boton play
         this.play.on("pointerover", ()=>{
@@ -795,20 +540,10 @@ var OneCharacterSelect = new Phaser.Class({
             this.play.setFrame(1);    
         })
         this.play.on('pointerup', ()=>{
-            if(this.flechita.y == 500) this.scene.start('mainGame');
-            else this.play.setFrame(0);
+            this.scene.start('mainGame');
+            this.play.setFrame(0);
         })
 
-        //Modos juego
-        /*
-        if(this.flechita.y == 420) this.modoCamp.setFontSize(22);
-        if(this.flechita.y != 420) this.modoCamp.setFontSize(20);
-  
-        if(this.flechita.y == 460) this.modoVersus.setFontSize(22);
-        if(this.flechita.y != 460) this.modoVersus.setFontSize(20);
-  
-        if(this.flechita.y == 500) this.modoArc.setFontSize(22);
-        if(this.flechita.y != 500) this.modoArc.setFontSize(20);*/
     },
 
     update: function(time, delta){
@@ -822,7 +557,6 @@ var OneCharacterSelect = new Phaser.Class({
             this.play.setVisible(true);
         }
         /*
-
         if(this.teclasJ1.w.JustDown == true){
             if(this.flechita.y > 420)
                 this.flechita.setPosition(320, this.flechita.y-40);
@@ -831,7 +565,6 @@ var OneCharacterSelect = new Phaser.Class({
             if(this.flechita.y < 500)
                 this.flechita.setPosition(320, this.flechita.y+40);
         }
-
         if(this.teclasJ2.up.isDown){
             if(this.flechita.y > 420)
                 this.flechita.setPosition(320, this.flechita.y-40);
@@ -1679,59 +1412,11 @@ class BorradorVictoria extends Phaser.Scene {
         this.abandonar = this.make.text(confSalir).setText(
             '¿Volver al menú principal?').setPosition(
                 400, 230).setFontSize(25).setVisible(false);
-        //warning
-        //x
-        //this.exit2 = this.add.sprite(625, 185, "exit").setVisible(false);
-        //this.exit2.scale = 0.6;
-        //yes y no
+     
         this.yes = this.add.sprite(300, 350, 'yes').setVisible(false);
         this.no = this.add.sprite(500, 350, 'no').setVisible(false);
 
-        /*
-        //FUNCIONALIDAD
-        this.salir.on("pointerover", ()=>{
-            document.body.style.cursor = "pointer";
-            this.marcoOk.setVisible(true);
-        })
-        this.salir.on("pointerout", ()=>{
-            document.body.style.cursor = "auto";
-            this.marcoOk.setVisible(false);
-        })
-        this.salir.on("pointerdown", ()=>{
-            this.salir.setFrame(1); 
-            this.marcoOk.setVisible(false);
-        })
-        this.salir.on("pointerup", ()=>{
-            this.salir.setFrame(0);
-            document.body.style.cursor = "auto";
-            this.pestaña.setVisible(true);
-            this.abandonar.setVisible(true);
-            this.exit2.setVisible(true).setInteractive();
-            this.yes.setVisible(true).setInteractive();
-            this.no.setVisible(true).setInteractive();
-            this.salir.disableInteractive();
-        })*/
-        /*
-        //exit2
-        this.exit2.on("pointerover", ()=>{
-            document.body.style.cursor = "pointer";
-        })
-        this.exit2.on("pointerout", ()=>{
-            document.body.style.cursor = "auto";
-        })
-        this.exit2.on("pointerdown", ()=>{
-            this.exit2.setFrame(1); 
-        })
-        this.exit2.on("pointerup", ()=>{
-            this.exit2.setFrame(0);
-            document.body.style.cursor = "auto";
-            this.pestaña.setVisible(false);
-            this.abandonar.setVisible(false);
-            this.exit2.setVisible(false).disableInteractive();
-            this.yes.setVisible(false).disableInteractive();
-            this.no.setVisible(false).disableInteractive();
-            this.salir.setInteractive();
-        })*/
+    
         //yes
         this.yes.on("pointerover", ()=>{
             document.body.style.cursor = "pointer";

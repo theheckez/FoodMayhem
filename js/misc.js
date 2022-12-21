@@ -1,3 +1,5 @@
+
+
 var Bullet = new Phaser.Class({
 
   Extends: Phaser.GameObjects.Image,
@@ -245,4 +247,7 @@ var Inventory = new Phaser.Class({
     this.wandButton = scene.add.image(670, 560, 'wand').setVisible(false);
   }
 
+
+
 })
+
