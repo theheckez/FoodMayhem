@@ -11,19 +11,19 @@ var PantallaCarga = new Phaser.Class({
     },
   
     preload: function(){
-        this.load.image("empresa", 'assets/logo/BakeryStudiosLogo.png');
+        this.load.image("empresa", 'Assets/Logos/BakeryStudiosLogo.png');
   
         let loadingBar = this.add.graphics({
             fillStyle: {
                 color: 0xde72ca
             }
         })
-        this.load.image('iconoJ1', 'assets/interfaz/cabezaMorada.png');
+        this.load.image('iconoJ1', 'Assets/Interfaces/InGame/purpleIceHead.png');
   
         //-----------------------------------------------------------------------------------
         //Escenario:
         this.load.spritesheet('pause',
-            'assets/interfaz/botonPause.png',
+            'Assets/Interfaces/Buttons/PlayPauseButtons/botonPause.png',
             { frameWidth: 80, frameHeight: 47 });
         //------------------------------------------------------------------------------------
   
@@ -61,17 +61,17 @@ var PantallaInicio = new Phaser.Class({
   },
 
   preload: function(){
-    this.load.image("logo", "assets/logo/LogoI-ScreamFondoBlanco.png");
+    this.load.image("logo", "Assets/Logos/LogoI-ScreamFondoBlanco.png");
     this.load.spritesheet('BotonPlay',
-          'assets/interfaz/BotonPlay.png',
+          'Assets/Interfaces/Buttons/PlayPauseButtons/BotonPlay.png',
           { frameWidth: 120, frameHeight: 47 });
-    this.load.image('marco', "assets/interfaz/recuadroBoton.png");
-    this.load.image("bg", "assets/interfaz/pantallaInicio.png");
-    this.load.image("flechita", "assets/interfaz/flechita.png");
-    this.load.image("marcador", "assets/interfaz/recuadroBoton.png");
-    this.load.image("local", "assets/interfaz/local.png");
-    this.load.image("online", "assets/interfaz/online.png");
-    this.load.image("credits", "assets/interfaz/credits.png");
+    this.load.image('marco', "Assets/Interfaces/Buttons/buttonHighlight.png");
+    this.load.image("bg", "Assets/Interfaces/Scenes/initialScene.png");
+    this.load.image("flechita", "Assets/Interfaces/Buttons/buttonMarker.png");
+    this.load.image("marcador", "Assets/Interfaces/Buttons/buttonHighlight.png");
+    this.load.image("local", "Assets/Interfaces/Text/local.png");
+    this.load.image("online", "Assets/Interfaces/Text/online.png");
+    this.load.image("credits", "Assets/Interfaces/Text/credits.png");
   },
 
   create: function(){
@@ -222,7 +222,7 @@ var PantallaCreditos = new Phaser.Class({
     },
   
     preload: function(){
-        this.load.image("creditos", "assets/pantallas/pantallaCredits.png");
+        this.load.image("creditos", "Assets/Interfaces/Scenes/pantallaCredits.png");
     },
     create: function(){
         this.add.image(400, 300, "creditos");
@@ -240,35 +240,35 @@ var TwoCharacterSelect = new Phaser.Class({
 
     preload: function() {
         //Background
-        this.load.image("bg2", "assets/interfaz/pantallaSeleccion.png");
+        this.load.image("bg2", "Assets/Interfaces/Scenes/charSelectScene.png");
         //Personajes:
         this.load.spritesheet('player',
-          'assets/players/SpritesheetJugadores/SpritesheetP1/SpritesheetP1(Andar).png',
+          'Assets/Characters/SpritesheetJugadores/SpritesheetP1/icy.png',
           { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet('player2',
-          'assets/players/SpritesheetJugadores/SpritesheetP2/SpritesheetP2Azul(Andar).png',
+          'Assets/Characters/SpritesheetJugadores/SpritesheetP2/Yci.png',
           { frameWidth: 64, frameHeight: 64 });
         //Recuadro
-        this.load.image("cuadro", "assets/interfaz/eleccionPersonaje.png");
+        this.load.image("cuadro", "Assets/Interfaces/InGame/Backgrounds/eleccionPersonaje.png");
         //Cargar letras:
         this.add.text(0, 0, '', {fontFamily: 'estilo'});
         this.add.text(0, 0, '', {fontFamily: 'titulo'});
         this.add.text(0, 0, '', {fontFamily: 'damage'});
         //Aceptar
         this.load.spritesheet('aceptar',
-            'assets/interfaz/botonOk.png',
+            'Assets/Interfaces/Buttons/ConfirmButtons/okButton.png',
             { frameWidth: 120, frameHeight: 47 });
         //Menu
         this.load.spritesheet('menu',
-            'assets/interfaz/botonMenu.png',
+            'Assets/Interfaces/Buttons/MenuButton/menuButton.png',
             { frameWidth: 120, frameHeight: 47 });
         //Play
         this.load.spritesheet('play',
-            'assets/interfaz/BotonPlay.png',
+            'Assets/Interfaces/Buttons/PlayPauseButtons/playbutton.png',
             { frameWidth: 120, frameHeight: 47 });
   
         //Flecha modo juego
-        this.load.image("flechita", "assets/interfaz/flechita.png");
+        this.load.image("flechita", "Assets/Interfaces/Buttons/buttonMarker.png");
     },
 
     create: function(){
@@ -516,32 +516,32 @@ var OneCharacterSelect = new Phaser.Class({
 
     preload: function() {
         //Background
-        this.load.image("bg2", "assets/interfaz/pantallaSeleccion.png");
+        this.load.image("bg2", "Assets/Interfaces/Scenes/charSelectScene.png");
         //Personajes:
         this.load.spritesheet('player',
-          'assets/players/SpritesheetJugadores/SpritesheetP1/SpritesheetP1(Andar).png',
+          'Assets/Characters/SpritesheetJugadores/SpritesheetP1/icy.png',
           { frameWidth: 64, frameHeight: 64 });
         //Recuadro
-        this.load.image("cuadro", "assets/interfaz/eleccionPersonaje.png");
+        this.load.image("cuadro", "Assets/Interfaces/InGame/Backgrounds/eleccionPersonaje.png");
         //Cargar letras:
         this.add.text(0, 0, '', {fontFamily: 'estilo'});
         this.add.text(0, 0, '', {fontFamily: 'titulo'});
         this.add.text(0, 0, '', {fontFamily: 'damage'});
         //Aceptar
         this.load.spritesheet('aceptar',
-            'assets/interfaz/botonOk.png',
-            { frameWidth: 120, frameHeight: 47 });
-        //Menu
-        this.load.spritesheet('menu',
-            'assets/interfaz/botonMenu.png',
-            { frameWidth: 120, frameHeight: 47 });
-        //Play
-        this.load.spritesheet('play',
-            'assets/interfaz/BotonPlay.png',
-            { frameWidth: 120, frameHeight: 47 });
-  
-        //Flecha modo juego
-        this.load.image("flechita", "assets/interfaz/flechita.png");
+        'Assets/Interfaces/Buttons/ConfirmButtons/okButton.png',
+        { frameWidth: 120, frameHeight: 47 });
+    //Menu
+    this.load.spritesheet('menu',
+        'Assets/Interfaces/Buttons/MenuButton/menuButton.png',
+        { frameWidth: 120, frameHeight: 47 });
+    //Play
+    this.load.spritesheet('play',
+        'Assets/Interfaces/Buttons/PlayPauseButtons/playbutton.png',
+        { frameWidth: 120, frameHeight: 47 });
+
+    //Flecha modo juego
+    this.load.image("flechita", "Assets/Interfaces/Buttons/buttonMarker.png");
     },
 
     create: function(){
@@ -852,27 +852,27 @@ class PantallaPausa extends Phaser.Scene {
     }
     preload(){
         //Background:
-        this.load.image("stop", "assets/interfaz/pantallaPausa.png");
+        this.load.image("stop", "Assets/Interfaces/Scenes/pauseScene.png");
         //Botones
         //x
         this.load.spritesheet('exit',
-          'assets/interfaz/botonX.png',
+          'Assets/Interfaces/Buttons/ConfirmButtons/closeButton.png',
           { frameWidth: 80, frameHeight: 47 });
 
         //Iconos:
-        this.load.image('iconoJ1', 'assets/interfaz/cabezaMorada.png');
-        this.load.image('iconoJ2', 'assets/interfaz/cabezaAzul.png');
+        this.load.image('iconoJ1', 'Assets/Interfaces/InGame/purpleIceHead.png');
+        this.load.image('iconoJ2', 'Assets/Interfaces/InGame/blueIceHead.png');
 
         //Variables
         //Barra vida:
-        this.load.image('vidaJ1', 'assets/interfaz/interfazVidaP1.png');
-        this.load.image('vidaJ2', 'assets/interfaz/interfazVidaP2.png');
+        this.load.image('vidaJ1', 'Assets/Interfaces/InGame/LifeBars/barraVidaP1.png');
+        this.load.image('vidaJ2', 'Assets/Interfaces/InGame/LifeBars/barraVidaP2.png');
 
         //Pestaña aviso
-        this.load.image('aviso', 'assets/interfaz/pestañaAviso.png');
+        this.load.image('aviso', 'Assets/Interfaces/InGame/Backgrounds/pestañaAviso.png');
 
-        this.load.spritesheet('yes', 'assets/interfaz/botonYes.png', { frameWidth: 120, frameHeight: 47});
-        this.load.spritesheet('no', 'assets/interfaz/botonNo.png', { frameWidth: 120, frameHeight: 47});
+        this.load.spritesheet('yes', 'Assets/Interfaces/Buttons/ConfirmButtons/confirmButton.png', { frameWidth: 120, frameHeight: 47});
+        this.load.spritesheet('no', 'Assets/Interfaces/Buttons/ConfirmButtons/cancelButton.png', { frameWidth: 120, frameHeight: 47});
 
     }
     create(){
@@ -1142,22 +1142,22 @@ class ResultadoDerrota extends Phaser.Scene {
     }
     preload()
     {
-        this.load.image("escenario", 'assets/interfaz/pantallaPausa.png');
-        this.load.image('derrota', 'assets/pantallas/pantallaDefeat.png');
+        this.load.image("escenario", 'Assets/Interfaces/Scenes/pauseScene.png');
+        this.load.image('derrota', 'Assets/Interfaces/Scenes/pantallaDefeat.png');
 
         //Iconos:
-        this.load.image('iconoJ1', 'assets/interfaz/cabezaMorada.png');
-        this.load.image('iconoJ2', 'assets/interfaz/cabezaAzul.png');
+        this.load.image('iconoJ1', 'Assets/Interfaces/InGame/cabezaMorada.png');
+        this.load.image('iconoJ2', 'Assets/Interfaces/InGame/cabezaAzul.png');
 
         //Pestaña aviso
-        this.load.image('aviso', 'assets/interfaz/pestañaAviso.png');
+        this.load.image('aviso', 'Assets/Interfaces/Backgrounds/pestañaAviso.png');
 
-        this.load.spritesheet('yes', 'assets/interfaz/botonYes.png', { frameWidth: 120, frameHeight: 47});
-        this.load.spritesheet('no', 'assets/interfaz/botonNo.png', { frameWidth: 120, frameHeight: 47});
+        this.load.spritesheet('yes', 'Assets/Interfaces/Buttons/ConfirmButtons/confirmButton.png', { frameWidth: 120, frameHeight: 47});
+        this.load.spritesheet('no', 'Assets/Interfaces/Buttons/ConfirmButtons/cancelButton.png', { frameWidth: 120, frameHeight: 47});
 
         //x
         this.load.spritesheet('exit',
-            'assets/interfaz/botonX.png',
+            'Assets/Interfaces/Buttons/ConfirmButtons/closeButton.png',
             { frameWidth: 80, frameHeight: 47 }
         );
     }
@@ -1378,22 +1378,22 @@ class ResultadoVictoria extends Phaser.Scene {
     }
     preload()
     {
-        this.load.image("escenario", 'assets/map1.png');
-        this.load.image('victoria', 'assets/interfaz/pantallaVictory.png');
+        this.load.image("escenario", 'Assets/Scenaries/Map/map1.png');
+        this.load.image('victoria', 'Assets/Interfaces/InGame/Backgrounds/victoryScene.png');
 
         //Iconos:
-        this.load.image('iconoJ1', 'assets/interfaz/cabezaMorada.png');
-        this.load.image('iconoJ2', 'assets/interfaz/cabezaAzul.png');
+        this.load.image('iconoJ1', 'Assets/Interfaces/InGame/purpleIceHead.png');
+        this.load.image('iconoJ2', 'Assets/Interfaces/InGame/blueIceHead.png');
 
         //Pestaña aviso
-        this.load.image('aviso', 'assets/interfaz/pestañaAviso.png');
+        this.load.image('aviso', 'Assets/Interfaces/InGame/Backgrounds/pestañaAviso.png');
 
-        this.load.spritesheet('yes', 'assets/interfaz/botonYes.png', { frameWidth: 120, frameHeight: 47});
-        this.load.spritesheet('no', 'assets/interfaz/botonNo.png', { frameWidth: 120, frameHeight: 47});
+        this.load.spritesheet('yes', 'Assets/Interfaces/Buttons/ConfirmButtons/confirmButton.png', { frameWidth: 120, frameHeight: 47});
+        this.load.spritesheet('no', 'Assets/Interfaces/Buttons/ConfirmButtons/cancelButton.png', { frameWidth: 120, frameHeight: 47});
 
         //x
         this.load.spritesheet('exit',
-            'assets/interfaz/botonX.png',
+            'Assets/Interfaces/Buttons/ConfirmButtons/closeButton.png',
             { frameWidth: 80, frameHeight: 47 }
         );
     }
@@ -1607,319 +1607,7 @@ class ResultadoVictoria extends Phaser.Scene {
     }
 }
 
-class BorradorVictoria extends Phaser.Scene {
-    constructor(){
-        super({key: 'BorradorVictoria'});
-        
-        this.player1T = "Player 1",
-        this.player2T = "Player 2",
-        this.player1K = 30,
-        this.player2K = 10
-        
-    }
-    preload()
-    {
-        this.load.image("escenario", 'assets/map1.png');
-        this.load.image('victoria', 'assets/interfaz/pantallaVictory.png');
 
-        //Iconos:
-        this.load.image('iconoJ1', 'assets/interfaz/cabezaMorada.png');
-        this.load.image('iconoJ2', 'assets/interfaz/cabezaAzul.png');
-
-        //Pestaña aviso
-        this.load.image('aviso', 'assets/interfaz/pestañaAviso.png');
-
-        this.load.spritesheet('yes', 'assets/interfaz/botonYes.png', { frameWidth: 120, frameHeight: 47});
-        this.load.spritesheet('no', 'assets/interfaz/botonNo.png', { frameWidth: 120, frameHeight: 47});
-
-        //x
-        this.load.spritesheet('exit',
-            'assets/interfaz/botonX.png',
-            { frameWidth: 80, frameHeight: 47 }
-        );
-    }
-    create()
-    {
-        //CREACION ESCENARIO
-        //Escenario
-        this.add.image(400, 382, 'escenario');
-        //Filtro
-        let filtro = this.add.graphics({
-            fillStyle: {
-                color: 0x5b2970, //color barra de cargar (CAMBIAR)
-                alpha: 0.2,
-            }
-        })
-        filtro.fillRect(0, 0, 800, 600);
-        //Victoria
-        this.add.image(400, 300, 'victoria').setScale(1.2);
-
-        //Iconos jugadores
-        this.add.image(300, 230, 'iconoJ1');
-        this.add.image(500, 230, 'iconoJ2');
-
-        //Jugadores
-        const confN = {
-            origin: 'center',
-            x: 300,
-            y: 270,
-            style: {
-                fontFamily: 'estilo',
-                color: '#ffffff',
-                fontSize: 25,
-                fontStyle: 'bold',
-                textAlign: 'center',
-                justifyContent: 'center'
-            }
-        }
-        this.make.text(confN).setText(this.player1T); 
-        this.make.text(confN).setText(this.player2T).setPosition(500, 270);
-        
-        //Kills
-        const confKills = {
-            origin: 'center',
-            x: 300,
-            y: 390,
-            style: {
-                fontFamily: 'estilo',
-                color: '#ffffff',
-                fontSize: 20,
-                textAlign: 'center',
-                justifyContent: 'center',
-            }
-        }
-        this.make.text(confKills).setText('Score');
-        this.make.text(confKills).setText('Score').setPosition(500, 390);
-
-        const confnKills = {
-            origin: 'center',
-            x: 300,
-            y: 340,
-            style: {
-                fontFamily: 'titulo',
-                color: '#ffffff',
-                fontSize: 25,
-                textAlign: 'center',
-                justifyContent: 'center',
-            }
-        }
-        this.make.text(confnKills).setText(this.player1K); 
-        this.make.text(confnKills).setText(this.player2K).setPosition(500, 340); 
-
-        //Salir
-        //this.salir = this.add.sprite(400, 450, "aceptar").setInteractive();
-        this.marcoOk = this.add.image(400, 450, 'marco').setVisible(false);
-        this.marcoOk.scale = 1.2;
-
-        //Pestaña confirmacion
-        const confSalir = {
-            origin: 'center',
-            x: 240,
-            y: 230,
-            style: {
-                fontFamily: 'estilo',
-                color: '#000000',
-                fontSize: 25,
-                textAlign: 'center',
-                justifyContent: 'center',
-            }
-        }
-        this.pestaña = this.add.image(400, 300, 'aviso').setVisible(false);
-        this.abandonar = this.make.text(confSalir).setText(
-            '¿Volver al menú principal?').setPosition(
-                400, 230).setFontSize(25).setVisible(false);
-        //warning
-        //x
-        //this.exit2 = this.add.sprite(625, 185, "exit").setVisible(false);
-        //this.exit2.scale = 0.6;
-        //yes y no
-        this.yes = this.add.sprite(300, 350, 'yes').setVisible(false);
-        this.no = this.add.sprite(500, 350, 'no').setVisible(false);
-
-        /*
-        //FUNCIONALIDAD
-        this.salir.on("pointerover", ()=>{
-            document.body.style.cursor = "pointer";
-            this.marcoOk.setVisible(true);
-        })
-        this.salir.on("pointerout", ()=>{
-            document.body.style.cursor = "auto";
-            this.marcoOk.setVisible(false);
-        })
-        this.salir.on("pointerdown", ()=>{
-            this.salir.setFrame(1); 
-            this.marcoOk.setVisible(false);
-        })
-        this.salir.on("pointerup", ()=>{
-            this.salir.setFrame(0);
-            document.body.style.cursor = "auto";
-            this.pestaña.setVisible(true);
-            this.abandonar.setVisible(true);
-            this.exit2.setVisible(true).setInteractive();
-            this.yes.setVisible(true).setInteractive();
-            this.no.setVisible(true).setInteractive();
-            this.salir.disableInteractive();
-        })*/
-        /*
-        //exit2
-        this.exit2.on("pointerover", ()=>{
-            document.body.style.cursor = "pointer";
-        })
-        this.exit2.on("pointerout", ()=>{
-            document.body.style.cursor = "auto";
-        })
-        this.exit2.on("pointerdown", ()=>{
-            this.exit2.setFrame(1); 
-        })
-        this.exit2.on("pointerup", ()=>{
-            this.exit2.setFrame(0);
-            document.body.style.cursor = "auto";
-            this.pestaña.setVisible(false);
-            this.abandonar.setVisible(false);
-            this.exit2.setVisible(false).disableInteractive();
-            this.yes.setVisible(false).disableInteractive();
-            this.no.setVisible(false).disableInteractive();
-            this.salir.setInteractive();
-        })*/
-        //yes
-        this.yes.on("pointerover", ()=>{
-            document.body.style.cursor = "pointer";
-        })
-        this.yes.on("pointerout", ()=>{
-            document.body.style.cursor = "auto";
-        })
-        this.yes.on("pointerdown", ()=>{
-            this.yes.setFrame(1); 
-        })
-        this.yes.on("pointerup", ()=>{
-            document.body.style.cursor = "auto";
-            this.scene.start("PantallaInicio");
-        })
-        //no
-        this.no.on("pointerover", ()=>{
-            document.body.style.cursor = "pointer";
-        })
-        this.no.on("pointerout", ()=>{
-            document.body.style.cursor = "auto";
-        })
-        this.no.on("pointerdown", ()=>{
-            this.no.setFrame(1); 
-        })
-        this.no.on("pointerup", ()=>{
-            this.no.setFrame(0);
-            document.body.style.cursor = "auto";
-            this.pestaña.setVisible(false);
-            this.abandonar.setVisible(false);
-            this.exit2.setVisible(false).disableInteractive();
-            this.yes.setVisible(false).disableInteractive();
-            this.no.setVisible(false).disableInteractive();
-            this.salir.setInteractive();
-        })
-
-        //SCORES
-        localStorage.clear();
-        //this.guardarHS1 = HighScoreClass
-        //this.guardarHS1.checkHighScore(this.player1T, this.player1K);
-        //this.guardarHS2 = new HighScoreClass();
-        //this.guardarHS1.checkHighScore(this.player2T, this.player2K);
-        this.highscore = new HighScoreClass(this);
-        this.highscore.checkHighScore(this.player1T, this.player1K);
-        
-
-        /*
-        this.highscore.checkHighScore("Pepe", 80);
-        this.highscore.checkHighScore("Antonia", 58);
-        this.highscore.checkHighScore("Mary", 24);
-        this.highscore.checkHighScore("Gonzalo", 15);
-        this.highscore.checkHighScore("Leonor", 10); --> 20
-        this.highscore.checkHighScore("Rosa", 5);
-        */
-
-        const next = {
-            origin: 'center',
-            x: 400,
-            y: 540,
-            text: 'Press any key to continue',
-            style: {
-                fontFamily: 'estilo',
-                color: '#ffffff',
-                fontSize: 20,
-                textAlign: 'center',
-                justifyContent: 'center',
-                class: 'animacion'
-            }
-        }
-        this.continue = this.make.text(next);
-
-        document.addEventListener('keydown', ()=>{
-            this.scene.start('HighScoresScreen');
-        })
-        
-    }
-    update(time, date)
-    {
-        /*
-        this.time.delayedCall(1000, () => {
-            this.continue.setVisible(false);
-            this.time.delayedCall(1000, () => {
-                this.continue.setVisible(true);
-            });
-        });*/
-        
-        
-    }
-    /*
-    //SCORES
-    //Guardar Score
-    checkHighScore(name, score)
-    {
-        //const finalScore = document.getElementById('finalScore');
-        //const mostRecentScore = localStorage.getItem('mostRecentScore');
-
-        console.log("chequeando score");
-        const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
-
-        //finalScore.innerText=mostRecentScore;
-
-        //Mirar el valor mas peque de la lista
-        const lowestScore = highScores[MAX_HIGH_SCORES-1]?.score??0;
-        if(score > lowestScore)
-        {
-            this.saveHighScores(name, score, highScores);
-            this.showHighScores();
-        }
-        
-    }
-    saveHighScores(name, score, highScores)
-    {
-        const data = {
-            name: name,
-            score: score
-        }
-        console.log("salvando score");
-
-        //Add to list
-        highScores.push(data);
-
-        //Sort the list
-        highScores.sort((a,b) => b.score - a.score);
-
-        //Select new list
-        highScores.splice(MAX_HIGH_SCORES);
-
-        //Save to local
-        localStorage.setItem(HIGH_SCORES, JSON.stringify(highScores));    
-    }
-    showHighScores()
-    {
-        const highScores = JSON.parse(localStorage.getItem(HIGH_SCORES)) || [];
-        const highScoresList = document.getElementById(HIGH_SCORES);
-
-        highScoresList.innerHTML = highScores.map((score) => `<li>${score.score}-${score.name}`).join("");
-        console.log(highScoresList);
-    }*/
-    
-}
 
 class HighScoresScreen extends Phaser.Scene{
     constructor(){
@@ -1929,7 +1617,7 @@ class HighScoresScreen extends Phaser.Scene{
     preload()
     {
         //Background
-        this.load.image("highsc", "assets/pantallas/highScores.png");
+        this.load.image("highsc", "Assets/Interfaces/Scenes/highScores.png");
     }
     create()
     {

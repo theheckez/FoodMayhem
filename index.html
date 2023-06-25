@@ -7,15 +7,15 @@
   <style>
            @font-face{
                font-family: 'estilo';
-               src: url('./assets/fuentes/serif_pixel-7.ttf');
+               src: url('./Assets/Fonts/serif_pixel-7.ttf');
            }
            @font-face{
                font-family: 'titulo';
-               src: url('./assets/fuentes/04B_30__.TTF');
+               src: url('./Assets/Fonts/04B_30__.TTF');
            }
            @font-face{
                font-family: 'damage';
-               src: url('./assets/fuentes/I-pixel-u.ttf');
+               src: url('./Assets/Fonts/I-pixel-u.ttf');
            }
        </style>
 
@@ -161,67 +161,68 @@ var MainGame = new Phaser.Class({
       preload: function () {
     
         //Imágenes de escenario
-        this.load.image('map', 'assets/map1.png');
-        this.load.image('valla', 'assets/vallas/valla1.png');
-        this.load.image('valla1', 'assets/vallas/valla2.1.png');
-        this.load.image('valla2', 'assets/vallas/valla2.2.png');
-        this.load.image('valla3', 'assets/vallas/valla3.png');
-        this.load.image('arbolB', 'assets/arboles/arbolBlanco.png');
-        this.load.image('arbolN', 'assets/arboles/arbolNaranja.png');
-        this.load.image('arbolR', 'assets/arboles/arbolRosa.png');
-        this.load.image('arbolV', 'assets/arboles/arbolVerde.png');
+        this.load.image('map', 'Assets/Scenaries/Map/map1.png');
+        this.load.image('valla', 'Assets/Scenaries/Decoration/Fences/fenceType1.png');
+        this.load.image('valla1', 'Assets/Scenaries/Decoration/Fences/fenceType2.png');
+        this.load.image('valla2', 'Assets/Scenaries/Decoration/Fences/fenceType3.png');
+        this.load.image('valla3', 'Assets/Scenaries/Decoration/Fences/fenceType4.png');
 
-        this.load.image('lifeBarP1', 'assets/interfaz/barraVidaP1.png');
-        this.load.image('lifeBarP2', 'assets/interfaz/barraVidaP2.png');
-        this.load.image('BckBarP1', 'assets/interfaz/fondoBarraP1.png');
-        this.load.image('BckBarP2', 'assets/interfaz/fondoBarraP2.png');
+        this.load.image('arbolB', 'Assets/Scenaries/Decoration/Trees/whiteTree.png');
+        this.load.image('arbolN', 'Assets/Scenaries/Decoration/Trees/orangeTree.png');
+        this.load.image('arbolR', 'Assets/Scenaries/Decoration/Trees/pinkTree.png');
+        this.load.image('arbolV', 'Assets/Scenaries/Decoration/Trees/greenTree.png');
 
+        this.load.image('lifeBarP1', 'Assets/Interfaces/InGame/LifeBars/barraVidaP1.png');
+        this.load.image('lifeBarP2', 'Assets/Interfaces/InGame/LifeBars/barraVidaP2.png');
+        this.load.image('BckBarP1', 'Assets/Interfaces/InGame/LifeBars/healthBarBGp1.png');
+        this.load.image('BckBarP2', 'Assets/Interfaces/InGame/LifeBars/healthBarBGp2.png');
 
         //Inventario
-        this.load.image('inventoryOpenP1', 'assets/interfaz/inventarioAbierto.png');
-        this.load.image('inventoryClosedP1', 'assets/interfaz/inventarioCerrado.png');
-        this.load.image('inventoryOpenP2', 'assets/interfaz/inventarioAbiertoP2.png');
-        this.load.image('inventoryClosedP2', 'assets/interfaz/inventarioCerradoP2.png');
-        this.load.image('sword', 'assets/players/espada.png');
-        this.load.image('swordSelec', 'assets/players/espadaSelec.png');
-        this.load.image('wand', 'assets/players/varitaSauco.png');
-        this.load.image('wandSelec', 'assets/players/varitaSaucoMarcada.png');
+        this.load.image('inventoryOpenP1', 'Assets/Interfaces/InGame/Inventory/inventarioAbierto.png');
+        this.load.image('inventoryClosedP1', 'Assets/Interfaces/InGame/Inventory/inventarioCerrado.png');
+        this.load.image('inventoryOpenP2', 'Assets/Interfaces/InGame/Inventory/inventarioAbiertoP2.png');
+        this.load.image('inventoryClosedP2', 'Assets/Interfaces/InGame/Inventory/inventarioCerradoP2.png');
 
-        this.load.image('bolaP1', 'assets/players/bola.png');
-        this.load.image('bolaP2', 'assets/players/bolaP2.png');
+        this.load.image('sword', 'Assets/Objects/espada.png');
+        this.load.image('swordSelec', 'Assets/Objects/espadaSelec.png');
+        this.load.image('wand', 'Assets/Objects/varitaSauco.png');
+        this.load.image('wandSelec', 'Assets/Objects/varitaSaucoMarcada.png');
+
+        this.load.image('bolaP1', 'Assets/Characters/SpritesheetJugadores/SpritesheetP1/bola.png');
+        this.load.image('bolaP2', 'Assets/Characters/SpritesheetJugadores/SpritesheetP2/bolaP2.png');
 
 
-        this.load.spritesheet('musicButton', 'assets/interfaz/BotonMutearMusica-sheet.png',
+        this.load.spritesheet('musicButton', 'Assets/Interfaces/Buttons/MusicButton/musicButton.png',
          { frameWidth: 57, frameHeight: 41 });
 
 
         //Imágenes de Icy
-        this.load.spritesheet('icy', 'assets/players/icy.png', { frameWidth: 64, frameHeight: 64 });
-        this.load.spritesheet('icyB', 'assets/players/Yci.png', { frameWidth: 64, frameHeight: 64 });
-        this.load.spritesheet('yciattack', 'assets/players/yciattack.png', { frameWidth: 64, frameHeight: 64 });
-        this.load.spritesheet('icyattack', 'assets/players/icyattack.png', { frameWidth: 64, frameHeight: 64 });
-        this.load.spritesheet('ycidistattack', 'assets/players/ycidistattack.png', { frameWidth: 64, frameHeight: 64 });
-        this.load.spritesheet('icydistattack', 'assets/players/icydistattack.png', { frameWidth: 64, frameHeight: 64 });
-        this.load.spritesheet('icydmg', 'assets/players/dmg.png',{ frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet('icy', 'Assets/Characters/SpritesheetJugadores/SpritesheetP1/icy.png', { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet('icyB', 'Assets/Characters/SpritesheetJugadores/SpritesheetP2/Yci.png', { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet('yciattack', 'Assets/Characters/SpritesheetJugadores/SpritesheetP1/yciattack.png', { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet('icyattack', 'Assets/Characters/SpritesheetJugadores/SpritesheetP1/icyattack.png', { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet('ycidistattack', 'Assets/Characters/SpritesheetJugadores/SpritesheetP1/ycidistattack.png', { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet('icydistattack', 'Assets/Characters/SpritesheetJugadores/SpritesheetP1/icydistattack.png', { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet('icydmg', 'Assets/Characters/SpritesheetJugadores/DamageP1.png',{ frameWidth: 64, frameHeight: 64 });
 
         //Imágenes de Enemigos
-        this.load.spritesheet('malvin', 'assets/enemies/malvin.png', { frameWidth: 64, frameHeight: 64 });
-        this.load.spritesheet('demon', 'assets/enemies/demon.png', { frameWidth: 32, frameHeight: 32 })
-        this.load.spritesheet('malvinattack', 'assets/enemies/malvinattack.png', { frameWidth: 64, frameHeight: 64 });
-        this.load.spritesheet('malvindeath', 'assets/enemies/malvinDeath.png', { frameWidth: 64, frameHeight: 64 });
-        this.load.spritesheet('pause', 'assets/interfaz/botonPause.png', { frameWidth: 80, frameHeight: 47 });
+        this.load.spritesheet('malvin', 'Assets/Characters/Enemies/malvin.png', { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet('demon', 'Assets/Characters/Enemies/demon.png', { frameWidth: 32, frameHeight: 32 })
+        this.load.spritesheet('malvinattack', 'Assets/Characters/Enemies/malvinattack.png', { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet('malvindeath', 'Assets/Characters/Enemies/malvinDeath.png', { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet('pause', 'Assets/Interfaces/Buttons/PlayPauseButtons/botonPause.png', { frameWidth: 80, frameHeight: 47 });
 
 
         //Sounds
         this.load.audio('escMusic', [
-          'assets/sounds/musicEsc.mp3'
+          'Assets/SoundFX/musicEsc.mp3'
         ]);
-        this.load.audio('hitSound', ['assets/sounds/icyHit.mp3']);
-       this.load.audio('nxtSound', [ 'assets/sounds/Success3.wav']);
-       this.load.audio('vicMusic', [ 'assets/sounds/Good_Time.mp3']);
-       this.load.audio('defMusic', [ 'assets/sounds/GameOver2.wav']);
-       this.load.audio('plHurtSound', [ 'assets/sounds/OuchSound.mp3']);
-       this.load.audio('mlvDeadSound', [ 'assets/sounds/Fire2.wav']);
+        this.load.audio('hitSound', ['Assets/SoundFX/icyHit.mp3']);
+       this.load.audio('nxtSound', [ 'Assets/SoundFX/Success3.wav']);
+       this.load.audio('vicMusic', [ 'Assets/SoundFX/Good_Time.mp3']);
+       this.load.audio('defMusic', [ 'Assets/SoundFX/GameOver2.wav']);
+       this.load.audio('plHurtSound', [ 'Assets/SoundFX/OuchSound.mp3']);
+       this.load.audio('mlvDeadSound', [ 'Assets/SoundFX/Fire2.wav']);
       },
 
       create: function () {
