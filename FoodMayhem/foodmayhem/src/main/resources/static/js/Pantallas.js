@@ -454,7 +454,9 @@ var TwoCharacterSelect = new Phaser.Class({
             this.play.setFrame(1);    
         })
         this.play.on('pointerup', ()=>{
+           
             this.scene.start('mainGame');
+            openConnection();
             this.play.setFrame(0);
             player1T.style.visibility = "hidden";
             player2T.style.visibility = "hidden";

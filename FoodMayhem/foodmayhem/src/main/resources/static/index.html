@@ -26,6 +26,12 @@
     <script src="js/Pantallas.js"></script>
     <script src="js/misc.js"></script>
     <script src="js/highScore.js"></script>
+
+    <script src="js/WebSocketFiles/WebSocketVariables.js"></script>
+    <script src="js/WebSocketFiles/ConnectionsWebSocket.js"></script>
+    <script src="js/WebSocketFiles/MovementWebSocket.js"></script>
+    <script src="js/WebSocketFiles/GenerationWebSocket.js"></script>
+
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"> </script>
 
     <link rel="stylesheet" media="all" href="./css/stylesheet.css">
@@ -56,8 +62,26 @@
 <script type="text/javascript">
 
 
-var player;
+var player1;
 var player2;
+
+var p1Connected;
+var p2Connected;
+
+var characterSelectScene;
+var scene;
+
+var isOwner;
+var isHost; 
+var isClient;
+
+var currentPlayer;
+
+var trees = [];
+var enemiesList = [];
+var bossesList = [];
+var generateObjects = false;
+
 
 var music;
 var nxtSound;
@@ -137,7 +161,6 @@ function updateChat(){
 
 function addMessageElement(el) {
   messages.append(el);
-  //messages.lastChild.scrollIntoView();
 }
 
 var MainGame = new Phaser.Class({
@@ -226,20 +249,31 @@ var MainGame = new Phaser.Class({
       },
 
       create: function () {
+        
+        scene = this;
+        if(currentPlayer == 1) 
+        {
+          isHost = true; 
+          isClient = false;
+        }
+        else 
+        {
+          isHost = false; 
+          isClient = true;
+        }
         this.add.image(400, 380, 'map');
         this.input.mouse.disableContextMenu();
 
         this.blocks = this.physics.add.staticGroup();
-        this.trees = this.physics.add.staticGroup();
 
         this.blocks.create(80, 65, 'valla').setScale(0.95).refreshBody();
         this.blocks.create(410, 139, 'valla1').setScale(0.95).refreshBody();
         this.blocks.create(547, 101, 'valla2').setScale(0.95).refreshBody();
         this.blocks.create(410, 334, 'valla3').setScale(0.95).refreshBody();
 
-        //  this.smth = new EnemyMM(this,500,500,'malvin');
 
         //Declaración de PJs y NPCs
+        
         this.enemies = this.add.group({
           classType: Malvin,
           runChildUpdate: false
@@ -250,13 +284,24 @@ var MainGame = new Phaser.Class({
           runChildUpdate: false
         });
 
+        if(isHost)
+        {
+
         this.generateEnemies(5, this.enemies, 'malvin');
         this.generateEnemies(1, this.bosses, 'demon');
         this.generateTrees(2);
+        generationWebSocket.sendWS(trees, enemiesList);
+        
+        }
+       
 
         //Jugadores
         player1 = new P1(this, 300, 450);
         player2 = new P2(this, 500, 450);
+
+        player1.id = 1;
+        player2.id = 2;
+
         this.players = [player1, player2];
 
         //Control de colisiones de mundo
@@ -277,8 +322,8 @@ var MainGame = new Phaser.Class({
         this.add.image(700, 35, 'lifeBarP2');
 
         //MUSICA
-        music = this.sound.add('escMusic', {loop: true});
-       nxtSound = this.sound.add('nxtSound', { loop: false})
+         music = this.sound.add('escMusic', {loop: true});
+         nxtSound = this.sound.add('nxtSound', { loop: false})
          victoryMusic = this.sound.add('vicMusic', { loop: true});
          defMusic = this.sound.add('defMusic', { loop: false});
 
@@ -335,26 +380,39 @@ var MainGame = new Phaser.Class({
 
       update: function () {
 
-        updateChat();
-        player1.move(this, this.enemies);
+        if(isClient)
+        {
+          if(generateObjects)
+          {
+            this.ClientGenerateTree();
+            this.ClientGenerateEnemies();
+            generateObjects = false;
+          }
+        }
 
-        player2.checkGamepad(this);
+        
 
-
-        player2.move();
+        if(isHost)
+        {
+        //updateChat();
+          player1.move();
+          player2.checkGamepad(this);
+          player2.move();  
 
         if(player2.control){
-          if(player2.pad.isButtonDown(9)){
+          if(player2.pad.isButtonDown(9))
+          {
             this.scene.launch("PantallaPausa");
             this.scene.sleep();
           }
         }
 
-      if (Phaser.Input.Keyboard.JustDown(player1.keys['esc'])){
-
+        if (Phaser.Input.Keyboard.JustDown(player1.keys['esc']))
+        {
           this.scene.launch("PantallaPausa");
           this.scene.sleep();
         }
+
         this.enemies.children.each(function (enem) {
           enem.initEnemy(this.players);
           enem.setSize(30, 30);
@@ -368,6 +426,11 @@ var MainGame = new Phaser.Class({
         }, this);
 
         this.checkforLevel();
+
+        }
+
+        
+    
 
       },
 
@@ -399,21 +462,40 @@ var MainGame = new Phaser.Class({
 
       generateEnemies: function (number, enemies, sprite) {
         for (var i = 0; i < number; i++) {
-          enemies.get(Phaser.Math.Between(100, 700),
+          var enemy = enemies.get(Phaser.Math.Between(100, 700),
             Phaser.Math.Between(100, 500), sprite);
+
+          enemiesList.push([enemy.x,enemy.y,sprite]);
         }
       },
 
       generateTrees: function (number) {
-        for (var i = 0; i < number; i++) {
-          this.blocks.create(Phaser.Math.Between(100, 700),
+        for (var i = 0; i < number; i++) 
+        {
+          var whiteTree = this.blocks.create(Phaser.Math.Between(100, 700),
             Phaser.Math.Between(100, 500), 'arbolB').setScale(0.6).refreshBody();
-          this.blocks.create(Phaser.Math.Between(100, 700)
+
+            trees.push(['arbolB',whiteTree.x, whiteTree.y]);
+
+           // generationWebSocket.sendWS('arbolB',whiteTree.x, whiteTree.y);
+
+          var blackTree = this.blocks.create(Phaser.Math.Between(100, 700)
             , Phaser.Math.Between(100, 500), 'arbolN').setScale(0.6).refreshBody();
-          this.blocks.create(Phaser.Math.Between(100, 700),
+
+            trees.push(['arbolN', blackTree.x, blackTree.y]);
+            //generationWebSocket.sendWS('arbolN', blackTree.x, blackTree.y);
+
+          var pinkTree = this.blocks.create(Phaser.Math.Between(100, 700),
             Phaser.Math.Between(100, 500), 'arbolR').setScale(0.6).refreshBody();
-          this.blocks.create(Phaser.Math.Between(100, 700),
+
+            trees.push(['arbolR', pinkTree.x, pinkTree.y]);
+            //generationWebSocket.sendWS('arbolR', pinkTree.x, pinkTree.y);
+
+          var greenTree = this.blocks.create(Phaser.Math.Between(100, 700),
             Phaser.Math.Between(100, 500), 'arbolV').setScale(0.6).refreshBody();
+          
+            trees.push(['arbolV',greenTree.x, greenTree.y]);
+           // generationWebSocket.sendWS('arbolV',greenTree.x, greenTree.y);
 
         }
 
@@ -426,7 +508,7 @@ var MainGame = new Phaser.Class({
 
       checkforLevel: function() {
         if(!player1.dead || !player2.dead){
-          if(this.level<3){
+          if(this.level < 3){
             if(this.enemies.countActive() === 0 && this.bosses.countActive() === 0 ) {
               this.generateEnemies(Phaser.Math.Between(3,10), this.enemies, 'malvin');
               this.generateEnemies(Phaser.Math.Between(0,4), this.bosses, 'demon');
@@ -448,6 +530,25 @@ var MainGame = new Phaser.Class({
                   defMusic.play();
           }
           this.scene.start('ResultadoDerrota');
+        }
+      },
+
+      ClientGenerateTree: function()
+      { 
+        for(var i = 0; i < trees.length; i++)
+        {
+          this.blocks.create(trees[i][1],trees[i][2],trees[i][0]).setScale(0.6).refreshBody();
+          console.log("Genero árbol");
+        }
+       
+      },
+
+      ClientGenerateEnemies: function()
+      {
+        for(var i = 0; i< enemiesList.length; i++)
+        {
+           this.enemies.get(enemiesList[i][0],
+            enemiesList[i][1], enemiesList[i][2]);
         }
       }
 
@@ -495,3 +596,4 @@ var MainGame = new Phaser.Class({
 
 
 </html>
+
