@@ -231,6 +231,7 @@ class StateMachine {
           } else{
           enemy.setVelocityX((enemy.direction.x/enemy.module) * enemy.speed);
           enemy.setVelocityY((enemy.direction.y/enemy.module) * enemy.speed);
+          enemyMovementWebSocket.sendWS(enemy.id, enemy.x, enemy.y);
           }
   
           if(enemy.direction.y>0){

@@ -15,3 +15,5 @@ var connectionWebSocket;
 var generationPath = 'ws://127.0.0.1:8080/randomGeneration';
 var generationWebSocket = new WebSocket(generationPath);
 
+var enemyMovementPath = 'ws://127.0.0.1:8080/enemyMovement';
+var enemyMovementWebSocket = new WebSocket(enemyMovementPath);

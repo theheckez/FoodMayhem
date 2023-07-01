@@ -31,6 +31,7 @@
     <script src="js/WebSocketFiles/ConnectionsWebSocket.js"></script>
     <script src="js/WebSocketFiles/MovementWebSocket.js"></script>
     <script src="js/WebSocketFiles/GenerationWebSocket.js"></script>
+    <script src="js/WebSocketFiles/EnemyMovementWebSocket.js"></script>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"> </script>
 
@@ -69,7 +70,7 @@ var p1Connected;
 var p2Connected;
 
 var characterSelectScene;
-var scene;
+var gameScene;
 
 var isOwner;
 var isHost; 
@@ -250,7 +251,7 @@ var MainGame = new Phaser.Class({
 
       create: function () {
         
-        scene = this;
+        gameScene = this;
         if(currentPlayer == 1) 
         {
           isHost = true; 
@@ -294,7 +295,7 @@ var MainGame = new Phaser.Class({
         
         }
        
-
+        
         //Jugadores
         player1 = new P1(this, 300, 450);
         player2 = new P2(this, 500, 450);
@@ -306,6 +307,11 @@ var MainGame = new Phaser.Class({
 
         //Control de colisiones de mundo
         this.initCollisions();
+
+        this.enemies.children.each(function (enem) {
+          enem.initEnemy(this.players);
+          enem.setSize(30, 30);
+        }, this);
 
         // BOTONES
         pauseButton = this.add.sprite(400, 22, 'pause', 0).setInteractive();
@@ -388,6 +394,18 @@ var MainGame = new Phaser.Class({
             this.ClientGenerateEnemies();
             generateObjects = false;
           }
+
+          player2.checkGamepad(this);
+          player2.move();  
+
+          if(player2.control){
+          if(player2.pad.isButtonDown(9))
+          {
+            this.scene.launch("PantallaPausa");
+            this.scene.sleep();
+          }
+        }
+        
         }
 
         
@@ -396,16 +414,6 @@ var MainGame = new Phaser.Class({
         {
         //updateChat();
           player1.move();
-          player2.checkGamepad(this);
-          player2.move();  
-
-        if(player2.control){
-          if(player2.pad.isButtonDown(9))
-          {
-            this.scene.launch("PantallaPausa");
-            this.scene.sleep();
-          }
-        }
 
         if (Phaser.Input.Keyboard.JustDown(player1.keys['esc']))
         {
@@ -428,9 +436,6 @@ var MainGame = new Phaser.Class({
         this.checkforLevel();
 
         }
-
-        
-    
 
       },
 
@@ -464,7 +469,7 @@ var MainGame = new Phaser.Class({
         for (var i = 0; i < number; i++) {
           var enemy = enemies.get(Phaser.Math.Between(100, 700),
             Phaser.Math.Between(100, 500), sprite);
-
+          enemy.id = i;
           enemiesList.push([enemy.x,enemy.y,sprite]);
         }
       },
@@ -547,9 +552,19 @@ var MainGame = new Phaser.Class({
       {
         for(var i = 0; i< enemiesList.length; i++)
         {
-           this.enemies.get(enemiesList[i][0],
+           var enemy = this.enemies.get(enemiesList[i][0],
             enemiesList[i][1], enemiesList[i][2]);
+            enemy.id = i;
         }
+      },
+
+      ClientUpdateEnemyPosition: function(enemy, enemyId, posX, posY)
+      {
+          if (enemy.id == enemyId)
+          {
+            enemy.x = posX;
+            enemy.y = posY;
+          }
       }
 
     });

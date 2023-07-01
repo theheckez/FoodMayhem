@@ -12,6 +12,7 @@ import com.bakerystudios.foodmayhem.AdditonalClasses.ChatHandler;
 import com.bakerystudios.foodmayhem.AdditonalClasses.SessionHandler;
 import com.bakerystudios.foodmayhem.AdditonalClasses.MovementHandler;
 import com.bakerystudios.foodmayhem.AdditonalClasses.GenerationHandler;
+import com.bakerystudios.foodmayhem.AdditonalClasses.EnemyMovementHandler;
 
 @SpringBootApplication
 @EnableWebSocket
@@ -28,6 +29,7 @@ public class FoodmayhemApplication implements WebSocketConfigurer
 		registry.addHandler(SessionsHandler(), "/sessions").setAllowedOrigins("*");
 		registry.addHandler(MovementHandler(),"/movement").setAllowedOrigins("*");
 		registry.addHandler(GenerationHandler(),"/randomGeneration").setAllowedOrigins("*");
+		registry.addHandler(EnemyMovementHandler(), "/enemyMovement").setAllowedOrigins("*");
 	}
 
 	@Bean
@@ -54,6 +56,11 @@ public class FoodmayhemApplication implements WebSocketConfigurer
 		return new GenerationHandler();
 	}
 	
+	@Bean
+	public EnemyMovementHandler EnemyMovementHandler()
+	{
+		return new EnemyMovementHandler();
+	}
 
 }
 
