@@ -44,6 +44,7 @@
   </div>
 </div>
 
+<<<<<<< Updated upstream
   <div class="flex-container">
     <div id="content"></div>
     <div id="chatContainer">
@@ -51,6 +52,19 @@
         <ul id="messages" class="messages"></ul>
       </div>
       <input id="inputMessage" class="inputMessage" placeholder="Type here..." type="text">
+=======
+<div id="input-form">
+  <input type="text" name="name" class="input-style" id="name" placeholder="Usuario" />
+  <p></p>
+  <input type="password" class="input-style" id="password" name="password" placeholder="Contraseña" />
+</div>
+
+<div class="flex-container">
+  <div id="content"></div>
+  <div id="chatContainer">
+    <div class="chatArea">
+      <ul id="messages" class="messages"></ul>
+>>>>>>> Stashed changes
     </div>
   </div>
 <script type="text/javascript">
@@ -68,6 +82,7 @@ const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
 const inputMessage = document.getElementById('inputMessage');
 const messages = document.getElementById('messages');
 const player1Name = document.getElementById('namebar');
+
 
 window.addEventListener('keydown', event => {
   if (event.which === 13) {
