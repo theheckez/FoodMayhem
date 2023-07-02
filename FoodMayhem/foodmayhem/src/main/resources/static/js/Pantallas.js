@@ -3,48 +3,48 @@
 
 var PantallaCarga = new Phaser.Class({
     Extends: Phaser.Scene,
-  
+
     initialize:
-  
-    function PantallaCarga(){
-      Phaser.Scene.call(this, {key: 'PantallaCarga'});
-    },
-  
-    preload: function(){
+
+        function PantallaCarga() {
+            Phaser.Scene.call(this, { key: 'PantallaCarga' });
+        },
+
+    preload: function () {
         this.load.image("empresa", 'Assets/Logos/BakeryStudiosLogo.png');
-  
+
         let loadingBar = this.add.graphics({
             fillStyle: {
                 color: 0xde72ca
             }
         })
         this.load.image('iconoJ1', 'Assets/Interfaces/InGame/purpleIceHead.png');
-  
+
         //-----------------------------------------------------------------------------------
         //Escenario:
         this.load.spritesheet('pause',
             'Assets/Interfaces/Buttons/PlayPauseButtons/botonPause.png',
             { frameWidth: 80, frameHeight: 47 });
         //------------------------------------------------------------------------------------
-  
+
         //Barra carga:
-        this.load.on("progress", (percent)=>{
-           this.time.delayedCall(1000, () => {
-            loadingBar.fillRect(100, 350, 600*percent, 40);
-            console.log(percent);
-           });
+        this.load.on("progress", (percent) => {
+            this.time.delayedCall(1000, () => {
+                loadingBar.fillRect(100, 350, 600 * percent, 40);
+                console.log(percent);
+            });
         })
-  
-        this.load.on("complete", ()=>{
+
+        this.load.on("complete", () => {
             console.log('done');
         })
     },
 
-    create: function (){
+    create: function () {
         this.add.image(400, 250, 'empresa');
         this.helado = this.add.image(100, 370, 'iconoJ1');
         this.helado.setScale(1.3);
-  
+
         this.time.delayedCall(2000, () => {
             this.scene.start('PantallaInicio');
         });
@@ -52,163 +52,221 @@ var PantallaCarga = new Phaser.Class({
 });
 
 var PantallaInicio = new Phaser.Class({
-  Extends: Phaser.Scene,
+    Extends: Phaser.Scene,
 
-  initialize:
+    initialize:
 
-  function PantallaInicio() {
-    Phaser.Scene.call(this, {key: 'PantallaInicio'});
-  },
+        function PantallaInicio() {
+            Phaser.Scene.call(this, { key: 'PantallaInicio' });
+        },
 
-  preload: function(){
-    this.load.image("logo", "Assets/Logos/logo.png");
-    this.load.spritesheet('BotonPlay',
-          'Assets/Interfaces/Buttons/PlayPauseButtons/playButton.png',
-          { frameWidth: 120, frameHeight: 47 });
-    this.load.image('marco', "Assets/Interfaces/Buttons/buttonHighlight.png");
-    this.load.image("bg", "Assets/Interfaces/Scenes/initialScene.png");
-    this.load.image("flechita", "Assets/Interfaces/Buttons/buttonMarker.png");
-    this.load.image("marcador", "Assets/Interfaces/Buttons/buttonHighlight.png");
-    this.load.image("local", "Assets/Interfaces/Text/local.png");
-    this.load.image("online", "Assets/Interfaces/Text/online.png");
-    this.load.image("credits", "Assets/Interfaces/Text/credits.png");
-  },
 
-  create: function(){
-    //this.add.image(this.game.renderer.width/2, this.game.renderer.height*0.20, "star");
-    this.add.image(400, 300, "bg");
-    this.logo = this.add.image(game.renderer.width/2, 200, "logo").setOriginFromFrame('center');
-    this.logo.setScale(1.2);
-    /*
-    //Modo de juego:
-    const confTittle = {
-        origin: 'center',
-        x: game.renderer.width/2,
-        y: 360,
-        text: 'MODO DE JUEGO',
-        style: {
-            color: '#ffffff',
-            fontSize: 20,
-            fontFamily: 'titulo'
+    preload: function () {
+        this.load.image("logo", "Assets/Logos/logo.png");
+        this.load.spritesheet('BotonPlay',
+            'Assets/Interfaces/Buttons/PlayPauseButtons/playButton.png',
+            { frameWidth: 120, frameHeight: 47 });
+        this.load.image('marco', "Assets/Interfaces/Buttons/buttonHighlight.png");
+        this.load.image("bg", "Assets/Interfaces/Scenes/initialScene.png");
+        this.load.image("flechita", "Assets/Interfaces/Buttons/buttonMarker.png");
+        this.load.image("marcador", "Assets/Interfaces/Buttons/buttonHighlight.png");
+        this.load.image("local", "Assets/Interfaces/Text/local.png");
+        this.load.image("online", "Assets/Interfaces/Text/online.png");
+        this.load.image("credits", "Assets/Interfaces/Text/credits.png");
+    },
+
+    create: function () {
+        
+        //login
+        var element = document.getElementById("input-form");
+        let name = document.getElementById("name");
+        let password = document.getElementById("password");
+
+        let text = this.add.text(350, 650, '', {
+            fontFamily: 'tilesFont',
+            font: (20).toString() + "px tilesFont",
+            color: 'black'
+        }).setScale(2);
+
+
+        this.responseText = this.add.sprite(650, 550, 'BotonPlay', 0).setOrigin(0, 0);
+        this.responseText.setVisible(false);
+        let change = false; // boolean to change scene (at first is set to false)
+        var responseText = this.responseText;
+        var data = this.dataObj;
+        this.startButton = this.add.sprite(955, 950, 'BotonPlay');
+        this.startButton.setInteractive().on('pointerdown', () => {
+            if (name.value != "" && password.value != "") {
+                console.log(url);
+                console.log(name.value);
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-type': 'application/json'
+                    },
+                    url: url + "users",
+                    data: JSON.stringify({ nick: "" + name.value, password: "" + password.value }),
+                    dataType: "json",
+                    success: function (boolean) { // returned variable to check if we can change the scene
+                        change = boolean;
+                    }
+                }).done(function (item) {
+                    console.log("User created: " + JSON.stringify({ nickname: "" + name.value, password: "" + password.value }));
+                })
+
+                // Starts the next scene
+                if (change) { //Si el usuario y contraseña existen y estan bien o no existen, se crea uno nuevo y se inicia la escena
+                    this.responseText.setFrame(0);
+                    this.responseText.setVisible(true);
+                    //this.scene.stop();
+                    this.dataObj.username = name.value;
+                    this.dataObj.url = url;
+                    this.time.addEvent({ delay: 1000, callback: countdownFunction, callbackScope: this, loop: true });
+                    //this.scene.start('lobby', data);
+                } else { // Si existe el usuario introducido pero la contraseña no es la guardada en el servidor, le decimos que intente de nuevo
+                    this.responseText.setFrame(2);
+                    this.responseText.setVisible(true);
+                    //text.setText('Contraseña incorrecta. Inténtelo de nuevo'); //
+                }
+            }
+        });
+
+        //this.add.image(this.game.renderer.width/2, this.game.renderer.height*0.20, "star");
+        this.add.image(400, 300, "bg");
+        this.logo = this.add.image(game.renderer.width / 2, 200, "logo").setOriginFromFrame('center');
+        this.logo.setScale(1.2);
+        /*
+        //Modo de juego:
+        const confTittle = {
+            origin: 'center',
+            x: game.renderer.width/2,
+            y: 360,
+            text: 'MODO DE JUEGO',
+            style: {
+                color: '#ffffff',
+                fontSize: 20,
+                fontFamily: 'titulo'
+            }
         }
-    }
-    this.make.text(confTittle);
-    */
-    this.modoLocal = this.add.image(game.renderer.width/2, 360, "local").setInteractive();
-    this.modoLocal.setScale(0.8);
-    //this.modoCamp.setAlpha(0.5);
-
-    this.modoOnline = this.add.image(game.renderer.width/2, 410, "online").setInteractive();
-    this.modoOnline.setScale(0.8);
-
-    this.modoCredits = this.add.image(game.renderer.width/2, 500, "credits").setInteractive();
-    this.modoCredits.setScale(0.7);
-
-
-    //Interaccion modos de juego:
-    this.flechita = this.add.image(300, 360, "flechita").setVisible(false);
-    this.marcador = this.add.image(game.renderer.width/2, 500, "marcador").setVisible(false);
-    this.marcador.setScale(2);
-    
-    /*
-    this.playButton = this.add.sprite(400, 600, "BotonPlay").setInteractive();
-    this.marco = this.add.image(400, 600, 'marco').setVisible(false);
-    this.marco.setScale(1.2);
-    */
-
-    //Interaccion botones
-    //Modo Local
-    this.modoLocal.on("pointerover", ()=>{
-        document.body.style.cursor = "pointer";
-        this.modoLocal.setScale(1);
-        this.flechita.setPosition(300, 360);
-        this.flechita.setVisible(true);
-    })
-  
-    this.modoLocal.on("pointerout", ()=>{
-        document.body.style.cursor = "auto";
+        this.make.text(confTittle);
+        */
+        this.modoLocal = this.add.image(game.renderer.width / 2, 360, "local").setInteractive();
         this.modoLocal.setScale(0.8);
-        this.flechita.setVisible(false);
-    })
-  
-    this.modoLocal.on("pointerdown", ()=>{
-        //this.playButton.setFrame(1);
-        //this.marco.setVisible(false);
-        this.modoLocal.setAlpha(0.8);
-    })
-  
-      this.modoLocal.on("pointerup", ()=>{
-        document.body.style.cursor = "auto";
-        this.scene.start("chSelect");
-      })
-    //Modo Online
-    this.modoOnline.on("pointerover", ()=>{
-        document.body.style.cursor = "pointer";
-        this.modoOnline.setScale(1);
-        this.flechita.setPosition(300, 410);
-        this.flechita.setVisible(true);
-    })
-  
-    this.modoOnline.on("pointerout", ()=>{
-        document.body.style.cursor = "auto";
+        //this.modoCamp.setAlpha(0.5);
+
+        this.modoOnline = this.add.image(game.renderer.width / 2, 410, "online").setInteractive();
         this.modoOnline.setScale(0.8);
-        this.flechita.setVisible(false);
-    })
-  
-    this.modoOnline.on("pointerdown", ()=>{
-        //this.playButton.setFrame(1);
-        //this.marco.setVisible(false);
-        this.modoOnline.setAlpha(0.8);
-    })
-  
-      this.modoOnline.on("pointerup", ()=>{
-        document.body.style.cursor = "auto";
-        this.scene.start("chSelect");
-    })
-    //Creditos
-    this.modoCredits.on("pointerover", ()=>{
-        document.body.style.cursor = "pointer";
-        this.modoCredits.setScale(1);
-        this.flechita.setPosition(280, 500);
-        this.flechita.setVisible(true);
-    })
-  
-    this.modoCredits.on("pointerout", ()=>{
-        document.body.style.cursor = "auto";
-        this.modoCredits.setScale(0.8);
-        this.flechita.setVisible(false);
-    })
-  
-    this.modoCredits.on("pointerdown", ()=>{
-        //this.playButton.setFrame(1);
-        //this.marco.setVisible(false);
-        this.modoCredits.setAlpha(0.8);
-    })
-  
-      this.modoCredits.on("pointerup", ()=>{
-        document.body.style.cursor = "auto";
-        this.scene.start("PantallaCreditos");
-    })
-    /*
-    this.playButton.on("pointerover", ()=>{
-      document.body.style.cursor = "pointer";
-      this.marco.setVisible(true);
-    })
 
-    this.playButton.on("pointerout", ()=>{
-      document.body.style.cursor = "auto";
-      this.marco.setVisible(false);
-    })
+        this.modoCredits = this.add.image(game.renderer.width / 2, 500, "credits").setInteractive();
+        this.modoCredits.setScale(0.7);
 
-    this.playButton.on("pointerdown", ()=>{
-      this.playButton.setFrame(1);
-      this.marco.setVisible(false);
-    })
 
-    this.playButton.on("pointerup", ()=>{
-      document.body.style.cursor = "auto";
-      this.scene.start("chSelect");
-    })*/
+        //Interaccion modos de juego:
+        this.flechita = this.add.image(300, 360, "flechita").setVisible(false);
+        this.marcador = this.add.image(game.renderer.width / 2, 500, "marcador").setVisible(false);
+        this.marcador.setScale(2);
+
+        /*
+        this.playButton = this.add.sprite(400, 600, "BotonPlay").setInteractive();
+        this.marco = this.add.image(400, 600, 'marco').setVisible(false);
+        this.marco.setScale(1.2);
+        */
+
+        //Interaccion botones
+        //Modo Local
+        this.modoLocal.on("pointerover", () => {
+            document.body.style.cursor = "pointer";
+            this.modoLocal.setScale(1);
+            this.flechita.setPosition(300, 360);
+            this.flechita.setVisible(true);
+        })
+
+        this.modoLocal.on("pointerout", () => {
+            document.body.style.cursor = "auto";
+            this.modoLocal.setScale(0.8);
+            this.flechita.setVisible(false);
+        })
+
+        this.modoLocal.on("pointerdown", () => {
+            //this.playButton.setFrame(1);
+            //this.marco.setVisible(false);
+            this.modoLocal.setAlpha(0.8);
+        })
+
+        this.modoLocal.on("pointerup", () => {
+            document.body.style.cursor = "auto";
+            this.scene.start("chSelect");
+        })
+        //Modo Online
+        this.modoOnline.on("pointerover", () => {
+            document.body.style.cursor = "pointer";
+            this.modoOnline.setScale(1);
+            this.flechita.setPosition(300, 410);
+            this.flechita.setVisible(true);
+        })
+
+        this.modoOnline.on("pointerout", () => {
+            document.body.style.cursor = "auto";
+            this.modoOnline.setScale(0.8);
+            this.flechita.setVisible(false);
+        })
+
+        this.modoOnline.on("pointerdown", () => {
+            //this.playButton.setFrame(1);
+            //this.marco.setVisible(false);
+            this.modoOnline.setAlpha(0.8);
+        })
+
+        this.modoOnline.on("pointerup", () => {
+            document.body.style.cursor = "auto";
+            this.scene.start("chSelect");
+        })
+        //Creditos
+        this.modoCredits.on("pointerover", () => {
+            document.body.style.cursor = "pointer";
+            this.modoCredits.setScale(1);
+            this.flechita.setPosition(280, 500);
+            this.flechita.setVisible(true);
+        })
+
+        this.modoCredits.on("pointerout", () => {
+            document.body.style.cursor = "auto";
+            this.modoCredits.setScale(0.8);
+            this.flechita.setVisible(false);
+        })
+
+        this.modoCredits.on("pointerdown", () => {
+            //this.playButton.setFrame(1);
+            //this.marco.setVisible(false);
+            this.modoCredits.setAlpha(0.8);
+        })
+
+        this.modoCredits.on("pointerup", () => {
+            document.body.style.cursor = "auto";
+            this.scene.start("PantallaCreditos");
+        })
+        /*
+        this.playButton.on("pointerover", ()=>{
+          document.body.style.cursor = "pointer";
+          this.marco.setVisible(true);
+        })
+    
+        this.playButton.on("pointerout", ()=>{
+          document.body.style.cursor = "auto";
+          this.marco.setVisible(false);
+        })
+    
+        this.playButton.on("pointerdown", ()=>{
+          this.playButton.setFrame(1);
+          this.marco.setVisible(false);
+        })
+    
+        this.playButton.on("pointerup", ()=>{
+          document.body.style.cursor = "auto";
+          this.scene.start("chSelect");
+        })*/
     },
 });
 
@@ -216,44 +274,44 @@ var PantallaCreditos = new Phaser.Class({
     Extends: Phaser.Scene,
 
     initialize:
-  
-    function PantallaCreditos() {
-      Phaser.Scene.call(this, {key: 'PantallaCreditos'});
-    },
-  
-    preload: function(){
+
+        function PantallaCreditos() {
+            Phaser.Scene.call(this, { key: 'PantallaCreditos' });
+        },
+
+    preload: function () {
         this.load.image("creditos", "Assets/Interfaces/Scenes/pantallaCredits.png");
     },
-    create: function(){
+    create: function () {
         this.add.image(400, 300, "creditos");
     }
 });
 
 var TwoCharacterSelect = new Phaser.Class({
     Extends: Phaser.Scene,
-  
-    initialize:
-  
-    function CharacterSelect(){
-      Phaser.Scene.call(this, {key: 'chSelect'});
-    },
 
-    preload: function() {
+    initialize:
+
+        function CharacterSelect() {
+            Phaser.Scene.call(this, { key: 'chSelect' });
+        },
+
+    preload: function () {
         //Background
         this.load.image("bg2", "Assets/Interfaces/Scenes/charSelectScene.png");
         //Personajes:
         this.load.spritesheet('player',
-          'Assets/Characters/SpritesheetJugadores/SpritesheetP1/icy.png',
-          { frameWidth: 64, frameHeight: 64 });
+            'Assets/Characters/SpritesheetJugadores/SpritesheetP1/icy.png',
+            { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet('player2',
-          'Assets/Characters/SpritesheetJugadores/SpritesheetP2/Yci.png',
-          { frameWidth: 64, frameHeight: 64 });
+            'Assets/Characters/SpritesheetJugadores/SpritesheetP2/Yci.png',
+            { frameWidth: 64, frameHeight: 64 });
         //Recuadro
         this.load.image("cuadro", "Assets/Interfaces/InGame/Backgrounds/eleccionPersonaje.png");
         //Cargar letras:
-        this.add.text(0, 0, '', {fontFamily: 'estilo'});
-        this.add.text(0, 0, '', {fontFamily: 'titulo'});
-        this.add.text(0, 0, '', {fontFamily: 'damage'});
+        this.add.text(0, 0, '', { fontFamily: 'estilo' });
+        this.add.text(0, 0, '', { fontFamily: 'titulo' });
+        this.add.text(0, 0, '', { fontFamily: 'damage' });
         //Aceptar
         this.load.spritesheet('aceptar',
             'Assets/Interfaces/Buttons/ConfirmButtons/okButton.png',
@@ -266,26 +324,26 @@ var TwoCharacterSelect = new Phaser.Class({
         this.load.spritesheet('play',
             'Assets/Interfaces/Buttons/PlayPauseButtons/playbutton.png',
             { frameWidth: 120, frameHeight: 47 });
-  
+
         //Flecha modo juego
         this.load.image("flechita", "Assets/Interfaces/Buttons/buttonMarker.png");
     },
 
     create: function(){
-
         openConnection();
         characterSelectScene = this;
+
         //CREACION ESCENA:
         //Fondo:
         this.add.image(400, 300, 'bg2');
-  
+
         //Recuadro personaje 1
         this.rec = this.add.image(210, 200, "cuadro");
         this.rec.setScale(3.5);
         //Recuadro personaje 2
         this.rec2 = this.add.image(590, 200, "cuadro");
         this.rec2.setScale(3.5);
-  
+
         //Personaje 1
         this.player1 = this.add.sprite(210, 200, 'player').setInteractive();
         this.player1.setFrame(3);
@@ -294,13 +352,13 @@ var TwoCharacterSelect = new Phaser.Class({
         this.player2 = this.add.sprite(590, 200, 'player2').setInteractive();
         this.player2.setFrame(3);
         this.player2.setScale(3);
-  
+
         //Nombre jugador 1:
         document.getElementById("namebar").style.visibility = "visible";
         //Nombre jugador 2:
         document.getElementById("namebar2").style.marginLeft = '60px';
         document.getElementById("namebar2").style.visibility = "visible";
-  
+
         //Botones aceptar: bloquean introducir nombre y van a siguiente pantalla
         this.aceptar1 = this.add.sprite(210, 380, "aceptar").setInteractive();
         this.marco1 = this.add.image(210, 380, 'marco').setVisible(false);
@@ -309,7 +367,7 @@ var TwoCharacterSelect = new Phaser.Class({
         this.aceptar2 = this.add.sprite(590, 380, "aceptar").setInteractive();
         this.marco2 = this.add.image(590, 380, 'marco').setVisible(false);
         this.marco2.setScale(1.2);
-  
+
         //Boton menu: volver al menu
         this.menu = this.add.sprite(695, 525, "menu").setInteractive();
         this.marcoMenu = this.add.image(695, 525, 'marco').setVisible(false);
@@ -318,95 +376,93 @@ var TwoCharacterSelect = new Phaser.Class({
         this.play = this.add.sprite(695, 480, "play").setInteractive();
         this.play.setVisible(false);
         this.marcoPlay = this.add.image(695, 480, 'marco').setVisible(false);
-  
+
         //FUNCIONALIDAD:
         //Animacion personajes
         this.anims.create({
             key: 'pose',
-            frames: this.anims.generateFrameNumbers('player', {start: 0, end: 4}),
+            frames: this.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
             frameRate: 10,
             repeat: -1
         })
         this.anims.create({
             key: 'pose2',
-            frames: this.anims.generateFrameNumbers('player2', {start: 0, end: 4}),
+            frames: this.anims.generateFrameNumbers('player2', { start: 0, end: 4 }),
             frameRate: 10,
             repeat: -1
         })
-  
+
         //Interaccion botones
         this.ready1 = 0;
         this.ready2 = 0;
         //ok 1:
-        this.aceptar1.on("pointerover", ()=>{
-            if(this.ready1 != 1)
-            {
+        this.aceptar1.on("pointerover", () => {
+            if (this.ready1 != 1) {
                 document.body.style.cursor = "pointer";
                 this.marco1.setVisible(true);
             }
         })
-        this.aceptar1.on("pointerout", ()=>{
+        this.aceptar1.on("pointerout", () => {
             document.body.style.cursor = "auto";
             this.marco1.setVisible(false);
         })
-        this.aceptar1.on("pointerdown", ()=>{
+        this.aceptar1.on("pointerdown", () => {
             this.marco1.setVisible(false);
             this.aceptar1.setFrame(1);
             player1T = document.getElementById("namebar");
-            if(player1T.value == "") document.getElementById("namebar").value = "Player1";
+            if (player1T.value == "") document.getElementById("namebar").value = "Player1";
             this.ready1 = 1;
-            console.log("Player1:"+ player1T.value);
+            console.log("Player1:" + player1T.value);
             this.aceptar1.disableInteractive();
             player1T.disabled = true;
         })
-        this.aceptar1.on("pointerup", ()=>{
+        this.aceptar1.on("pointerup", () => {
             document.body.style.cursor = "auto";
         })
-  
+
         //ok 2:
-        this.aceptar2.on("pointerover", ()=>{
-            if(this.ready2 != 1)
-            {
+        this.aceptar2.on("pointerover", () => {
+            if (this.ready2 != 1) {
                 document.body.style.cursor = "pointer";
                 this.marco2.setVisible(true);
             }
         })
-        this.aceptar2.on("pointerout", ()=>{
+        this.aceptar2.on("pointerout", () => {
             document.body.style.cursor = "auto";
             this.marco2.setVisible(false);
         })
-        this.aceptar2.on("pointerdown", ()=>{
+        this.aceptar2.on("pointerdown", () => {
             this.marco2.setVisible(false);
             this.aceptar2.setFrame(1);
             player2T = document.getElementById("namebar2");
-            if(player2T.value == "") document.getElementById("namebar2").value = "Player2";
+            if (player2T.value == "") document.getElementById("namebar2").value = "Player2";
             this.ready2 = 1;
-            console.log("Player2:"+ player2T.value);
+            console.log("Player2:" + player2T.value);
             this.aceptar2.disableInteractive();
             player2T.disabled = true;
         })
-        this.aceptar2.on("pointerup", ()=>{
+        this.aceptar2.on("pointerup", () => {
             document.body.style.cursor = "auto";
         })
-  
+
         //menu:
-        this.menu.on("pointerover", ()=>{
+        this.menu.on("pointerover", () => {
             document.body.style.cursor = "pointer";
             this.marcoMenu.setVisible(true);
         })
-        this.menu.on("pointerout", ()=>{
+        this.menu.on("pointerout", () => {
             document.body.style.cursor = "auto";
             this.marcoMenu.setVisible(false);
         })
-        this.menu.on("pointerdown", ()=>{
+        this.menu.on("pointerdown", () => {
             this.marcoMenu.setVisible(false);
             this.menu.setFrame(1);
         })
-        this.menu.on("pointerup", ()=>{
+        this.menu.on("pointerup", () => {
             document.body.style.cursor = "auto";
             this.scene.start("PantallaInicio");
         })
-  
+
         //Interaccion modos de juego:
         //Entrada por teclado
         /*
@@ -442,25 +498,26 @@ var TwoCharacterSelect = new Phaser.Class({
                 this.flechita.setPosition(320, this.flechita.y+40);
         })
         */
-        
+
         //Boton play
-        this.play.on("pointerover", ()=>{
+        this.play.on("pointerover", () => {
             document.body.style.cursor = "pointer";
             this.marcoPlay.setVisible(true);
         })
-        this.play.on("pointerout", ()=>{
+        this.play.on("pointerout", () => {
             document.body.style.cursor = "auto";
             this.marcoPlay.setVisible(false);
         })
-        this.play.on("pointerdown", ()=>{
+        this.play.on("pointerdown", () => {
             this.marcoPlay.setVisible(false);
-            this.play.setFrame(1);    
+            this.play.setFrame(1);
         })
-        this.play.on('pointerup', ()=>{
-            
+
+
+        this.play.on('pointerup', () => {
+
             connectionWebSocket.sendWS("play");
             //this.scene.start('mainGame');
-          
             this.play.setFrame(0);
             player1T.style.visibility = "hidden";
             player2T.style.visibility = "hidden";
@@ -478,14 +535,13 @@ var TwoCharacterSelect = new Phaser.Class({
         if(this.flechita.y != 500) this.modoArc.setFontSize(20);*/
     },
 
-    update: function(time, delta){
+    update: function (time, delta) {
         //Animacion personajes en pausa
         this.player1.anims.play('pose', true);
-        this.player2.anims.play('pose2', true); 
+        this.player2.anims.play('pose2', true);
 
         //Cambiar de pantalla:
-        if(this.ready1 + this.ready2 == 2)
-        {
+        if (this.ready1 + this.ready2 == 2) {
             this.ready = 0;
             this.play.setVisible(true);;
         }
@@ -513,57 +569,57 @@ var TwoCharacterSelect = new Phaser.Class({
 
 var OneCharacterSelect = new Phaser.Class({
     Extends: Phaser.Scene,
-  
-    initialize:
-  
-    function CharacterSelect(){
-      Phaser.Scene.call(this, {key: 'chSelect'});
-    },
 
-    preload: function() {
+    initialize:
+
+        function CharacterSelect() {
+            Phaser.Scene.call(this, { key: 'chSelect' });
+        },
+
+    preload: function () {
         //Background
         this.load.image("bg2", "Assets/Interfaces/Scenes/charSelectScene.png");
         //Personajes:
         this.load.spritesheet('player',
-          'Assets/Characters/SpritesheetJugadores/SpritesheetP1/icy.png',
-          { frameWidth: 64, frameHeight: 64 });
+            'Assets/Characters/SpritesheetJugadores/SpritesheetP1/icy.png',
+            { frameWidth: 64, frameHeight: 64 });
         //Recuadro
         this.load.image("cuadro", "Assets/Interfaces/InGame/Backgrounds/eleccionPersonaje.png");
         //Cargar letras:
-        this.add.text(0, 0, '', {fontFamily: 'estilo'});
-        this.add.text(0, 0, '', {fontFamily: 'titulo'});
-        this.add.text(0, 0, '', {fontFamily: 'damage'});
+        this.add.text(0, 0, '', { fontFamily: 'estilo' });
+        this.add.text(0, 0, '', { fontFamily: 'titulo' });
+        this.add.text(0, 0, '', { fontFamily: 'damage' });
         //Aceptar
         this.load.spritesheet('aceptar',
-        'Assets/Interfaces/Buttons/ConfirmButtons/okButton.png',
-        { frameWidth: 120, frameHeight: 47 });
-    //Menu
-    this.load.spritesheet('menu',
-        'Assets/Interfaces/Buttons/MenuButton/menuButton.png',
-        { frameWidth: 120, frameHeight: 47 });
-    //Play
-    this.load.spritesheet('play',
-        'Assets/Interfaces/Buttons/PlayPauseButtons/playbutton.png',
-        { frameWidth: 120, frameHeight: 47 });
+            'Assets/Interfaces/Buttons/ConfirmButtons/okButton.png',
+            { frameWidth: 120, frameHeight: 47 });
+        //Menu
+        this.load.spritesheet('menu',
+            'Assets/Interfaces/Buttons/MenuButton/menuButton.png',
+            { frameWidth: 120, frameHeight: 47 });
+        //Play
+        this.load.spritesheet('play',
+            'Assets/Interfaces/Buttons/PlayPauseButtons/playbutton.png',
+            { frameWidth: 120, frameHeight: 47 });
 
-    //Flecha modo juego
-    this.load.image("flechita", "Assets/Interfaces/Buttons/buttonMarker.png");
+        //Flecha modo juego
+        this.load.image("flechita", "Assets/Interfaces/Buttons/buttonMarker.png");
     },
 
-    create: function(){
+    create: function () {
         //CREACION ESCENA:
         //Fondo:
         this.add.image(400, 300, 'bg2');
-  
+
         //Recuadro personaje 1
         this.rec = this.add.image(400, 200, "cuadro");
         this.rec.setScale(3.5);
-  
+
         //Personaje 1
         this.player1 = this.add.sprite(400, 200, 'player').setInteractive();
         this.player1.setFrame(3);
         this.player1.setScale(3);
-  
+
         /*
         //Configuracion texto:
         const configNombres = {
@@ -624,7 +680,7 @@ var OneCharacterSelect = new Phaser.Class({
         this.play = this.add.sprite(695, 480, "play").setInteractive();
         this.play.setVisible(false);
         this.marcoPlay = this.add.image(695, 480, 'marco').setVisible(false);
-  
+
         /*
         //Modo de juego:
         const confTittle = {
@@ -673,7 +729,7 @@ var OneCharacterSelect = new Phaser.Class({
         //Animacion personajes
         this.anims.create({
             key: 'pose',
-            frames: this.anims.generateFrameNumbers('player', {start: 0, end: 4}),
+            frames: this.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
             frameRate: 10,
             repeat: -1
         })
@@ -704,53 +760,52 @@ var OneCharacterSelect = new Phaser.Class({
         player1T.on("pointerup", ()=>{
             document.body.style.cursor = "auto";
         })*/
-  
+
         //Interaccion botones
         this.ready1 = 0;
         //ok:
-        this.aceptar1.on("pointerover", ()=>{
-            if(this.ready1 != 1)
-            {
+        this.aceptar1.on("pointerover", () => {
+            if (this.ready1 != 1) {
                 document.body.style.cursor = "pointer";
                 this.marco1.setVisible(true);
             }
         })
-        this.aceptar1.on("pointerout", ()=>{
+        this.aceptar1.on("pointerout", () => {
             document.body.style.cursor = "auto";
             this.marco1.setVisible(false);
         })
-        this.aceptar1.on("pointerdown", ()=>{
+        this.aceptar1.on("pointerdown", () => {
             this.marco1.setVisible(false);
             this.aceptar1.setFrame(1);
             player1T = document.getElementById("namebar");
-            if(player1T.value == null) document.getElementById("namebar").value = "Player";
-            console.log("Player:"+ player1T.value);
+            if (player1T.value == null) document.getElementById("namebar").value = "Player";
+            console.log("Player:" + player1T.value);
             this.aceptar1.disableInteractive();
             player1T.disabled = true;
-            this.ready1=1;
+            this.ready1 = 1;
         })
-        this.aceptar1.on("pointerup", ()=>{
+        this.aceptar1.on("pointerup", () => {
             document.body.style.cursor = "auto";
         })
-  
+
         //menu:
-        this.menu.on("pointerover", ()=>{
+        this.menu.on("pointerover", () => {
             document.body.style.cursor = "pointer";
             this.marcoMenu.setVisible(true);
         })
-        this.menu.on("pointerout", ()=>{
+        this.menu.on("pointerout", () => {
             document.body.style.cursor = "auto";
             this.marcoMenu.setVisible(false);
         })
-        this.menu.on("pointerdown", ()=>{
+        this.menu.on("pointerdown", () => {
             this.marcoMenu.setVisible(false);
             this.menu.setFrame(1);
         })
-        this.menu.on("pointerup", ()=>{
+        this.menu.on("pointerup", () => {
             document.body.style.cursor = "auto";
             this.scene.start("PantallaInicio");
         })
-  
+
         //Interaccion modos de juego:
         //Entrada por teclado
         /*
@@ -786,21 +841,21 @@ var OneCharacterSelect = new Phaser.Class({
                 this.flechita.setPosition(320, this.flechita.y+40);
         })
         */
-        
+
         //Boton play
-        this.play.on("pointerover", ()=>{
+        this.play.on("pointerover", () => {
             document.body.style.cursor = "pointer";
             this.marcoPlay.setVisible(true);
         })
-        this.play.on("pointerout", ()=>{
+        this.play.on("pointerout", () => {
             document.body.style.cursor = "auto";
             this.marcoPlay.setVisible(false);
         })
-        this.play.on("pointerdown", ()=>{
+        this.play.on("pointerdown", () => {
             this.marcoPlay.setVisible(false);
-            this.play.setFrame(1);    
+            this.play.setFrame(1);
         })
-        this.play.on('pointerup', ()=>{
+        this.play.on('pointerup', () => {
             this.scene.start('mainGame');
             this.play.setFrame(0);
             player1T.style.visibility = "hidden";
@@ -819,13 +874,12 @@ var OneCharacterSelect = new Phaser.Class({
         if(this.flechita.y != 500) this.modoArc.setFontSize(20);*/
     },
 
-    update: function(time, delta){
+    update: function (time, delta) {
         //Animacion personajes en pausa
-        this.player1.anims.play('pose', true); 
+        this.player1.anims.play('pose', true);
 
         //Cambiar de pantalla:
-        if(this.ready1  == 1)
-        {
+        if (this.ready1 == 1) {
             this.ready = 0;
             this.play.setVisible(true);
         }
@@ -853,17 +907,17 @@ var OneCharacterSelect = new Phaser.Class({
 
 
 class PantallaPausa extends Phaser.Scene {
-    constructor(){
-        super({key: 'PantallaPausa'});
+    constructor() {
+        super({ key: 'PantallaPausa' });
     }
-    preload(){
+    preload() {
         //Background:
         this.load.image("stop", "Assets/Interfaces/Scenes/pauseScene.png");
         //Botones
         //x
         this.load.spritesheet('exit',
-          'Assets/Interfaces/Buttons/ConfirmButtons/closeButton.png',
-          { frameWidth: 80, frameHeight: 47 });
+            'Assets/Interfaces/Buttons/ConfirmButtons/closeButton.png',
+            { frameWidth: 80, frameHeight: 47 });
 
         //Iconos:
         this.load.image('iconoJ1', 'Assets/Interfaces/InGame/purpleIceHead.png');
@@ -877,11 +931,11 @@ class PantallaPausa extends Phaser.Scene {
         //Pestaña aviso
         this.load.image('aviso', 'Assets/Interfaces/InGame/Backgrounds/pestañaAviso.png');
 
-        this.load.spritesheet('yes', 'Assets/Interfaces/Buttons/ConfirmButtons/confirmButton.png', { frameWidth: 120, frameHeight: 47});
-        this.load.spritesheet('no', 'Assets/Interfaces/Buttons/ConfirmButtons/cancelButton.png', { frameWidth: 120, frameHeight: 47});
+        this.load.spritesheet('yes', 'Assets/Interfaces/Buttons/ConfirmButtons/confirmButton.png', { frameWidth: 120, frameHeight: 47 });
+        this.load.spritesheet('no', 'Assets/Interfaces/Buttons/ConfirmButtons/cancelButton.png', { frameWidth: 120, frameHeight: 47 });
 
     }
-    create(){
+    create() {
         //CREACION ESCENA
         //Background
         this.add.image(400, 300, "stop");
@@ -890,7 +944,7 @@ class PantallaPausa extends Phaser.Scene {
         //Modo de juego:
         const confTitulo = {
             origin: 'center',
-            x: game.renderer.width/2,
+            x: game.renderer.width / 2,
             y: 100,
             text: 'PAUSE',
             style: {
@@ -943,8 +997,8 @@ class PantallaPausa extends Phaser.Scene {
             }
         }
         this.make.text(confJugadores).setText(player1T.text);
-        this.make.text(confJugadores).setText(player2T.text).setPosition(game.renderer.width*3/4, 180); 
-        
+        this.make.text(confJugadores).setText(player2T.text).setPosition(game.renderer.width * 3 / 4, 180);
+
         //Iconos jugadores
         this.add.image(140, 180, 'iconoJ1');
         this.add.image(500, 180, 'iconoJ2');
@@ -973,18 +1027,18 @@ class PantallaPausa extends Phaser.Scene {
             }
         })
         //Vida Jugador 1:
-        if(player1.health == 100) {
+        if (player1.health == 100) {
             vidaJ1.fillRect(214, 267, 132, 10);
         } else if (player1.health < 100 && player1.health > 0) {
-            vidaJ1.fillRect(214, 267, (132/100)*player1.health, 10);
+            vidaJ1.fillRect(214, 267, (132 / 100) * player1.health, 10);
         } else if (player1.health <= 0) {
             vidaJ1.fillRect(214, 267, 0, 10);
         }
         //Vida Jugador 2:
-        if(player2.health == 100) {
+        if (player2.health == 100) {
             vidaJ1.fillRect(657, 267, -132, 10);
         } else if (player2.health < 100 && player1.health > 0) {
-            vidaJ1.fillRect(657, 267, -(132/100)*player2.health, 10);
+            vidaJ1.fillRect(657, 267, -(132 / 100) * player2.health, 10);
         } else if (player2.health <= 0) {
             vidaJ1.fillRect(657, 267, 0, 10);
         }
@@ -1003,8 +1057,8 @@ class PantallaPausa extends Phaser.Scene {
                 fontSize: 30
             }
         }
-        this.make.text(confDamage).setText('x'+player1.attackHitbox.attackDmg);
-        this.make.text(confDamage).setText('x'+player2.attackHitbox.attackDmg).setPosition(610, 350);
+        this.make.text(confDamage).setText('x' + player1.attackHitbox.attackDmg);
+        this.make.text(confDamage).setText('x' + player2.attackHitbox.attackDmg).setPosition(610, 350);
 
         //Mensaje abandonar partida
         //tapar fondo
@@ -1035,35 +1089,35 @@ class PantallaPausa extends Phaser.Scene {
 
         //FUNCIONALIDADES
         //exit
-        this.exit.on("pointerover", ()=>{
+        this.exit.on("pointerover", () => {
             document.body.style.cursor = "pointer";
         })
-        this.exit.on("pointerout", ()=>{
+        this.exit.on("pointerout", () => {
             document.body.style.cursor = "auto";
         })
-        this.exit.on("pointerdown", ()=>{
+        this.exit.on("pointerdown", () => {
             this.exit.setFrame(1);
         })
-        this.exit.on("pointerup", ()=>{
+        this.exit.on("pointerup", () => {
             document.body.style.cursor = "auto";
             this.scene.wake("mainGame");
             sceneChangeWebSocket.sendWS('mainGame');
             this.scene.sleep();
         })
         //menu
-        this.menu.on("pointerover", ()=>{
+        this.menu.on("pointerover", () => {
             document.body.style.cursor = "pointer";
             this.marcoMenu.setVisible(true);
         })
-        this.menu.on("pointerout", ()=>{
+        this.menu.on("pointerout", () => {
             document.body.style.cursor = "auto";
             this.marcoMenu.setVisible(false);
         })
-        this.menu.on("pointerdown", ()=>{
+        this.menu.on("pointerdown", () => {
             this.menu.setFrame(1);
             this.marcoMenu.setVisible(false);
         })
-        this.menu.on("pointerup", ()=>{
+        this.menu.on("pointerup", () => {
             this.menu.setFrame(0);
             document.body.style.cursor = "auto";
             this.niebla.setVisible(true);
@@ -1076,16 +1130,16 @@ class PantallaPausa extends Phaser.Scene {
             this.exit.disableInteractive();
         })
         //exit2
-        this.exit2.on("pointerover", ()=>{
+        this.exit2.on("pointerover", () => {
             document.body.style.cursor = "pointer";
         })
-        this.exit2.on("pointerout", ()=>{
+        this.exit2.on("pointerout", () => {
             document.body.style.cursor = "auto";
         })
-        this.exit2.on("pointerdown", ()=>{
+        this.exit2.on("pointerdown", () => {
             this.exit2.setFrame(1);
         })
-        this.exit2.on("pointerup", ()=>{
+        this.exit2.on("pointerup", () => {
             this.exit2.setFrame(0);
             document.body.style.cursor = "auto";
             this.niebla.setVisible(false);
@@ -1098,36 +1152,36 @@ class PantallaPausa extends Phaser.Scene {
             this.exit.setInteractive();
         })
         //yes
-        this.yes.on("pointerover", ()=>{
+        this.yes.on("pointerover", () => {
             document.body.style.cursor = "pointer";
             this.marcoYes.setVisible(true);
         })
-        this.yes.on("pointerout", ()=>{
+        this.yes.on("pointerout", () => {
             document.body.style.cursor = "auto";
             this.marcoYes.setVisible(false);
         })
-        this.yes.on("pointerdown", ()=>{
+        this.yes.on("pointerdown", () => {
             this.yes.setFrame(1);
             this.marcoYes.setVisible(false);
         })
-        this.yes.on("pointerup", ()=>{
+        this.yes.on("pointerup", () => {
             document.body.style.cursor = "auto";
             this.scene.start("PantallaInicio");
         })
         //no
-        this.no.on("pointerover", ()=>{
+        this.no.on("pointerover", () => {
             document.body.style.cursor = "pointer";
             this.marcoNo.setVisible(true);
         })
-        this.no.on("pointerout", ()=>{
+        this.no.on("pointerout", () => {
             document.body.style.cursor = "auto";
             this.marcoNo.setVisible(false);
         })
-        this.no.on("pointerdown", ()=>{
+        this.no.on("pointerdown", () => {
             this.no.setFrame(1);
             this.marcoNo.setVisible(false);
         })
-        this.no.on("pointerup", ()=>{
+        this.no.on("pointerup", () => {
             this.no.setFrame(0);
             document.body.style.cursor = "auto";
             this.niebla.setVisible(false);
@@ -1144,11 +1198,10 @@ class PantallaPausa extends Phaser.Scene {
 };
 
 class ResultadoDerrota extends Phaser.Scene {
-    constructor(){
-        super({key: 'ResultadoDerrota'});
+    constructor() {
+        super({ key: 'ResultadoDerrota' });
     }
-    preload()
-    {
+    preload() {
         this.load.image("escenario", 'Assets/Interfaces/Scenes/pauseScene.png');
         this.load.image('derrota', 'Assets/Interfaces/Scenes/pantallaDefeat.png');
 
@@ -1159,8 +1212,8 @@ class ResultadoDerrota extends Phaser.Scene {
         //Pestaña aviso
         this.load.image('aviso', 'Assets/Interfaces/Backgrounds/pestañaAviso.png');
 
-        this.load.spritesheet('yes', 'Assets/Interfaces/Buttons/ConfirmButtons/confirmButton.png', { frameWidth: 120, frameHeight: 47});
-        this.load.spritesheet('no', 'Assets/Interfaces/Buttons/ConfirmButtons/cancelButton.png', { frameWidth: 120, frameHeight: 47});
+        this.load.spritesheet('yes', 'Assets/Interfaces/Buttons/ConfirmButtons/confirmButton.png', { frameWidth: 120, frameHeight: 47 });
+        this.load.spritesheet('no', 'Assets/Interfaces/Buttons/ConfirmButtons/cancelButton.png', { frameWidth: 120, frameHeight: 47 });
 
         //x
         this.load.spritesheet('exit',
@@ -1168,8 +1221,7 @@ class ResultadoDerrota extends Phaser.Scene {
             { frameWidth: 80, frameHeight: 47 }
         );
     }
-    create()
-    {
+    create() {
         //CREACION ESCENARIO
         //Escenario
         this.add.image(400, 300, 'escenario');
@@ -1187,7 +1239,7 @@ class ResultadoDerrota extends Phaser.Scene {
         //Iconos jugadores
         this.add.image(300, 240, 'iconoJ1');
         this.add.image(500, 240, 'iconoJ2');
-    
+
         //Jugadores
         const confN = {
             origin: 'center',
@@ -1202,9 +1254,9 @@ class ResultadoDerrota extends Phaser.Scene {
                 justifyContent: 'center',
             }
         }
-        this.make.text(confN).setText(player1T.value); 
+        this.make.text(confN).setText(player1T.value);
         this.make.text(confN).setText(player2T.value).setPosition(500, 280);
-        
+
         //Kills
         const confKills = {
             origin: 'center',
@@ -1218,7 +1270,7 @@ class ResultadoDerrota extends Phaser.Scene {
                 justifyContent: 'center',
             }
         }
-        this.make.text(confKills).setText('Score'); 
+        this.make.text(confKills).setText('Score');
         this.make.text(confKills).setText('Score').setPosition(500, 390);
 
         const confnKills = {
@@ -1233,9 +1285,9 @@ class ResultadoDerrota extends Phaser.Scene {
                 justifyContent: 'center',
             }
         }
-        this.make.text(confnKills).setText(player1.lifeBar.kills); 
+        this.make.text(confnKills).setText(player1.lifeBar.kills);
         this.make.text(confnKills).setText(player2.lifeBar.kills).setPosition(500, 340);
-        
+
 
         //Salir
         //this.salir = this.add.sprite(400, 450, "aceptar").setInteractive();
@@ -1261,7 +1313,7 @@ class ResultadoDerrota extends Phaser.Scene {
                 400, 230).setFontSize(25).setVisible(false);
         this.volverInicio = this.make.text(confSalir).setText(
             'Si dices que no, \nvolverás al menú del inicio').setPosition(
-            400, 278).setFontSize(16).setVisible(false);
+                400, 278).setFontSize(16).setVisible(false);
         //warning
         //x
         //this.exit2 = this.add.sprite(625, 185, "exit").setVisible(false);
@@ -1317,35 +1369,35 @@ class ResultadoDerrota extends Phaser.Scene {
             this.salir.setInteractive();
         })*/
         //yes
-        this.yes.on("pointerover", ()=>{
+        this.yes.on("pointerover", () => {
             document.body.style.cursor = "pointer";
         })
-        this.yes.on("pointerout", ()=>{
+        this.yes.on("pointerout", () => {
             document.body.style.cursor = "auto";
         })
-        this.yes.on("pointerdown", ()=>{
-            this.yes.setFrame(1); 
+        this.yes.on("pointerdown", () => {
+            this.yes.setFrame(1);
         })
-        this.yes.on("pointerup", ()=>{
+        this.yes.on("pointerup", () => {
             document.body.style.cursor = "auto";
             this.scene.start('mainGame');
         })
         //no
-        this.no.on("pointerover", ()=>{
+        this.no.on("pointerover", () => {
             document.body.style.cursor = "pointer";
         })
-        this.no.on("pointerout", ()=>{
+        this.no.on("pointerout", () => {
             document.body.style.cursor = "auto";
         })
-        this.no.on("pointerdown", ()=>{
-            this.no.setFrame(1); 
+        this.no.on("pointerdown", () => {
+            this.no.setFrame(1);
         })
-        this.no.on("pointerup", ()=>{
+        this.no.on("pointerup", () => {
             this.no.setFrame(0);
             document.body.style.cursor = "auto";
             this.scene.start('PantallaInicio');
         })
-        
+
         //SCORES
         this.guardarHS1 = new HighScoreClass(this);
         this.guardarHS1.checkHighScore(player1T.value, player1.lifeBar.kills);
@@ -1367,24 +1419,22 @@ class ResultadoDerrota extends Phaser.Scene {
         }
         this.continue = this.make.text(next);
 
-        document.addEventListener('keydown', ()=>{
+        document.addEventListener('keydown', () => {
             this.scene.start('HighScoresScreen');
         })
-        
+
 
     }
-    update(time, date)
-    {
+    update(time, date) {
 
     }
 }
 
 class ResultadoVictoria extends Phaser.Scene {
-    constructor(){
-        super({key: 'ResultadoVictoria'});
+    constructor() {
+        super({ key: 'ResultadoVictoria' });
     }
-    preload()
-    {
+    preload() {
         this.load.image("escenario", 'Assets/Scenaries/Map/map1.png');
         this.load.image('victoria', 'Assets/Interfaces/InGame/Backgrounds/victoryScene.png');
 
@@ -1395,8 +1445,8 @@ class ResultadoVictoria extends Phaser.Scene {
         //Pestaña aviso
         this.load.image('aviso', 'Assets/Interfaces/InGame/Backgrounds/pestañaAviso.png');
 
-        this.load.spritesheet('yes', 'Assets/Interfaces/Buttons/ConfirmButtons/confirmButton.png', { frameWidth: 120, frameHeight: 47});
-        this.load.spritesheet('no', 'Assets/Interfaces/Buttons/ConfirmButtons/cancelButton.png', { frameWidth: 120, frameHeight: 47});
+        this.load.spritesheet('yes', 'Assets/Interfaces/Buttons/ConfirmButtons/confirmButton.png', { frameWidth: 120, frameHeight: 47 });
+        this.load.spritesheet('no', 'Assets/Interfaces/Buttons/ConfirmButtons/cancelButton.png', { frameWidth: 120, frameHeight: 47 });
 
         //x
         this.load.spritesheet('exit',
@@ -1404,8 +1454,7 @@ class ResultadoVictoria extends Phaser.Scene {
             { frameWidth: 80, frameHeight: 47 }
         );
     }
-    create()
-    {
+    create() {
         //CREACION ESCENARIO
         //Escenario
         this.add.image(400, 382, 'escenario');
@@ -1438,9 +1487,9 @@ class ResultadoVictoria extends Phaser.Scene {
                 justifyContent: 'center',
             }
         }
-        this.make.text(confN).setText(player1T.value); 
+        this.make.text(confN).setText(player1T.value);
         this.make.text(confN).setText(player2T.value).setPosition(500, 270);
-        
+
         //Kills
         const confKills = {
             origin: 'center',
@@ -1469,8 +1518,8 @@ class ResultadoVictoria extends Phaser.Scene {
                 justifyContent: 'center',
             }
         }
-        this.make.text(confnKills).setText(player1.lifeBar.kills); 
-        this.make.text(confnKills).setText(player2.lifeBar.kills).setPosition(500, 340); 
+        this.make.text(confnKills).setText(player1.lifeBar.kills);
+        this.make.text(confnKills).setText(player2.lifeBar.kills).setPosition(500, 340);
 
         //Salir
         //this.salir = this.add.sprite(400, 450, "aceptar").setInteractive();
@@ -1496,7 +1545,7 @@ class ResultadoVictoria extends Phaser.Scene {
                 400, 230).setFontSize(25).setVisible(false);
         //warning
         //x
-        
+
         //this.exit2 = this.add.sprite(625, 185, "exit").setVisible(false);
         //this.exit2.scale = 0.6;
         //yes y no
@@ -1549,30 +1598,30 @@ class ResultadoVictoria extends Phaser.Scene {
             this.salir.setInteractive();
         })*/
         //yes
-        this.yes.on("pointerover", ()=>{
+        this.yes.on("pointerover", () => {
             document.body.style.cursor = "pointer";
         })
-        this.yes.on("pointerout", ()=>{
+        this.yes.on("pointerout", () => {
             document.body.style.cursor = "auto";
         })
-        this.yes.on("pointerdown", ()=>{
-            this.yes.setFrame(1); 
+        this.yes.on("pointerdown", () => {
+            this.yes.setFrame(1);
         })
-        this.yes.on("pointerup", ()=>{
+        this.yes.on("pointerup", () => {
             document.body.style.cursor = "auto";
             this.scene.start("PantallaInicio");
         })
         //no
-        this.no.on("pointerover", ()=>{
+        this.no.on("pointerover", () => {
             document.body.style.cursor = "pointer";
         })
-        this.no.on("pointerout", ()=>{
+        this.no.on("pointerout", () => {
             document.body.style.cursor = "auto";
         })
-        this.no.on("pointerdown", ()=>{
-            this.no.setFrame(1); 
+        this.no.on("pointerdown", () => {
+            this.no.setFrame(1);
         })
-        this.no.on("pointerup", ()=>{
+        this.no.on("pointerup", () => {
             this.no.setFrame(0);
             document.body.style.cursor = "auto";
             this.pestaña.setVisible(false);
@@ -1604,30 +1653,27 @@ class ResultadoVictoria extends Phaser.Scene {
         }
         this.continue = this.make.text(next);
 
-        document.addEventListener('keydown', ()=>{
+        document.addEventListener('keydown', () => {
             this.scene.start('HighScoresScreen');
         })
     }
-    update(time, date)
-    {
+    update(time, date) {
 
     }
 }
 
 
 
-class HighScoresScreen extends Phaser.Scene{
-    constructor(){
-        super({key: "HighScoresScreen"});
+class HighScoresScreen extends Phaser.Scene {
+    constructor() {
+        super({ key: "HighScoresScreen" });
     }
 
-    preload()
-    {
+    preload() {
         //Background
         this.load.image("highsc", "Assets/Interfaces/Scenes/highScores.png");
     }
-    create()
-    {
+    create() {
         this.add.image(400, 300, 'highsc');
 
         var ny = 190;
@@ -1655,12 +1701,11 @@ class HighScoresScreen extends Phaser.Scene{
 
         const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
 
-        for(var i = 0; i < highScores.length; i++)
-        {
+        for (var i = 0; i < highScores.length; i++) {
             this.make.text(type).setText(highScores[i].name).setPosition(200, ny);
             //if(highScores[i].name==player1T.value) this.n1 = resaltar.fillRect(46, ny, 695, 35);
             this.make.text(type).setText(highScores[i].score).setPosition(600, ny);
-            ny = ny+60;
+            ny = ny + 60;
         }
 
         //Botones
