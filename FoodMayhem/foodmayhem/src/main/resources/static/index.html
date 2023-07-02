@@ -32,10 +32,14 @@
     <script src="js/WebSocketFiles/MovementWebSocket.js"></script>
     <script src="js/WebSocketFiles/GenerationWebSocket.js"></script>
     <script src="js/WebSocketFiles/EnemyMovementWebSocket.js"></script>
+    <script src="js/WebSocketFiles/PlayerInfoWebSocket.js"></script>
+    <script src="js/WebSocketFiles/SceneChangeWebSocket.js"></script>
+    <script src="js/WebSocketFiles/ChatWebSocket.js"></script>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"> </script>
 
     <link rel="stylesheet" media="all" href="./css/stylesheet.css">
+    <link rel="stylesheet" media="all" href="./css/chat.css">
 </head>
 
 <body style="text-align:center">
@@ -51,15 +55,16 @@
   </div>
 </div>
 
-  <div class="flex-container">
-    <div id="content"></div>
-    <div id="chatContainer">
-      <div class="chatArea">
-        <ul id="messages" class="messages"></ul>
-      </div>
-      <input id="inputMessage" class="inputMessage" placeholder="Type here..." type="text">
+<div class="flex-container">
+  <div id="content"></div>
+  <div id="chatContainer">
+    <div class="chatArea">
+      <ul id="messages" class="messages"></ul>
     </div>
+    <input id="inputMessage" class="inputMessage" placeholder="Type here..." type="text">
   </div>
+</div>
+
 <script type="text/javascript">
 
 
@@ -107,58 +112,22 @@ window.addEventListener('keydown', event => {
 
 $(document).ready(function()
 { 
-  updateChat();  
+  //updateChat();  
 });
 
 
 function sendMessage() {
 
-  let message = inputMessage.value;
+  let msg = inputMessage.value;
   let nick = player1Name.value;
 
-  if (message && nick) {
+  if (msg && nick) {
     inputMessage.value = '';
-    $.ajax({
-        type: "POST",
-        async:false,
-        headers: {
-            'Accept': 'application/json',
-            'Content-type' : 'application/json'
-        },
-        url: '/chats',
-        data: JSON.stringify( { nick: nick+': ', message: ""+ message } ),
-        dataType: "json", error: function(xhr) {
-        console.log(xhr);
-      } 
-    })
+    chatWebSocket.sendWS(nick, msg);
   }
 }
 
-function updateChat(){
-  messages.innerHTML = '';
-  $.ajax({ 
-    url: '/chats',
-  }).done(function(data) 
-  { 
-    for(var k in data) {
-      const usernameSpan = document.createElement('span');
-      const usernameText = document.createTextNode(data[k].nick);
-      usernameSpan.className = 'username';
-      usernameSpan.appendChild(usernameText);
-      const messageBodySpan = document.createElement('span');
-      const messageBodyText = document.createTextNode(data[k].message);
-      messageBodySpan.className = 'messageBody';
-      messageBodySpan.appendChild(messageBodyText);
-      const messageLi = document.createElement('li');
-      messageLi.setAttribute('username', data[k].nick);
-      messageLi.append(usernameSpan);
-      messageLi.append(messageBodySpan);
-      addMessageElement(messageLi); 
-    }
- })
 
-    setTimeout(updateChat, 5000);
-}
 
 function addMessageElement(el) {
   messages.append(el);
@@ -375,6 +344,7 @@ var MainGame = new Phaser.Class({
 
             pauseButton.on("pointerdown", ()=>{
                 this.scene.launch("PantallaPausa");
+                sceneChangeWebSocket.sendWS('PantallaPausa');
                  this.scene.sleep();
            })
 
@@ -394,38 +364,37 @@ var MainGame = new Phaser.Class({
             this.ClientGenerateEnemies();
             generateObjects = false;
           }
-
+          
           player2.checkGamepad(this);
-          player2.move();  
+           
 
           if(player2.control){
           if(player2.pad.isButtonDown(9))
           {
             this.scene.launch("PantallaPausa");
+            sceneChangeWebSocket.sendWS('PantallaPausa');
             this.scene.sleep();
           }
         }
         
         }
 
-        
-
+        player1.move();
+        player2.move();
+       
         if(isHost)
         {
         //updateChat();
-          player1.move();
-
+        
+      
         if (Phaser.Input.Keyboard.JustDown(player1.keys['esc']))
         {
           this.scene.launch("PantallaPausa");
+          sceneChangeWebSocket.sendWS('ResultadoVictoria');
           this.scene.sleep();
         }
 
-        this.enemies.children.each(function (enem) {
-          enem.initEnemy(this.players);
-          enem.setSize(30, 30);
-          enem.update();
-        }, this);
+        
 
         this.bosses.children.each(function (enem) {
           enem.setScale(2);
@@ -436,6 +405,12 @@ var MainGame = new Phaser.Class({
         this.checkforLevel();
 
         }
+
+        this.enemies.children.each(function (enem) {
+          enem.initEnemy(this.players);
+          enem.setSize(30, 30);
+          enem.update();
+        }, this);
 
       },
 
@@ -527,6 +502,7 @@ var MainGame = new Phaser.Class({
                     victoryMusic.play();
             }
             this.scene.start('ResultadoVictoria');
+            sceneChangeWebSocket.sendWS('ResultadoVictoria');
           }
         } else {
           console.log("Derrota")
@@ -535,6 +511,7 @@ var MainGame = new Phaser.Class({
                   defMusic.play();
           }
           this.scene.start('ResultadoDerrota');
+          sceneChangeWebSocket.sendWS('ResultadoDerrota');
         }
       },
 
@@ -564,6 +541,22 @@ var MainGame = new Phaser.Class({
           {
             enemy.x = posX;
             enemy.y = posY;
+          }
+      },
+
+      ClientUpdateEnemyTarget: function(enemy, enemyId, player)
+      {
+          if (enemy.id == enemyId)
+          {
+            enemy.target = player
+          }
+      },
+
+      ClientUpdateEnemyTarget: function(enemy, enemyId, value)
+      {
+          if (enemy.id == enemyId)
+          {
+            enemy.health = value
           }
       }
 

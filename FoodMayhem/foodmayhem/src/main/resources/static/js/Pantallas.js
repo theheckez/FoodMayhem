@@ -1047,6 +1047,7 @@ class PantallaPausa extends Phaser.Scene {
         this.exit.on("pointerup", ()=>{
             document.body.style.cursor = "auto";
             this.scene.wake("mainGame");
+            sceneChangeWebSocket.sendWS('mainGame');
             this.scene.sleep();
         })
         //menu

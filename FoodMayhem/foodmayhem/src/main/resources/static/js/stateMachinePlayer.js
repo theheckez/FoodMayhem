@@ -45,13 +45,14 @@ class StateMachine {
       player.setVelocity(0);
       player.anims.play(player.spriteName.idle);
       movementWebSocket.sendWS(player.id, player.x, player.y, 
-      player.padMovement,player.keys['up'].isDown,player.keys['left'].isDown, player.keys['down'].isDown ,player.keys['right'].isDown);
+      player.padMovement,player.keys['up'].isDown,player.keys['left'].isDown, player.keys['down'].isDown ,player.keys['right'].isDown,player.keys['attack'].isDown);
       
     }
   
     execute(scene, player) {
-  
-    if (player.keys['attack'].isDown) {
+      console.log("Id de jugador:" + player.id + "y soy Host?: " + isHost )
+    
+         if (player.keys['attack'].isDown  || player.isAttacking ) {
       this.stateMachine.transition('attack');
       return;
     }
@@ -81,6 +82,8 @@ class StateMachine {
         this.stateMachine.transition('move');
         return;
       }
+    
+ 
     }
   }
   
@@ -88,11 +91,11 @@ class StateMachine {
   class MoveState extends State {
     execute(scene, player) {
   
-      if (Phaser.Input.Keyboard.JustDown(player.keys['attack'])) {
+      if (Phaser.Input.Keyboard.JustDown(player.keys['attack']) || player.isAttacking) {
         this.stateMachine.transition('attack');
         return;
       }
-      if (player.keys['distAttack'].isDown) {
+      if (player.keys['distAttack'].isDown ) {
         this.stateMachine.transition('distAttack');
         return;
       }
@@ -191,7 +194,7 @@ class StateMachine {
           player.anims.play(player.spriteName.down, true);
         }
   
-        movementWebSocket.sendWS(player.id, player.x, player.y, player.padMovement,player.keys['up'].isDown, player.keys['left'].isDown, player.keys['down'].isDown ,player.keys['right'].isDown);
+        movementWebSocket.sendWS(player.id, player.x, player.y, player.padMovement,player.keys['up'].isDown, player.keys['left'].isDown, player.keys['down'].isDown ,player.keys['right'].isDown, player.keys['attack'].isDown);
     }
    
      
@@ -214,34 +217,36 @@ class StateMachine {
   
     class HuntState extends State {
       execute(scene, enemy) {
-  
-        if(enemy.targets[0].dead && enemy.targets[1].dead ) {
-        this.stateMachine.transition('idle');
-        return;
-        }
-        enemy.getTarget();
-        enemy.direction = new Phaser.Math.Vector2(enemy.target.x - enemy.x, enemy.target.y - enemy.y);
-        enemy.module = enemy.direction.length();
-  
-        if(enemy.module < enemy.attackRange) {
-          enemy.setVelocityX(0);
-          enemy.setVelocityY(0);
-          this.stateMachine.transition('attack');
-          return;
-          } else{
-          enemy.setVelocityX((enemy.direction.x/enemy.module) * enemy.speed);
-          enemy.setVelocityY((enemy.direction.y/enemy.module) * enemy.speed);
-          enemyMovementWebSocket.sendWS(enemy.id, enemy.x, enemy.y);
-          }
-  
-          if(enemy.direction.y>0){
-            if(enemy.spriteName.move !== undefined)enemy.anims.play(enemy.spriteName.move,true);
-          } else if(enemy.direction.y<0) {
-            if(enemy.spriteName.moveU !== undefined){enemy.anims.play(enemy.spriteName.moveU,true)}else{
-              enemy.anims.play(enemy.spriteName.move,true)
+     
+          if(enemy.targets[0].dead && enemy.targets[1].dead ) {
+            this.stateMachine.transition('idle');
+            return;
             }
-          }
-  
+            
+              enemy.getTarget();
+            if(isHost)enemyMovementWebSocket.sendWS(enemy.id, enemy.x, enemy.y, enemy.target.id, "target");
+            
+            enemy.direction = new Phaser.Math.Vector2(enemy.target.x - enemy.x, enemy.target.y - enemy.y);
+            enemy.module = enemy.direction.length();
+      
+            if(enemy.module < enemy.attackRange) {
+              enemy.setVelocityX(0);
+              enemy.setVelocityY(0);
+              this.stateMachine.transition('attack');
+              return;
+              } else{
+              enemy.setVelocityX((enemy.direction.x/enemy.module) * enemy.speed);
+              enemy.setVelocityY((enemy.direction.y/enemy.module) * enemy.speed);
+              if(isHost) enemyMovementWebSocket.sendWS(enemy.id, enemy.x, enemy.y, enemy.target, "movement");
+              }
+      
+              if(enemy.direction.y>0){
+                if(enemy.spriteName.move !== undefined)enemy.anims.play(enemy.spriteName.move,true);
+              } else if(enemy.direction.y<0) {
+                if(enemy.spriteName.moveU !== undefined){enemy.anims.play(enemy.spriteName.moveU,true)}else{
+                  enemy.anims.play(enemy.spriteName.move,true)
+                }
+              }
       }
     }
   
@@ -268,6 +273,7 @@ class StateMachine {
         enter(scene, player) {
   
           player.health -= player.attackerDmg;
+          playerInfoWebSocket.sendWS(player.id, player.health, "health");
           player.lifeBar.draw(player.health);
           player.anims.play('getHurt',true);
           player.hurtSound.play();
@@ -292,10 +298,12 @@ class StateMachine {
       enter(scene, enemy) {
   
         enemy.health -= enemy.attackerDmg;
-  
+        if(isHost) enemyMovementWebSocket.sendWS(enemy.id, enemy.health, enemy.y, enemy.target.id, "damage");
+
         if(enemy.health <= 0 && !enemy.dead){
           enemy.setVelocity(0);
           enemy.dead = true;
+         
           enemy.anims.play('malvinDeath',true);
         }
   
@@ -304,9 +312,11 @@ class StateMachine {
           scene.time.delayedCall(1000, () => {
             if(enemy.attackerID === 0) {
               player1.lifeBar.kills++;
+              playerInfoWebSocket.sendWS(player1.id, player1.lifeBar.kills, "score");
               player1.lifeBar.count();
             } else if(enemy.attackerID === 1) {
               player2.lifeBar.kills++;
+              playerInfoWebSocket.sendWS(player2.id, player2.lifeBar.kills, "score");
               player2.lifeBar.count();
             }
             enemy.destroy();

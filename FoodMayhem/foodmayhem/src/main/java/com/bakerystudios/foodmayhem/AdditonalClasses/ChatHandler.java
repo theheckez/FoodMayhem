@@ -32,9 +32,9 @@ public class ChatHandler extends TextWebSocketHandler {
 
 	private void sendOtherParticipants(WebSocketSession session, String payload) throws IOException {
 		for(WebSocketSession participant : sessions.values()) {
-			if(!participant.getId().equals(session.getId())) {
+			
 				participant.sendMessage(new TextMessage(payload));
-			}
+			
 		}
 	}
 

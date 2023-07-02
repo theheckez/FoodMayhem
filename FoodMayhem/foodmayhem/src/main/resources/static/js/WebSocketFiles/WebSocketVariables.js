@@ -17,3 +17,13 @@ var generationWebSocket = new WebSocket(generationPath);
 
 var enemyMovementPath = 'ws://127.0.0.1:8080/enemyMovement';
 var enemyMovementWebSocket = new WebSocket(enemyMovementPath);
+
+var playerInfoPath = 'ws://127.0.0.1:8080/playerInfo';
+var playerInfoWebSocket = new WebSocket(playerInfoPath);
+
+var sceneChangePath = 'ws://127.0.0.1:8080/sceneChange';
+var sceneChangeWebSocket = new WebSocket(sceneChangePath);
+
+var chatPath = 'ws://127.0.0.1:8080/chat';
+var chatWebSocket = new WebSocket(chatPath);
+

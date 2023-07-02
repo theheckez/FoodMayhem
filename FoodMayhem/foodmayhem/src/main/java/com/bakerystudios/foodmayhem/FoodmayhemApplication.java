@@ -11,6 +11,8 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import com.bakerystudios.foodmayhem.AdditonalClasses.ChatHandler;
 import com.bakerystudios.foodmayhem.AdditonalClasses.SessionHandler;
 import com.bakerystudios.foodmayhem.AdditonalClasses.MovementHandler;
+import com.bakerystudios.foodmayhem.AdditonalClasses.PlayerInfoHandler;
+import com.bakerystudios.foodmayhem.AdditonalClasses.SceneChangeHandler;
 import com.bakerystudios.foodmayhem.AdditonalClasses.GenerationHandler;
 import com.bakerystudios.foodmayhem.AdditonalClasses.EnemyMovementHandler;
 
@@ -25,15 +27,17 @@ public class FoodmayhemApplication implements WebSocketConfigurer
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry)
 	{
-		registry.addHandler(EchoHandler(), "/echo").setAllowedOrigins("*");
+		registry.addHandler(ChatHandler(), "/chat").setAllowedOrigins("*");
 		registry.addHandler(SessionsHandler(), "/sessions").setAllowedOrigins("*");
 		registry.addHandler(MovementHandler(),"/movement").setAllowedOrigins("*");
 		registry.addHandler(GenerationHandler(),"/randomGeneration").setAllowedOrigins("*");
 		registry.addHandler(EnemyMovementHandler(), "/enemyMovement").setAllowedOrigins("*");
+		registry.addHandler(PlayerInfoHandler(), "/playerInfo").setAllowedOrigins("*");
+		registry.addHandler(SceneChangeHandler(), "/sceneChange").setAllowedOrigins("*");
 	}
 
 	@Bean
-	public ChatHandler EchoHandler()
+	public ChatHandler ChatHandler()
 	{
 		return new ChatHandler();
 	}
@@ -62,6 +66,17 @@ public class FoodmayhemApplication implements WebSocketConfigurer
 		return new EnemyMovementHandler();
 	}
 
+	@Bean
+	public PlayerInfoHandler PlayerInfoHandler()
+	{
+		return new PlayerInfoHandler();
+	}
+
+	@Bean
+	public SceneChangeHandler SceneChangeHandler()
+	{
+		return new SceneChangeHandler();
+	}
 }
 
 

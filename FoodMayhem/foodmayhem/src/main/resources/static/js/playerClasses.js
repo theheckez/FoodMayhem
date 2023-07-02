@@ -15,6 +15,8 @@ class Actor extends Phaser.Physics.Arcade.Sprite{
       this.dirLeft = false;
       this.dirRight = false;
       this.dirDown = false;
+
+      this.isAttacking = false;
     
       this.scene = newScene;
       this.dead = false;
