@@ -60,21 +60,7 @@ var PantallaInicio = new Phaser.Class({
             Phaser.Scene.call(this, { key: 'PantallaInicio' });
         },
 
-<<<<<<< Updated upstream
-  preload: function(){
-    this.load.image("logo", "Assets/Logos/LogoI-ScreamWhiteBG.png");
-    this.load.spritesheet('BotonPlay',
-          'Assets/Interfaces/Buttons/PlayPauseButtons/playButton.png',
-          { frameWidth: 120, frameHeight: 47 });
-    this.load.image('marco', "Assets/Interfaces/Buttons/buttonHighlight.png");
-    this.load.image("bg", "Assets/Interfaces/Scenes/initialScene.png");
-    this.load.image("flechita", "Assets/Interfaces/Buttons/buttonMarker.png");
-    this.load.image("marcador", "Assets/Interfaces/Buttons/buttonHighlight.png");
-    this.load.image("local", "Assets/Interfaces/Text/local.png");
-    this.load.image("online", "Assets/Interfaces/Text/online.png");
-    this.load.image("credits", "Assets/Interfaces/Text/credits.png");
-  },
-=======
+
     preload: function () {
         this.load.image("logo", "Assets/Logos/logo.png");
         this.load.spritesheet('BotonPlay',
@@ -88,7 +74,6 @@ var PantallaInicio = new Phaser.Class({
         this.load.image("online", "Assets/Interfaces/Text/online.png");
         this.load.image("credits", "Assets/Interfaces/Text/credits.png");
     },
->>>>>>> Stashed changes
 
     create: function () {
         
@@ -344,14 +329,10 @@ var TwoCharacterSelect = new Phaser.Class({
         this.load.image("flechita", "Assets/Interfaces/Buttons/buttonMarker.png");
     },
 
-<<<<<<< Updated upstream
     create: function(){
-=======
-    create: function () {
-
         openConnection();
         characterSelectScene = this;
->>>>>>> Stashed changes
+
         //CREACION ESCENA:
         //Fondo:
         this.add.image(400, 300, 'bg2');
@@ -531,16 +512,12 @@ var TwoCharacterSelect = new Phaser.Class({
             this.marcoPlay.setVisible(false);
             this.play.setFrame(1);
         })
-<<<<<<< Updated upstream
-        this.play.on('pointerup', ()=>{
-            this.scene.start('mainGame');
-=======
+
+
         this.play.on('pointerup', () => {
 
             connectionWebSocket.sendWS("play");
             //this.scene.start('mainGame');
-
->>>>>>> Stashed changes
             this.play.setFrame(0);
             player1T.style.visibility = "hidden";
             player2T.style.visibility = "hidden";
@@ -1124,6 +1101,7 @@ class PantallaPausa extends Phaser.Scene {
         this.exit.on("pointerup", () => {
             document.body.style.cursor = "auto";
             this.scene.wake("mainGame");
+            sceneChangeWebSocket.sendWS('mainGame');
             this.scene.sleep();
         })
         //menu
