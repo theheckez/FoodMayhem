@@ -61,7 +61,7 @@ var PantallaInicio = new Phaser.Class({
   },
 
   preload: function(){
-    this.load.image("logo", "Assets/Logos/LogoI-ScreamWhiteBG.png");
+    this.load.image("logo", "Assets/Logos/logo.png");
     this.load.spritesheet('BotonPlay',
           'Assets/Interfaces/Buttons/PlayPauseButtons/playButton.png',
           { frameWidth: 120, frameHeight: 47 });
@@ -272,6 +272,9 @@ var TwoCharacterSelect = new Phaser.Class({
     },
 
     create: function(){
+
+        openConnection();
+        characterSelectScene = this;
         //CREACION ESCENA:
         //Fondo:
         this.add.image(400, 300, 'bg2');
@@ -454,7 +457,10 @@ var TwoCharacterSelect = new Phaser.Class({
             this.play.setFrame(1);    
         })
         this.play.on('pointerup', ()=>{
-            this.scene.start('mainGame');
+            
+            connectionWebSocket.sendWS("play");
+            //this.scene.start('mainGame');
+          
             this.play.setFrame(0);
             player1T.style.visibility = "hidden";
             player2T.style.visibility = "hidden";
@@ -1041,6 +1047,7 @@ class PantallaPausa extends Phaser.Scene {
         this.exit.on("pointerup", ()=>{
             document.body.style.cursor = "auto";
             this.scene.wake("mainGame");
+            sceneChangeWebSocket.sendWS('mainGame');
             this.scene.sleep();
         })
         //menu
