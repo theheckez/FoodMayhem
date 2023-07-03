@@ -1,0 +1,51 @@
+body{
+  margin: 0 auto;
+}
+
+
+
+/*
+.SectionBackground ::part(image) {
+  object-position: top;
+  object-fit: cover;
+}
+@media (min-width: 720px) {
+  .SectionBackground ::part(image) {
+    object-fit: none;
+  }
+}
+@media (min-width: 2600px) {
+  .SectionBackground ::part(image) {
+    object-fit: cover;
+  }
+}*/
+
+.nk-namebar-input{
+padding:0 0.75rem;
+width: 16em;
+height: 2em;
+text-align: center;
+font-size: 1em;
+font-family: 'estilo';
+/*background-image: linear-gradient(180deg, #ffffff 0%, #9e7aa5 100%);*/
+border-radius: 5px;
+/*text-shadow: 0 4px 8px rgb(0 0 0 / 20%);
+outline: 0.2em;*/
+z-index: 1;
+
+position:fixed;
+top: 330px;
+right: 41.5%; 
+
+visibility: hidden;
+}
+
+*{
+box-sizing: border-box;
+}
+
+input[type-text]{
+writing-mode: horizontal-tb;
+cursor: text;
+
+}

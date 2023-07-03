@@ -1,0 +1,25 @@
+body{
+    margin: 0 auto;
+}
+
+
+.chatContainer 
+{
+    background-color:solid rgba(225, 21, 21, 0.872);
+
+}
+.chatArea 
+{
+    background-color:solid rgba(21, 174, 225, 0.931);
+
+}
+.messages
+{
+    background-color:solid rgba(184, 225, 21, 0.931);
+
+}
+.inputMessage 
+{
+    background-color:solid rgba(21, 225, 99, 0.931);
+
+}
