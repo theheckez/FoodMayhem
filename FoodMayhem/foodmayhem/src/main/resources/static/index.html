@@ -91,7 +91,9 @@ var currentPlayer;
 var trees = [];
 var enemiesList = [];
 var bossesList = [];
-var generateObjects = false;
+var generateTrees = false;
+var generateEnemies = false;
+var generateBosses = false;
 
 
 var music;
@@ -265,9 +267,11 @@ var MainGame = new Phaser.Class({
         {
 
         this.generateEnemies(5, this.enemies, 'malvin');
+        generationWebSocket.sendWS(enemiesList, "enemies");
         this.generateEnemies(1, this.bosses, 'demon');
+        generationWebSocket.sendWS(enemiesList, "demon");
         this.generateTrees(2);
-        generationWebSocket.sendWS(trees, enemiesList);
+        generationWebSocket.sendWS(trees, "trees");
         
         }
        
@@ -365,11 +369,20 @@ var MainGame = new Phaser.Class({
 
         if(isClient)
         {
-          if(generateObjects)
+          if(generateTrees)
           {
             this.ClientGenerateTree();
+            generateTrees = false;
+          }
+          if(generateEnemies)
+          {
             this.ClientGenerateEnemies();
-            generateObjects = false;
+            generateEnemies = false;
+          }
+          if(generateBosses)
+          {
+            this.ClientGenerateBosses();
+            generateBosses = false;
           }
           player2.move();
           movementWebSocket.sendWS(player2.id, player2.x, player2.y, 
@@ -377,6 +390,9 @@ var MainGame = new Phaser.Class({
           
           player2.checkGamepad(this);
            
+          this.bosses.children.each(function (enem) {
+          enem.setScale(2);
+        }, this);
 
           if(player2.control){
           if(player2.pad.isButtonDown(9))
@@ -414,7 +430,7 @@ var MainGame = new Phaser.Class({
           enem.update();
           if(enem.target != undefined)
           {
-            enemyMovementWebSocket.sendWS(enem.id, enem.health,enem.x,enem.y,enem.target.id, enem.direction, enem.module)
+            enemyMovementWebSocket.sendWS(enem.id, enem.health,enem.x,enem.y,enem.target.id, enem.direction, enem.module, "malvin")
           }
           
           }, this);
@@ -422,7 +438,10 @@ var MainGame = new Phaser.Class({
         this.bosses.children.each(function (enem) {
           enem.setScale(2);
           enem.initEnemy(this.players);
-
+          if(enem.target != undefined)
+          {
+            enemyMovementWebSocket.sendWS(enem.id, enem.health,enem.x,enem.y,enem.target.id, enem.direction, enem.module, "demon")
+          }
         }, this);
 
         this.checkforLevel();
@@ -457,6 +476,7 @@ var MainGame = new Phaser.Class({
       },
 
       generateEnemies: function (number, enemies, sprite) {
+        enemiesList = []
         for (var i = 0; i < number; i++) {
           var enemy = enemies.get(Phaser.Math.Between(100, 700),
             Phaser.Math.Between(100, 500), sprite);
@@ -504,10 +524,12 @@ var MainGame = new Phaser.Class({
 
       checkforLevel: function() {
         if(!player1.dead || !player2.dead){
-          if(this.level < 3){
+          if(this.level < 1){
             if(this.enemies.countActive() === 0 && this.bosses.countActive() === 0 ) {
               this.generateEnemies(Phaser.Math.Between(3,10), this.enemies, 'malvin');
+              generationWebSocket.sendWS(enemiesList, "enemies");
               this.generateEnemies(Phaser.Math.Between(0,4), this.bosses, 'demon');
+              generationWebSocket.sendWS(enemiesList, "demon");
               this.level++;
               nxtSound.play();
             }
@@ -547,6 +569,17 @@ var MainGame = new Phaser.Class({
         {
            var enemy = this.enemies.get(enemiesList[i][0],
             enemiesList[i][1], enemiesList[i][2]);
+            enemy.id = i;
+        }
+      },
+
+        ClientGenerateBosses: function()
+      {
+        console.log(bossesList)
+        for(var i = 0; i< bossesList.length; i++)
+        {
+           var enemy = this.bosses.get(bossesList[i][0],
+            bossesList[i][1], bossesList[i][2]);
             enemy.id = i;
         }
       },

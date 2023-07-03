@@ -1487,7 +1487,7 @@ class ResultadoVictoria extends Phaser.Scene {
                 justifyContent: 'center',
             }
         }
-        this.make.text(confN).setText(player1T.value);
+        //this.make.text(confN).setText(player1T.value);
         //this.make.text(confN).setText(player2T.value).setPosition(500, 270);
 
         //Kills
@@ -1634,8 +1634,8 @@ class ResultadoVictoria extends Phaser.Scene {
 
         //SCORES
         this.guardarHS1 = new HighScoreClass(this);
-        this.guardarHS1.checkHighScore(player1T.value, player1.lifeBar.kills);
-        this.guardarHS1.checkHighScore(player2T.value, player2.lifeBar.kills);
+        //this.guardarHS1.checkHighScore(player1T.value, player1.lifeBar.kills);
+       // this.guardarHS1.checkHighScore(player2T.value, player2.lifeBar.kills);
 
         const next = {
             origin: 'center',
