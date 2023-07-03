@@ -364,14 +364,14 @@ Se ha creado un back-end que permite implementar la comunicación entre el clien
 WEBSOCKETS
 
 Se utilizan WebSockets como mecanismo de comunicación asíncrona en el juego. Se han creado 8 clases para los WebSocket por ejemplo, para el chat, el movimiento de los enemigos, la información de cada jugador. A continuación se enumeran todas las clases implementadas:
-	ChatWebSocket.js
-	ConnectionsWebSocket.js
-	EnemyMovementWebSocket.js
-	GenerationWebSocket.js
-	MovementWebSocket.js
-	PlayerInfoWebSocket.js
-	SceneChangeWebSocket.js
-	WebSocketVariables.js
+- ChatWebSocket.js
+- ConnectionsWebSocket.js
+- EnemyMovementWebSocket.js
+- GenerationWebSocket.js
+- MovementWebSocket.js
+- PlayerInfoWebSocket.js
+- SceneChangeWebSocket.js
+- WebSocketVariables.js
 ![Chat](FoodMayhem/foodmayhem/src/main/resources/static/Assets/Scenaries/Map/map1.png)
 
 
