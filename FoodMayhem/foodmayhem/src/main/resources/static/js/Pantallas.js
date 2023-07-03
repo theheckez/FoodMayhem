@@ -68,6 +68,7 @@ var PantallaInicio = new Phaser.Class({
             { frameWidth: 120, frameHeight: 47 });
         this.load.image('marco', "Assets/Interfaces/Buttons/buttonHighlight.png");
         this.load.image("bg", "Assets/Interfaces/Scenes/initialScene.png");
+        this.load.image("login", "Assets/Interfaces/InGame/Backgrounds/pestañaAviso.png");
         this.load.image("flechita", "Assets/Interfaces/Buttons/buttonMarker.png");
         this.load.image("marcador", "Assets/Interfaces/Buttons/buttonHighlight.png");
         this.load.image("local", "Assets/Interfaces/Text/local.png");
@@ -95,6 +96,7 @@ var PantallaInicio = new Phaser.Class({
         var responseText = this.responseText;
         var data = this.dataObj;
         this.startButton = this.add.sprite(955, 950, 'BotonPlay');
+        /*
         this.startButton.setInteractive().on('pointerdown', () => {
             if (name.value != "" && password.value != "") {
                 console.log(url);
@@ -131,35 +133,22 @@ var PantallaInicio = new Phaser.Class({
                     //text.setText('Contraseña incorrecta. Inténtelo de nuevo'); //
                 }
             }
-        });
+        });*/
 
         //this.add.image(this.game.renderer.width/2, this.game.renderer.height*0.20, "star");
         this.add.image(400, 300, "bg");
-        this.logo = this.add.image(game.renderer.width / 2, 200, "logo").setOriginFromFrame('center');
+        this.logo = this.add.image(game.renderer.width / 2, 150, "logo").setOriginFromFrame('center');
         this.logo.setScale(1.2);
-        /*
-        //Modo de juego:
-        const confTittle = {
-            origin: 'center',
-            x: game.renderer.width/2,
-            y: 360,
-            text: 'MODO DE JUEGO',
-            style: {
-                color: '#ffffff',
-                fontSize: 20,
-                fontFamily: 'titulo'
-            }
-        }
-        this.make.text(confTittle);
-        */
-        this.modoLocal = this.add.image(game.renderer.width / 2, 360, "local").setInteractive();
+
+        this.login = this.add.image(game.renderer.width / 2, 340, "login").setScale(0.5);
+        this.modoLocal = this.add.image(game.renderer.width / 2 - 100, 470, "local").setInteractive();
         this.modoLocal.setScale(0.8);
         //this.modoCamp.setAlpha(0.5);
 
-        this.modoOnline = this.add.image(game.renderer.width / 2, 410, "online").setInteractive();
+        this.modoOnline = this.add.image(game.renderer.width / 2 + 100,  470, "online").setInteractive();
         this.modoOnline.setScale(0.8);
 
-        this.modoCredits = this.add.image(game.renderer.width / 2, 500, "credits").setInteractive();
+        this.modoCredits = this.add.image(game.renderer.width - 100, 550, "credits").setInteractive();
         this.modoCredits.setScale(0.7);
 
 
@@ -167,6 +156,11 @@ var PantallaInicio = new Phaser.Class({
         this.flechita = this.add.image(300, 360, "flechita").setVisible(false);
         this.marcador = this.add.image(game.renderer.width / 2, 500, "marcador").setVisible(false);
         this.marcador.setScale(2);
+
+        //***LOGIN***//
+        document.getElementById("namebar").style.visibility = "visible";
+        document.getElementById("password").style.top = '400px';
+        document.getElementById("password").style.visibility = "visible";
 
         /*
         this.playButton = this.add.sprite(400, 600, "BotonPlay").setInteractive();
@@ -179,7 +173,7 @@ var PantallaInicio = new Phaser.Class({
         this.modoLocal.on("pointerover", () => {
             document.body.style.cursor = "pointer";
             this.modoLocal.setScale(1);
-            this.flechita.setPosition(300, 360);
+            this.flechita.setPosition(this.modoLocal.x - 100, this.modoLocal.y,);
             this.flechita.setVisible(true);
         })
 
@@ -203,7 +197,7 @@ var PantallaInicio = new Phaser.Class({
         this.modoOnline.on("pointerover", () => {
             document.body.style.cursor = "pointer";
             this.modoOnline.setScale(1);
-            this.flechita.setPosition(300, 410);
+            this.flechita.setPosition(this.modoOnline.x - 100, this.modoOnline.y);
             this.flechita.setVisible(true);
         })
 
@@ -227,7 +221,7 @@ var PantallaInicio = new Phaser.Class({
         this.modoCredits.on("pointerover", () => {
             document.body.style.cursor = "pointer";
             this.modoCredits.setScale(1);
-            this.flechita.setPosition(280, 500);
+            this.flechita.setPosition(this.modoCredits.x - 150, this.modoCredits.y);
             this.flechita.setVisible(true);
         })
 

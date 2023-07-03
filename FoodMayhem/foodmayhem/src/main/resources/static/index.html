@@ -45,8 +45,8 @@
 <body style="text-align:center">
   
   <div class="bs-intro-text" id="introTextoP1">
-    <input id="namebar" name="player1T" class="nk-namebar-input" type="text" placeholder="Introduce your name...">
-    <input id="namebar2" name="player2T" class="nk-namebar-input" type="text" placeholder="Introduce your name...">
+    <input id="namebar" name="player_User" class="nk-namebar-input" type="text" placeholder="User...">
+    <input id="password" name="player_Password" class="nk-namebar-input" type="text" placeholder="Password...">
     <span class="nk-namebar-indicator"></span>
   </div>
   <div id="hS">
@@ -56,19 +56,19 @@
 </div>
 
 
-  <div class="flex-container">
+  <!--div class="flex-container">
     <div id="content"></div>
     <div id="chatContainer">
       <div class="chatArea">
         <ul id="messages" class="messages"></ul>
-      </div>
-      <input id="inputMessage" class="inputMessage" placeholder="Type here..." type="text">
+      </div-->
+      <!--input id="inputMessage" class="inputMessage" placeholder="Type here..." type="text"-->
 
-<div id="input-form">
+<!--div id="input-form">
   <input type="text" name="name" class="input-style" id="name" placeholder="Usuario" />
   <p></p>
   <input type="password" class="input-style" id="password" name="password" placeholder="Contraseña" />
-</div>
+</div-->
 
 <script type="text/javascript">
 
@@ -102,7 +102,8 @@ var defMusic;
 const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
 const inputMessage = document.getElementById('inputMessage');
 const messages = document.getElementById('messages');
-const player1Name = document.getElementById('namebar');
+const playerName = document.getElementById('namebar');
+const password = document.getElementById('password');
 
 
 window.addEventListener('keydown', event => {
@@ -599,7 +600,7 @@ var MainGame = new Phaser.Class({
       'transparent'
     ]
   },
-  scene: [PantallaCarga, MainGame, PantallaInicio, PantallaCreditos, TwoCharacterSelect, PantallaPausa, ResultadoDerrota, ResultadoVictoria, HighScoresScreen]
+  scene: [/*PantallaCarga, MainGame,*/PantallaInicio, PantallaCreditos, TwoCharacterSelect, PantallaPausa, ResultadoDerrota, ResultadoVictoria, HighScoresScreen]
   };
 
   var game = new Phaser.Game(config);
