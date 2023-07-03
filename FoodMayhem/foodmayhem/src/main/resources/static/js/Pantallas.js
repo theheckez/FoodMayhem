@@ -1488,7 +1488,7 @@ class ResultadoVictoria extends Phaser.Scene {
             }
         }
         this.make.text(confN).setText(player1T.value);
-        this.make.text(confN).setText(player2T.value).setPosition(500, 270);
+        //this.make.text(confN).setText(player2T.value).setPosition(500, 270);
 
         //Kills
         const confKills = {

@@ -9,44 +9,21 @@ enemyMovementWebSocket.onerror = function (e) {
 
 enemyMovementWebSocket.onmessage = function (msg) {
 	var obj = JSON.parse(msg.data);
-	
-	if(obj._dataType == "movement")
-	{
-		gameScene.enemies.children.each(function (enem) {
-			gameScene.ClientUpdateEnemyPosition(enem, obj.enemy_id, obj.enemy_x, obj.enemy_y);
-			  }, gameScene);
-		console.log("Recibo movimientos");
-	} else if (obj._dataType == "target")
-	{
-		if(obj.target == 1)
-		{
-			gameScene.enemies.children.each(function (enem) {
-				gameScene.ClientUpdateEnemyTarget(enem, obj.id, player1);
-				  }, gameScene);
-		} else 
-		{
-			gameScene.enemies.children.each(function (enem) {
-				gameScene.ClientUpdateEnemyTarget(enem, obj.id, player2);
-				  }, gameScene);
-		}
-	} else if (obj.dataType == "damage")
-	{
-		gameScene.enemies.children.each(function (enem) {
-			gameScene.ClientUpdateEnemyTarget(enem, obj.id, obj.enemy_x);
-			  }, gameScene);
-	}
-
-
-	
+	gameScene.enemies.children.each(function (enem) {
+		gameScene.ClientUpdateEnemy(enem, obj.enemy_id,obj.enemy_health, obj.enemy_x, obj.enemy_y, obj.target, obj.enemy_direction, obj.enemy_module);
+		 }, gameScene);
 }
 
-enemyMovementWebSocket.sendWS = function (id, x, y, targetId, dataType) {
+enemyMovementWebSocket.sendWS = function (id, health, x, y, targetId, direction, mod) {
+	console.log("En el websocket se envía: " + id)
 	let message = {
             enemy_id: id,
+			enemy_health: health,
 			enemy_x: x,
 			enemy_y: y,
 			target: targetId,
-			_dataType: dataType
+			enemy_direction: direction,
+			enemy_module: mod
            	
 	};
 
