@@ -354,7 +354,20 @@ Para el escenario se ha utilizado un tileset descargado de it.chio (creado por: 
 
 _______________________________________________________________________
 
-El jugador puede elegir entre cuatro personajes y personalizar el color (sabor del helado).
+
+API REST
+Se ha creado un back-end que permite implementar la comunicación entre el cliente y un servidor utilizando un servicio REST, definir la API REST que ofrecerá el servidor y definir las funciones de gestión de clientes y servidor, así como los datos que se gestionarán usando REST. En nuestro caso se ha utilizado REST para la implementación del login del los usuarios al inicio del juego, para almacenar su nombre y contraseña. También se ha usado para guardar las mejores puntaciones de cada usuario, y mantener actualizada la lista de highscores del juego.
+
+WEBSOCKETS
+Se utilizan WebSockets como mecanismo de comunicación asíncrona en el juego. Se han creado 8 clases para los WebSocket por ejemplo, para el chat, el movimiento de los enemigos, la información de cada jugador. A continuación se enumeran todas las clases implementadas:
+	ChatWebSocket.js
+	ConnectionsWebSocket.js
+	EnemyMovementWebSocket.js
+	GenerationWebSocket.js
+	MovementWebSocket.js
+	PlayerInfoWebSocket.js
+	SceneChangeWebSocket.js
+	WebSocketVariables.js
 
 
 
