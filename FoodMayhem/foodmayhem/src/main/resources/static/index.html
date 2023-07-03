@@ -45,8 +45,8 @@
 <body style="text-align:center">
   
   <div class="bs-intro-text" id="introTextoP1">
-    <input id="namebar" name="player1T" class="nk-namebar-input" type="text" placeholder="Introduce your name...">
-    <input id="namebar2" name="player2T" class="nk-namebar-input" type="text" placeholder="Introduce your name...">
+    <input id="namebar" name="player_User" class="nk-namebar-input" type="text" placeholder="User...">
+    <input id="password" name="player_Password" class="nk-namebar-input" type="text" placeholder="Password...">
     <span class="nk-namebar-indicator"></span>
   </div>
   <div id="hS">
@@ -56,19 +56,19 @@
 </div>
 
 
-  <div class="flex-container">
+  <!--div class="flex-container">
     <div id="content"></div>
     <div id="chatContainer">
       <div class="chatArea">
         <ul id="messages" class="messages"></ul>
-      </div>
-      <input id="inputMessage" class="inputMessage" placeholder="Type here..." type="text">
+      </div-->
+      <!--input id="inputMessage" class="inputMessage" placeholder="Type here..." type="text"-->
 
-<div id="input-form">
+<!--div id="input-form">
   <input type="text" name="name" class="input-style" id="name" placeholder="Usuario" />
   <p></p>
   <input type="password" class="input-style" id="password" name="password" placeholder="Contraseña" />
-</div>
+</div-->
 
 <script type="text/javascript">
 
@@ -100,9 +100,10 @@ var victoryMusic;
 var defMusic;
 
 const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
-const inputMessage = document.getElementById('inputMessage');
-const messages = document.getElementById('messages');
-const player1Name = document.getElementById('namebar');
+//const inputMessage = document.getElementById('inputMessage');
+//const messages = document.getElementById('messages');
+var playerName;
+var password;
 
 
 window.addEventListener('keydown', event => {
@@ -370,6 +371,9 @@ var MainGame = new Phaser.Class({
             this.ClientGenerateEnemies();
             generateObjects = false;
           }
+          player2.move();
+          movementWebSocket.sendWS(player2.id, player2.x, player2.y, 
+          player2.padMovement,player2.keys['up'].isDown,player2.keys['left'].isDown, player2.keys['down'].isDown ,player2.keys['right'].isDown,player2.keys['attack'].isDown);
           
           player2.checkGamepad(this);
            
@@ -385,14 +389,18 @@ var MainGame = new Phaser.Class({
         
         }
 
-        player1.move();
-        player2.move();
+  
+       
        
         if(isHost)
         {
-        //updateChat();
+
+        player1.move();
         
-      
+        
+        movementWebSocket.sendWS(player1.id, player1.x, player1.y, 
+        player1.padMovement,player1.keys['up'].isDown,player1.keys['left'].isDown, player1.keys['down'].isDown ,player1.keys['right'].isDown,player1.keys['attack'].isDown);
+
         if (Phaser.Input.Keyboard.JustDown(player1.keys['esc']))
         {
           this.scene.launch("PantallaPausa");
@@ -400,7 +408,16 @@ var MainGame = new Phaser.Class({
           this.scene.sleep();
         }
 
-        
+        this.enemies.children.each(function (enem) {
+          enem.initEnemy(this.players);
+          enem.setSize(30, 30);
+          enem.update();
+          if(enem.target != undefined)
+          {
+            enemyMovementWebSocket.sendWS(enem.id, enem.health,enem.x,enem.y,enem.target.id, enem.direction, enem.module)
+          }
+          
+          }, this);
 
         this.bosses.children.each(function (enem) {
           enem.setScale(2);
@@ -411,13 +428,6 @@ var MainGame = new Phaser.Class({
         this.checkforLevel();
 
         }
-
-        this.enemies.children.each(function (enem) {
-          enem.initEnemy(this.players);
-          enem.setSize(30, 30);
-          enem.update();
-        }, this);
-
       },
 
       initCollisions: function () {
@@ -541,28 +551,53 @@ var MainGame = new Phaser.Class({
         }
       },
 
-      ClientUpdateEnemyPosition: function(enemy, enemyId, posX, posY)
-      {
+      ClientUpdateEnemy: function(enemy, enemyId, enemyHealth, posX, posY, targetId, direction, mod)
+      {   
           if (enemy.id == enemyId)
           {
-            enemy.x = posX;
-            enemy.y = posY;
-          }
-      },
+            console.log(enemy.id)
+            enemy.health = enemyHealth;
 
-      ClientUpdateEnemyTarget: function(enemy, enemyId, player)
-      {
-          if (enemy.id == enemyId)
-          {
-            enemy.target = player
-          }
-      },
+            if(enemy.health <= 0 && !enemy.dead)
+            {
+              enemy.setVelocity(0);
+              enemy.dead = true;  
+              enemy.anims.play('malvinDeath',true);
+            }
 
-      ClientUpdateEnemyTarget: function(enemy, enemyId, value)
-      {
-          if (enemy.id == enemyId)
-          {
-            enemy.health = value
+            if(enemy.dead){
+              enemy.death.play();
+              gameScene.time.delayedCall(1000, () => {
+              enemy.destroy();
+              });
+            } 
+            else {
+              enemy.x = posX;
+              enemy.y = posY;
+              
+              if(mod < enemy.attackRange) {
+                enemy.actualTime = enemy.scene.time.now/1000;
+  
+                if(enemy.actualTime>(enemy.timeSinceLastIncrement+enemy.attackCooldown)){
+                  enemy.anims.play('malvinAttack', true);
+                  enemy.timeSinceLastIncrement = gameScene.time.now/1000;
+                }
+              }
+              else if(direction.y>0){
+                if(enemy.spriteName.move !== undefined)enemy.anims.play(enemy.spriteName.move,true);
+              } else if(direction.y<0) {
+                if(enemy.spriteName.moveU !== undefined){enemy.anims.play(enemy.spriteName.moveU,true)}else{
+                  enemy.anims.play(enemy.spriteName.move,true)
+                }
+              }
+
+              if(targetId == 1)
+              {
+                enemy.target = player1;
+              } else{
+                enemy.target = player2;
+              }
+            }
           }
       }
 

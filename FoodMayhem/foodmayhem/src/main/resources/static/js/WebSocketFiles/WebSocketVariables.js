@@ -11,7 +11,6 @@ var movementWebSocket = new WebSocket(movementPath);
 var connectionPath = 'ws://127.0.0.1:8080/sessions';
 var connectionWebSocket;
 
-
 var generationPath = 'ws://127.0.0.1:8080/randomGeneration';
 var generationWebSocket = new WebSocket(generationPath);
 

@@ -10,8 +10,6 @@ playerInfoWebSocket.onerror = function (e) {
 playerInfoWebSocket.onmessage = function (msg) {
 	var obj = JSON.parse(msg.data);
 
-    console.log("Jugador :" + obj.id + " con valor: " + obj._value + " y tipo de valor: " + obj.dataType);
-
     if(obj._dataType == "health")
     {
         if(obj.id == 1)

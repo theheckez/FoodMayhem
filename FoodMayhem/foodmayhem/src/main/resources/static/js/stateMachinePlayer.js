@@ -44,15 +44,12 @@ class StateMachine {
     enter(scene,player) {
       player.setVelocity(0);
       player.anims.play(player.spriteName.idle);
-      movementWebSocket.sendWS(player.id, player.x, player.y, 
-      player.padMovement,player.keys['up'].isDown,player.keys['left'].isDown, player.keys['down'].isDown ,player.keys['right'].isDown,player.keys['attack'].isDown);
+      
       
     }
   
-    execute(scene, player) {
-      console.log("Id de jugador:" + player.id + "y soy Host?: " + isHost )
-    
-         if (player.keys['attack'].isDown  || player.isAttacking ) {
+    execute(scene, player) { 
+         if (player.keys['attack'].isDown) {
       this.stateMachine.transition('attack');
       return;
     }
@@ -99,38 +96,8 @@ class StateMachine {
         this.stateMachine.transition('distAttack');
         return;
       }
-  
-      if(currentPlayer != player.id)
-      {
-        player.setVelocity(0);
-  
-        if ( player.dirLeft) {
-          player.setVelocityX(-100);
-          player.direction = 'left';
-          player.anims.play(player.spriteName.left, true);
-        } else if ( player.dirRight) {
-          player.setVelocityX(100);
-          player.direction = 'right';
-          player.anims.play(player.spriteName.right, true);
-        }
-        if ( player.dirUp) {
-          player.setVelocityY(-player.speed);
-          player.direction = 'up';
-          player.anims.play(player.spriteName.up, true);
-        } else if (player.dirDown) {
-          player.setVelocityY(player.speed);
-          player.direction = 'down';
-          player.anims.play(player.spriteName.down, true);
-        }
-    
-        if (!(player.dirDown || player.dirUp ||
-          player.dirLeft  || player.dirRight)) {
-    
-          this.stateMachine.transition('idle');
-          return;
-      }
-    }
-      else if(player.control){
+
+    if(player.control){
   
       player.setVelocity(0);
   
@@ -167,7 +134,9 @@ class StateMachine {
   
     } else {
         player.setVelocity(0);
-  
+
+        if(currentPlayer != player.id) return;
+
         if (!(player.keys['left'].isDown || player.keys['up'].isDown ||
         player.keys['down'].isDown  || player.keys['right'].isDown)) {
   
@@ -193,8 +162,7 @@ class StateMachine {
           player.direction = 'down';
           player.anims.play(player.spriteName.down, true);
         }
-  
-        movementWebSocket.sendWS(player.id, player.x, player.y, player.padMovement,player.keys['up'].isDown, player.keys['left'].isDown, player.keys['down'].isDown ,player.keys['right'].isDown, player.keys['attack'].isDown);
+
     }
    
      
@@ -223,9 +191,7 @@ class StateMachine {
             return;
             }
             
-              enemy.getTarget();
-            if(isHost)enemyMovementWebSocket.sendWS(enemy.id, enemy.x, enemy.y, enemy.target.id, "target");
-            
+            enemy.getTarget();      
             enemy.direction = new Phaser.Math.Vector2(enemy.target.x - enemy.x, enemy.target.y - enemy.y);
             enemy.module = enemy.direction.length();
       
@@ -237,7 +203,7 @@ class StateMachine {
               } else{
               enemy.setVelocityX((enemy.direction.x/enemy.module) * enemy.speed);
               enemy.setVelocityY((enemy.direction.y/enemy.module) * enemy.speed);
-              if(isHost) enemyMovementWebSocket.sendWS(enemy.id, enemy.x, enemy.y, enemy.target, "movement");
+
               }
       
               if(enemy.direction.y>0){
@@ -298,7 +264,6 @@ class StateMachine {
       enter(scene, enemy) {
   
         enemy.health -= enemy.attackerDmg;
-        if(isHost) enemyMovementWebSocket.sendWS(enemy.id, enemy.health, enemy.y, enemy.target.id, "damage");
 
         if(enemy.health <= 0 && !enemy.dead){
           enemy.setVelocity(0);
@@ -307,21 +272,21 @@ class StateMachine {
           enemy.anims.play('malvinDeath',true);
         }
   
-        if(enemy.dead){
-          enemy.death.play();
-          scene.time.delayedCall(1000, () => {
-            if(enemy.attackerID === 0) {
-              player1.lifeBar.kills++;
-              playerInfoWebSocket.sendWS(player1.id, player1.lifeBar.kills, "score");
-              player1.lifeBar.count();
-            } else if(enemy.attackerID === 1) {
-              player2.lifeBar.kills++;
-              playerInfoWebSocket.sendWS(player2.id, player2.lifeBar.kills, "score");
-              player2.lifeBar.count();
-            }
-            enemy.destroy();
-          });
-        } else {
+          if(enemy.dead){
+            enemy.death.play();
+            scene.time.delayedCall(1000, () => {
+              if(enemy.attackerID === 0) {
+                player1.lifeBar.kills++;
+                playerInfoWebSocket.sendWS(player1.id, player1.lifeBar.kills, "score");
+                player1.lifeBar.count();
+              } else if(enemy.attackerID === 1) {
+                player2.lifeBar.kills++;
+                playerInfoWebSocket.sendWS(player2.id, player2.lifeBar.kills, "score");
+                player2.lifeBar.count();
+              }
+              enemy.destroy();
+            });
+          } else {
             this.stateMachine.transition('move');
         }
       }
