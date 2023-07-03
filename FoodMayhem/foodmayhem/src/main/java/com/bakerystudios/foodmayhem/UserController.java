@@ -17,8 +17,8 @@ public class UserController {
 	
 	private Map<String, User> activeUsers = new HashMap<String, User>();
 	
-	String usersFileURL = "src/main/resources/static/db/users.txt"; // Files users
-	String tempUsersFileURL = "src/main/resources/static/db/tempUsers.txt"; // File used to delete one user
+	String usersFileURL = "C:\\Users\\menec\\Documents\\GitHub\\FoodMayhem\\FoodMayhem\\foodmayhem\\src\\main\\resources\\static\\db\\users.txt"; // Files users
+	String tempUsersFileURL = "C:\\Users\\menec\\Documents\\GitHub\\FoodMayhem\\FoodMayhem\\foodmayhem\\src\\main\\resources\\static\\db\\tempUsers.txt"; // File used to delete one user
 	
 	public UserController() 
 	{
@@ -90,6 +90,7 @@ public class UserController {
     	String nickname = newUser.getNick();	// Uses the user nick as key
     	String password = newUser.getPassword();
     	System.out.println(nickname);
+		System.out.println(password);
     	if(!users.containsKey(nickname)) // if the user doesn't exist
     	{
     		users.put(nickname, newUser); // we add the new user

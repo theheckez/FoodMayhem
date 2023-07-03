@@ -80,8 +80,6 @@ var PantallaInicio = new Phaser.Class({
         
         //login
         //var element = document.getElementById("input-form");
-        let name = document.getElementById("name");
-        let password = document.getElementById("password");
         var mode;
 
         let text = this.add.text(350, 650, '', {
@@ -120,9 +118,13 @@ var PantallaInicio = new Phaser.Class({
         this.marcador.setScale(2);
 
         //***LOGIN***//
-        document.getElementById("namebar").style.visibility = "visible";
-        document.getElementById("password").style.top = '390px';
-        document.getElementById("password").style.visibility = "visible";
+        let name = document.getElementById("namebar");
+        name.style.visibility = "visible";
+        let passwordo = document.getElementById("password");
+        passwordo.style.top = '390px';
+      
+        passwordo.style.visibility = "visible";
+        this.url = window.location.href;
 
         
         this.playButton = this.add.sprite(game.renderer.width / 2, 520, "BotonPlay").setInteractive();
@@ -218,12 +220,15 @@ var PantallaInicio = new Phaser.Class({
         this.playButton.on("pointerdown", ()=>{
           this.playButton.setFrame(2);
         })
-    
+        
+
         this.playButton.on("pointerup", ()=>{
             document.body.style.cursor = "auto";
-            if (name.value != "" && password.value != "") {
-                console.log(url);
+            if (name.value != "" && passwordo.value != "") {
+               
+                console.log(this.url);
                 console.log(name.value);
+                console.log(passwordo.value)
                 $.ajax({
                     type: "POST",
                     async: false,
@@ -231,29 +236,32 @@ var PantallaInicio = new Phaser.Class({
                         'Accept': 'application/json',
                         'Content-type': 'application/json'
                     },
-                    url: url + "users",
-                    data: JSON.stringify({ nick: "" + name.value, password: "" + password.value }),
+                    url: this.url + "users",
+                    data: JSON.stringify({nick: "" + name.value, password: "" + passwordo.value }),
                     dataType: "json",
                     success: function (boolean) { // returned variable to check if we can change the scene
                         change = boolean;
                     }
                 }).done(function (item) {
-                    console.log("User created: " + JSON.stringify({ nickname: "" + name.value, password: "" + password.value }));
+                    console.log("User created: " + JSON.stringify({ nickname: "" + name.value, pass: "" + passwordo.value}));
+                    
                 })
 
                 // Starts the next scene
                 if (change) { //Si el usuario y contraseña existen y estan bien o no existen, se crea uno nuevo y se inicia la escena
-                    this.responseText.setFrame(0);
-                    this.responseText.setVisible(true);
+                    //this.responseText.setFrame(0);
+                    //this.responseText.setVisible(true);
                     //this.scene.stop();
-                    this.dataObj.username = name.value;
-                    this.dataObj.url = url;
-                    this.time.addEvent({ delay: 1000, callback: countdownFunction, callbackScope: this, loop: true });
+                    //this.dataObj.username = this.name.value;
+                    //this.dataObj.url = this.url;
+                    //this.time.addEvent({ delay: 1000, callback: countdownFunction, callbackScope: this, loop: true });
                     //this.scene.start('lobby', data);
                     this.scene.start("chSelect");
                 } else { // Si existe el usuario introducido pero la contraseña no es la guardada en el servidor, le decimos que intente de nuevo
-                    this.responseText.setFrame(2);
-                    this.responseText.setVisible(true);
+                    //this.responseText.setFrame(2);
+                    //this.responseText.setVisible(true);
+                    console.log(name);
+                    console.log(passwordo)
                     console.log("Nope");
                     //text.setText('Contraseña incorrecta. Inténtelo de nuevo'); //
                 }
@@ -348,8 +356,8 @@ var TwoCharacterSelect = new Phaser.Class({
         //Nombre jugador 1:
         document.getElementById("namebar").style.visibility = "visible";
         //Nombre jugador 2:
-        document.getElementById("namebar2").style.marginLeft = '60px';
-        document.getElementById("namebar2").style.visibility = "visible";
+        //document.getElementById("namebar2").style.marginLeft = '60px';
+       // document.getElementById("namebar2").style.visibility = "visible";
 
         //Botones aceptar: bloquean introducir nombre y van a siguiente pantalla
         this.aceptar1 = this.add.sprite(210, 380, "aceptar").setInteractive();
@@ -426,12 +434,12 @@ var TwoCharacterSelect = new Phaser.Class({
         this.aceptar2.on("pointerdown", () => {
             this.marco2.setVisible(false);
             this.aceptar2.setFrame(1);
-            player2T = document.getElementById("namebar2");
-            if (player2T.value == "") document.getElementById("namebar2").value = "Player2";
+           // player2T = document.getElementById("namebar2");
+            //if (player2T.value == "") document.getElementById("namebar2").value = "Player2";
             this.ready2 = 1;
-            console.log("Player2:" + player2T.value);
+           // console.log("Player2:" + player2T.value);
             this.aceptar2.disableInteractive();
-            player2T.disabled = true;
+            //player2T.disabled = true;
         })
         this.aceptar2.on("pointerup", () => {
             document.body.style.cursor = "auto";
@@ -512,7 +520,7 @@ var TwoCharacterSelect = new Phaser.Class({
             //this.scene.start('mainGame');
             this.play.setFrame(0);
             player1T.style.visibility = "hidden";
-            player2T.style.visibility = "hidden";
+           // player2T.style.visibility = "hidden";
         })
 
         //Modos juego
