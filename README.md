@@ -4,7 +4,7 @@
 ![Logo del juego](https://github.com/theheckez/FoodMayhem/blob/main/logo/LogoI-Scream.png)
 
 ## Game Design Document
-![Inicio](https://github.com/theheckez/FoodMayhem/blob/main/CapturasInterfaz/PantallaInicio.png)
+![Logo del equipo](https://github.com/theheckez/FoodMayhem/foodmayhem/src/main/resources/static/Assets/Logos/BakeryStudiosLogo.png)
 __Juegos en Red
 Curso 2022/23__
 
