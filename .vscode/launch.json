@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-FoodmayhemApplication<foodmayhem>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.bakerystudios.foodmayhem.FoodmayhemApplication",
+            "projectName": "foodmayhem",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
