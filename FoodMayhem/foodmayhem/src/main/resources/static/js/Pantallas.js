@@ -65,10 +65,9 @@ var PantallaInicio = new Phaser.Class({
         this.load.image("logo", "Assets/Logos/logo.png");
         this.load.spritesheet('BotonPlay',
             'Assets/Interfaces/Buttons/PlayPauseButtons/playButton.png',
-            { frameWidth: 64, frameHeight: 47 });
+            { frameWidth: 120, frameHeight: 47 });
         this.load.image('marco', "Assets/Interfaces/Buttons/buttonHighlight.png");
         this.load.image("bg", "Assets/Interfaces/Scenes/initialScene.png");
-        this.load.image("login", "Assets/Interfaces/InGame/Backgrounds/pestañaAviso.png");
         this.load.image("flechita", "Assets/Interfaces/Buttons/buttonMarker.png");
         this.load.image("marcador", "Assets/Interfaces/Buttons/buttonHighlight.png");
         this.load.image("local", "Assets/Interfaces/Text/local.png");
@@ -79,10 +78,9 @@ var PantallaInicio = new Phaser.Class({
     create: function () {
         
         //login
-        //var element = document.getElementById("input-form");
+        var element = document.getElementById("input-form");
         let name = document.getElementById("name");
         let password = document.getElementById("password");
-        var mode;
 
         let text = this.add.text(350, 650, '', {
             fontFamily: 'tilesFont',
@@ -91,136 +89,13 @@ var PantallaInicio = new Phaser.Class({
         }).setScale(2);
 
 
-        //this.responseText = this.add.sprite(650, 550, 'BotonPlay', 0).setOrigin(0, 0);
-        //this.responseText.setVisible(false);
+        this.responseText = this.add.sprite(650, 550, 'BotonPlay', 0).setOrigin(0, 0);
+        this.responseText.setVisible(false);
         let change = false; // boolean to change scene (at first is set to false)
         var responseText = this.responseText;
         var data = this.dataObj;
-        //this.startButton = this.add.sprite(955, 950, 'BotonPlay');
-
-        //this.add.image(this.game.renderer.width/2, this.game.renderer.height*0.20, "star");
-        this.add.image(400, 300, "bg");
-        this.logo = this.add.image(game.renderer.width / 2, 100, "logo").setOriginFromFrame('center');
-        this.logo.setScale(1.2);
-
-        this.login = this.add.image(game.renderer.width / 2, 310, "login").setScale(0.5);
-        this.modoLocal = this.add.image(game.renderer.width / 2 - 100, 450, "local").setInteractive();
-        this.modoLocal.setScale(0.8);
-        //this.modoCamp.setAlpha(0.5);
-
-        this.modoOnline = this.add.image(game.renderer.width / 2 + 100,  450, "online").setInteractive();
-        this.modoOnline.setScale(0.8);
-
-        this.modoCredits = this.add.image(game.renderer.width - 100, 550, "credits").setInteractive();
-        this.modoCredits.setScale(0.7);
-
-        //Interaccion modos de juego:
-        this.flechita = this.add.image(300, 360, "flechita").setVisible(false);
-        this.marcador = this.add.image(game.renderer.width / 2, 500, "marcador").setVisible(false);
-        this.marcador.setScale(2);
-
-        //***LOGIN***//
-        document.getElementById("namebar").style.visibility = "visible";
-        document.getElementById("password").style.top = '390px';
-        document.getElementById("password").style.visibility = "visible";
-
-        
-        this.playButton = this.add.sprite(game.renderer.width / 2, 520, "BotonPlay").setInteractive();
-        this.playButton.setScale(2);
-
-        //Interaccion botones
-        //Modo Local
-        this.modoLocal.on("pointerover", () => {
-            document.body.style.cursor = "pointer";
-            this.modoLocal.setScale(1);
-            this.flechita.setPosition(this.modoLocal.x - 100, this.modoLocal.y,);
-            this.flechita.setVisible(true);
-        })
-
-        this.modoLocal.on("pointerout", () => {
-            document.body.style.cursor = "auto";
-            this.modoLocal.setScale(0.8);
-            this.flechita.setVisible(false);
-        })
-
-        this.modoLocal.on("pointerdown", () => {
-            //this.playButton.setFrame(1);
-            this.modoLocal.setAlpha(0.8);
-            this.modoOnline.setAlpha(1);
-        })
-
-        this.modoLocal.on("pointerup", () => {
-            document.body.style.cursor = "auto";
-            //this.scene.start("chSelect");
-            mode = "Local"
-        })
-        //Modo Online
-        this.modoOnline.on("pointerover", () => {
-            document.body.style.cursor = "pointer";
-            this.modoOnline.setScale(1);
-            this.flechita.setPosition(this.modoOnline.x - 100, this.modoOnline.y);
-            this.flechita.setVisible(true);
-        })
-
-        this.modoOnline.on("pointerout", () => {
-            document.body.style.cursor = "auto";
-            this.modoOnline.setScale(0.8);
-            this.flechita.setVisible(false);
-        })
-
-        this.modoOnline.on("pointerdown", () => {
-            //this.playButton.setFrame(1);
-            //this.marco.setVisible(false);
-            this.modoOnline.setAlpha(0.8);
-            this.modoLocal.setAlpha(1);
-        })
-
-        this.modoOnline.on("pointerup", () => {
-            document.body.style.cursor = "auto";
-            mode = "Online";
-            //this.scene.start("chSelect");
-        })
-        //Creditos
-        this.modoCredits.on("pointerover", () => {
-            document.body.style.cursor = "pointer";
-            this.modoCredits.setScale(1);
-            this.flechita.setPosition(this.modoCredits.x - 150, this.modoCredits.y);
-            this.flechita.setVisible(true);
-        })
-
-        this.modoCredits.on("pointerout", () => {
-            document.body.style.cursor = "auto";
-            this.modoCredits.setScale(0.8);
-            this.flechita.setVisible(false);
-        })
-
-        this.modoCredits.on("pointerdown", () => {
-            //this.playButton.setFrame(1);
-            //this.marco.setVisible(false);
-            this.modoCredits.setAlpha(0.8);
-        })
-
-        this.modoCredits.on("pointerup", () => {
-            document.body.style.cursor = "auto";
-            this.scene.start("PantallaCreditos");
-        })
-
-        this.playButton.on("pointerover", ()=>{
-          document.body.style.cursor = "pointer";
-          this.playButton.setFrame(1);
-        })
-    
-        this.playButton.on("pointerout", ()=>{
-          document.body.style.cursor = "auto";
-          this.playButton.setFrame(0);
-        })
-    
-        this.playButton.on("pointerdown", ()=>{
-          this.playButton.setFrame(2);
-        })
-    
-        this.playButton.on("pointerup", ()=>{
-            document.body.style.cursor = "auto";
+        this.startButton = this.add.sprite(955, 950, 'BotonPlay');
+        this.startButton.setInteractive().on('pointerdown', () => {
             if (name.value != "" && password.value != "") {
                 console.log(url);
                 console.log(name.value);
@@ -250,15 +125,148 @@ var PantallaInicio = new Phaser.Class({
                     this.dataObj.url = url;
                     this.time.addEvent({ delay: 1000, callback: countdownFunction, callbackScope: this, loop: true });
                     //this.scene.start('lobby', data);
-                    this.scene.start("chSelect");
                 } else { // Si existe el usuario introducido pero la contraseña no es la guardada en el servidor, le decimos que intente de nuevo
                     this.responseText.setFrame(2);
                     this.responseText.setVisible(true);
-                    console.log("Nope");
                     //text.setText('Contraseña incorrecta. Inténtelo de nuevo'); //
                 }
             }
+        });
+
+        //this.add.image(this.game.renderer.width/2, this.game.renderer.height*0.20, "star");
+        this.add.image(400, 300, "bg");
+        this.logo = this.add.image(game.renderer.width / 2, 200, "logo").setOriginFromFrame('center');
+        this.logo.setScale(1.2);
+        /*
+        //Modo de juego:
+        const confTittle = {
+            origin: 'center',
+            x: game.renderer.width/2,
+            y: 360,
+            text: 'MODO DE JUEGO',
+            style: {
+                color: '#ffffff',
+                fontSize: 20,
+                fontFamily: 'titulo'
+            }
+        }
+        this.make.text(confTittle);
+        */
+        this.modoLocal = this.add.image(game.renderer.width / 2, 360, "local").setInteractive();
+        this.modoLocal.setScale(0.8);
+        //this.modoCamp.setAlpha(0.5);
+
+        this.modoOnline = this.add.image(game.renderer.width / 2, 410, "online").setInteractive();
+        this.modoOnline.setScale(0.8);
+
+        this.modoCredits = this.add.image(game.renderer.width / 2, 500, "credits").setInteractive();
+        this.modoCredits.setScale(0.7);
+
+
+        //Interaccion modos de juego:
+        this.flechita = this.add.image(300, 360, "flechita").setVisible(false);
+        this.marcador = this.add.image(game.renderer.width / 2, 500, "marcador").setVisible(false);
+        this.marcador.setScale(2);
+
+        /*
+        this.playButton = this.add.sprite(400, 600, "BotonPlay").setInteractive();
+        this.marco = this.add.image(400, 600, 'marco').setVisible(false);
+        this.marco.setScale(1.2);
+        */
+
+        //Interaccion botones
+        //Modo Local
+        this.modoLocal.on("pointerover", () => {
+            document.body.style.cursor = "pointer";
+            this.modoLocal.setScale(1);
+            this.flechita.setPosition(300, 360);
+            this.flechita.setVisible(true);
         })
+
+        this.modoLocal.on("pointerout", () => {
+            document.body.style.cursor = "auto";
+            this.modoLocal.setScale(0.8);
+            this.flechita.setVisible(false);
+        })
+
+        this.modoLocal.on("pointerdown", () => {
+            //this.playButton.setFrame(1);
+            //this.marco.setVisible(false);
+            this.modoLocal.setAlpha(0.8);
+        })
+
+        this.modoLocal.on("pointerup", () => {
+            document.body.style.cursor = "auto";
+            this.scene.start("chSelect");
+        })
+        //Modo Online
+        this.modoOnline.on("pointerover", () => {
+            document.body.style.cursor = "pointer";
+            this.modoOnline.setScale(1);
+            this.flechita.setPosition(300, 410);
+            this.flechita.setVisible(true);
+        })
+
+        this.modoOnline.on("pointerout", () => {
+            document.body.style.cursor = "auto";
+            this.modoOnline.setScale(0.8);
+            this.flechita.setVisible(false);
+        })
+
+        this.modoOnline.on("pointerdown", () => {
+            //this.playButton.setFrame(1);
+            //this.marco.setVisible(false);
+            this.modoOnline.setAlpha(0.8);
+        })
+
+        this.modoOnline.on("pointerup", () => {
+            document.body.style.cursor = "auto";
+            this.scene.start("chSelect");
+        })
+        //Creditos
+        this.modoCredits.on("pointerover", () => {
+            document.body.style.cursor = "pointer";
+            this.modoCredits.setScale(1);
+            this.flechita.setPosition(280, 500);
+            this.flechita.setVisible(true);
+        })
+
+        this.modoCredits.on("pointerout", () => {
+            document.body.style.cursor = "auto";
+            this.modoCredits.setScale(0.8);
+            this.flechita.setVisible(false);
+        })
+
+        this.modoCredits.on("pointerdown", () => {
+            //this.playButton.setFrame(1);
+            //this.marco.setVisible(false);
+            this.modoCredits.setAlpha(0.8);
+        })
+
+        this.modoCredits.on("pointerup", () => {
+            document.body.style.cursor = "auto";
+            this.scene.start("PantallaCreditos");
+        })
+        /*
+        this.playButton.on("pointerover", ()=>{
+          document.body.style.cursor = "pointer";
+          this.marco.setVisible(true);
+        })
+    
+        this.playButton.on("pointerout", ()=>{
+          document.body.style.cursor = "auto";
+          this.marco.setVisible(false);
+        })
+    
+        this.playButton.on("pointerdown", ()=>{
+          this.playButton.setFrame(1);
+          this.marco.setVisible(false);
+        })
+    
+        this.playButton.on("pointerup", ()=>{
+          document.body.style.cursor = "auto";
+          this.scene.start("chSelect");
+        })*/
     },
 });
 

@@ -1,4 +1,7 @@
-adri;bizcoxito;0
-rosa;nsqesesto;0
-nerea;asies;0
-santi;ago;0
+santy;null;0
+123;null;0
+aa;null;0
+;null;0
+qwe;null;0
+1234;null;0
+456;asdzx;0

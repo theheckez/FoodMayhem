@@ -10,7 +10,6 @@ chatWebSocket.onerror = function (e) {
 
 chatWebSocket.onmessage = function (msg) {
 	var obj = JSON.parse(msg.data);
-    obj._nick += ': ';
 
 	console.log(obj);
 	const usernameSpan = document.createElement('span');
