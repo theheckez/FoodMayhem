@@ -34,8 +34,10 @@ body{
   z-index: 1;
 
   position:fixed;
-  top: 350px;
+  top: 330px;
   right: 41.5%; 
+
+  visibility: hidden;
 }
 
 *{
