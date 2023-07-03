@@ -46,9 +46,42 @@
   
   <div class="bs-intro-text" id="introTextoP1">
     <input id="namebar" name="player_User" class="nk-namebar-input" type="text" placeholder="User...">
-    <input id="password" name="player_Password" class="nk-namebar-input" type="text" placeholder="Password...">
+    <input id="password" name="player_Password" class="nk-namebar-input" type="text" placeholder="Password..."> 
+    <input id="inputChat" name="player_write" class="nk-messagesContainer-output" type="text" placeholder="Send...">
+    <div class="input-group-append btn-sendMessage">
+      <input type="submit" class="btn btn-warning">
+    </div>
     <span class="nk-namebar-indicator"></span>
   </div>
+
+  <div id="chat" class="nk-showMessages-container"></div>
+  <!--div class="--dark-theme" id="chat">
+    <div class="col-md-6 mt4">
+      <div class="card">
+        <div class="card-header">
+          <g4>CHAT</g4>
+        </div>
+        <div id="chatCard" class="card-body"></div>
+        <from id="message-form" class="class-footer">
+          <div class="input-group">
+            <input id="inputChat" name="chatContainer" class="nk-chatContainer-input" type="text" placeholder="WriteHere...">
+            <div class="input-group-append">
+              <input type="submit" class="btn btn-warning">
+            </div>
+          </div>
+        </from>
+      </div>
+    </div>
+  </div-->
+  <!--div id="chatContainer" class="flex-container">
+    <div id="othersMessages" class ="nk-chatArea-input">
+      <ul id="messages" class="messages"></ul>
+    </div>
+    <div id="writeSection">
+      <input id="newMessage" class="nk-messageBar-input" type="text" placeholder="Chat here...">
+    </div>
+  </div-->
+
   <div id="hS">
     <h1 id="finalScore"></h1>
     <ul id="highScores"></ul>
@@ -600,7 +633,7 @@ var MainGame = new Phaser.Class({
       'transparent'
     ]
   },
-  scene: [PantallaCarga, MainGame, PantallaInicio, PantallaCreditos, TwoCharacterSelect, PantallaPausa, ResultadoDerrota, ResultadoVictoria, HighScoresScreen]
+  scene: [/*PantallaCarga, MainGame, PantallaInicio, PantallaCreditos, */TwoCharacterSelect, PantallaPausa, ResultadoDerrota, ResultadoVictoria, HighScoresScreen]
   };
 
   var game = new Phaser.Game(config);
