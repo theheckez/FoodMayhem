@@ -236,9 +236,9 @@ _______________________________________________________________________
 	 Se ha añadido una pantalla de carga.
 _______________________________________________________________________	
 #### Pantalla Carga
-![PantallaCarga](https://github.com/theheckez/FoodMayhem/blob/main/CapturasInterfaz/PantallaCarga.JPG)
+![PantallaCarga](https://github.com/theheckez/FoodMayhem/blob/main/Screenshots/LoadingScene.JPG)
 #### Pantalla Inicio
-![PantallaInicio](https://github.com/theheckez/FoodMayhem/blob/main/CapturasInterfaz/PantallaInicio.png)
+![PantallaInicio](https://github.com/theheckez/FoodMayhem/blob/main/Screenshots/InitScene.png)
 
 Lista de los elementos:
 - Logo del juego
@@ -354,7 +354,6 @@ Para el escenario se ha utilizado un tileset descargado de it.chio (creado por: 
 
 _______________________________________________________________________
 
-El jugador puede elegir entre cuatro personajes y personalizar el color (sabor del helado).
 
 
 
