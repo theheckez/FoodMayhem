@@ -1,10 +1,10 @@
 
 # Proyecto Food Mayhem
 ### Cambio de nombre propuesto -> I-Scream 
-![Logo del juego](https://github.com/theheckez/FoodMayhem/blob/main/logo/LogoI-Scream.png)
+![Logo del juego](FoodMayhem/foodmayhem/src/main/resources/static/Assets/Logos/logo.png)
 
 ## Game Design Document
-![Inicio](https://github.com/theheckez/FoodMayhem/blob/main/CapturasInterfaz/PantallaInicio.png)
+![Logo del grupo](FoodMayhem/foodmayhem/src/main/resources/static/Assets/Logos/BakeryStudiosLogo.png)
 __Juegos en Red
 Curso 2022/23__
 
