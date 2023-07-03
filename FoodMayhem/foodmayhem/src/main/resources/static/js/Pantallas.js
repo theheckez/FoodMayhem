@@ -122,8 +122,8 @@ var PantallaInicio = new Phaser.Class({
         name.style.visibility = "visible";
         let passwordo = document.getElementById("password");
         passwordo.style.top = '390px';
-      
         passwordo.style.visibility = "visible";
+        
         this.url = window.location.href;
 
         
@@ -223,6 +223,8 @@ var PantallaInicio = new Phaser.Class({
         
 
         this.playButton.on("pointerup", ()=>{
+            name.style.visibility = "hidden";
+            passwordo.style.visibility = "hidden";
             document.body.style.cursor = "auto";
             if (name.value != "" && passwordo.value != "") {
                
@@ -353,29 +355,33 @@ var TwoCharacterSelect = new Phaser.Class({
         this.player2.setFrame(3);
         this.player2.setScale(3);
 
-        //Nombre jugador 1:
-        document.getElementById("namebar").style.visibility = "visible";
-        //Nombre jugador 2:
-        //document.getElementById("namebar2").style.marginLeft = '60px';
-       // document.getElementById("namebar2").style.visibility = "visible";
+        //***POR HACER: MOSTRAR NOMBRES JUGADORES***//
 
         //Botones aceptar: bloquean introducir nombre y van a siguiente pantalla
-        this.aceptar1 = this.add.sprite(210, 380, "aceptar").setInteractive();
-        this.marco1 = this.add.image(210, 380, 'marco').setVisible(false);
+        this.aceptar1 = this.add.sprite(210, 350, "aceptar").setInteractive();
+        this.marco1 = this.add.image(210, 350, 'marco').setVisible(false);
         this.marco1.setScale(1.2);
 
-        this.aceptar2 = this.add.sprite(590, 380, "aceptar").setInteractive();
-        this.marco2 = this.add.image(590, 380, 'marco').setVisible(false);
+        this.aceptar2 = this.add.sprite(590, 350, "aceptar").setInteractive();
+        this.marco2 = this.add.image(590, 350, 'marco').setVisible(false);
         this.marco2.setScale(1.2);
 
         //Boton menu: volver al menu
-        this.menu = this.add.sprite(695, 525, "menu").setInteractive();
-        this.marcoMenu = this.add.image(695, 525, 'marco').setVisible(false);
+        this.menu = this.add.sprite(100, 69, "menu").setInteractive();
+        this.marcoMenu = this.add.image(100, 69, 'marco').setVisible(false);
 
         //Boton play
         this.play = this.add.sprite(695, 480, "play").setInteractive();
         this.play.setVisible(false);
         this.marcoPlay = this.add.image(695, 480, 'marco').setVisible(false);
+
+        //***CHAT***//
+        let chatArea = document.getElementById("chat");
+        chatArea.style.visibility = "visible";
+        let textInput = document.getElementById("inputChat");
+        textInput.style.visibility = "visible";
+        //let sendButton = document.getElementById("sendButton");
+        //sendButton.style.visibility = "visible";
 
         //FUNCIONALIDAD:
         //Animacion personajes
@@ -463,42 +469,6 @@ var TwoCharacterSelect = new Phaser.Class({
             this.scene.start("PantallaInicio");
         })
 
-        //Interaccion modos de juego:
-        //Entrada por teclado
-        /*
-        const keyCodes = Phaser.Input.Keyboard.KeyCodes;
-        this.teclasJ1 = this.input.keyboard.addKeys({
-            w: keyCodes.W,
-            a: keyCodes.A,
-            d: keyCodes.D,
-            s: keyCodes.S
-        });
-        this.teclasJ2 = this.input.keyboard.addKeys({
-            up: keyCodes.UP, 
-            left: keyCodes.LEFT, 
-            right: keyCodes.RIGHT, 
-            down: keyCodes.DOWN
-        });*/
-        /*
-        this.teclasJ1.w.on('down', () =>{
-            if(this.flechita.y > 420)
-                this.flechita.setPosition(320, this.flechita.y-40);
-        })
-        this.teclasJ1.s.on('down', () =>{
-            if(this.flechita.y < 500)
-                this.flechita.setPosition(320, this.flechita.y+40);
-        })
-
-        this.teclasJ2.up.on('down', () =>{
-            if(this.flechita.y > 420)
-                this.flechita.setPosition(320, this.flechita.y-40);
-        })
-        this.teclasJ2.down.on('down', () =>{
-            if(this.flechita.y < 500)
-                this.flechita.setPosition(320, this.flechita.y+40);
-        })
-        */
-
         //Boton play
         this.play.on("pointerover", () => {
             document.body.style.cursor = "pointer";
@@ -512,8 +482,6 @@ var TwoCharacterSelect = new Phaser.Class({
             this.marcoPlay.setVisible(false);
             this.play.setFrame(1);
         })
-
-
         this.play.on('pointerup', () => {
 
             connectionWebSocket.sendWS("play");
@@ -523,16 +491,12 @@ var TwoCharacterSelect = new Phaser.Class({
            // player2T.style.visibility = "hidden";
         })
 
-        //Modos juego
-        /*
-        if(this.flechita.y == 420) this.modoCamp.setFontSize(22);
-        if(this.flechita.y != 420) this.modoCamp.setFontSize(20);
-  
-        if(this.flechita.y == 460) this.modoVersus.setFontSize(22);
-        if(this.flechita.y != 460) this.modoVersus.setFontSize(20);
-  
-        if(this.flechita.y == 500) this.modoArc.setFontSize(22);
-        if(this.flechita.y != 500) this.modoArc.setFontSize(20);*/
+        //CHAT
+        //sendButton.onclick(() => {
+
+        //})
+
+        
     },
 
     update: function (time, delta) {

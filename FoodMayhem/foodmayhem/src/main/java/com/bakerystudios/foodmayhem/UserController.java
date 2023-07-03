@@ -17,8 +17,8 @@ public class UserController {
 	
 	private Map<String, User> activeUsers = new HashMap<String, User>();
 	
-	String usersFileURL = "C:\\Users\\menec\\Documents\\GitHub\\FoodMayhem\\FoodMayhem\\foodmayhem\\src\\main\\resources\\static\\db\\users.txt"; // Files users
-	String tempUsersFileURL = "C:\\Users\\menec\\Documents\\GitHub\\FoodMayhem\\FoodMayhem\\foodmayhem\\src\\main\\resources\\static\\db\\tempUsers.txt"; // File used to delete one user
+	String usersFileURL = "src/main/resources/static/db/users.txt"; // Files users
+	String tempUsersFileURL = "src/main/resources/static/db/tempUsers.txt"; // File used to delete one user
 	
 	public UserController() 
 	{
