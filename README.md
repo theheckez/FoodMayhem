@@ -375,7 +375,9 @@ Se utilizan WebSockets como mecanismo de comunicación asíncrona en el juego. S
   
 ![Chat](Screenshots/ChatScreen.jpeg)
 
+DIAGRAMA DE CLASES
 
+![Diagrama de clases](Screenshots/DiagramaClases.PNG)
 
 
 
