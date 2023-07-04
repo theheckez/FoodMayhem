@@ -26,67 +26,93 @@ body{
   box-sizing: border-box;
 }
 
+.nk-chatContainer-section
+{
+  position: fixed;
+  width: 845px;
+  height: 190px;
+
+  top:470px;
+  right:17.35%;
+}
+
+.container {
+  container-type: inline-size;
+  position: fixed;
+  height: 190px;
+  width: 845px;
+
+  margin-top: 470px;
+  margin-left: 5px;
+  
+  visibility: hidden;
+}
+
+@container (min-width: 845px) {
+  .card {
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: auto 1fr;
+    align-items: start;
+    column-gap: 20px;
+
+    
+  }
+
+  .card .nk-showMessages-container {
+    grid-row: 1;
+    grid-column: 2;
+    /*padding-bottom: 50px;*/
+    height: 160px;
+    text-align: left;
+    font-size: 1em;
+    font-family: 'estilo'; 
+    background-color:rgba(105, 105, 105, 0.715);
+    border-radius: 5px;
+    border-color: dimgrey;
+    /*text-shadow: 0 4px 8px rgb(0 0 0 / 20%);
+    outline: 0.2em;*/
+  
+  
+    position:inherit;
+    top: 400px;
+    right: 22.5%; 
+  }
+  
+  .card .nk-messagesContainer-input{
+    position:inherit;
+    height:40px;
+    width: 845px;
+    text-align: left;
+    font-size: 1em;
+    font-family: 'estilo';
+    /*background-image: linear-gradient(180deg, #ffffff 0%, #9e7aa5 100%);*/
+    border-radius: 5px;
+    /*text-shadow: 0 4px 8px rgb(0 0 0 / 20%);
+    outline: 0.2em;*/
+    z-index: 1;
+  
+  }
+  
+  .card .btn-personalization{
+    width: 5%;
+    height: 5%;
+  
+    font-size: 1em;
+    font-family: 'estilo';
+  
+    color:rgb(0, 0, 0);
+    background-color:rgb(121, 70, 146);
+    border-style: dashed;
+    z-index: 1;
+  
+    position:fixed;
+    top: 620px;
+    right: 22.7%;
+  }
+}
+
 input[type-text]{
   writing-mode: horizontal-tb;
   cursor: text;
   
-}
-
-.nk-showMessages-container {
-  padding:0 0.90rem;
-  padding-bottom: 50px;
-  width: 845px;
-  height: 190px;
-  text-align: left;
-  font-size: 1em;
-  font-family: 'estilo'; 
-  background-color:rgba(105, 105, 105, 0.715);
-  border-radius: 5px;
-  border-color: dimgrey;
-  /*text-shadow: 0 4px 8px rgb(0 0 0 / 20%);
-  outline: 0.2em;*/
-
-
-  position:fixed;
-  top: 470px;
-  right: 22.5%; 
-
-  visibility: hidden;
-}
-
-.nk-messagesContainer-output{
-  padding:0 0.90rem;
-  width: 845px;
-  height: 40px;
-  text-align: left;
-  font-size: 1em;
-  font-family: 'estilo';
-  /*background-image: linear-gradient(180deg, #ffffff 0%, #9e7aa5 100%);*/
-  border-radius: 5px;
-  /*text-shadow: 0 4px 8px rgb(0 0 0 / 20%);
-  outline: 0.2em;*/
-  z-index: 1;
-
-  position:fixed;
-  top: 620px;
-  right: 22.5%; 
-
-  visibility: hidden;
-}
-
-.btn-warning{
-  width: 5%;
-  height: 5%;
-
-  font-size: 1em;
-  font-family: 'estilo';
-
-  color:rgb(0, 0, 0);
-  background-color:rgb(121, 70, 146);
-  border-style: dashed;
-  z-index: 1;
-
-  position:fixed;
-  top: 620px;
-  right: 22.7%;
 }

@@ -47,14 +47,26 @@
   <div class="bs-intro-text" id="introTextoP1">
     <input id="namebar" name="player_User" class="nk-namebar-input" type="text" placeholder="User...">
     <input id="password" name="player_Password" class="nk-namebar-input" type="text" placeholder="Password..."> 
-    <input id="inputChat" name="player_write" class="nk-messagesContainer-output" type="text" placeholder="Send...">
-    <div class="input-group-append btn-sendMessage">
-      <input type="submit" class="btn btn-warning">
-    </div>
     <span class="nk-namebar-indicator"></span>
   </div>
 
-  <div id="chat" class="nk-showMessages-container"></div>
+  <div id="chatContainer" class="container">
+    <div id="othersMessages" class ="card">
+      <ul id="messages" class="nk-showMessages-container"></ul>
+    </div>
+    <div id="writeSection" class="card">
+      <input id="inputChat" name="player_write" class="nk-messagesContainer-input" type="text" placeholder="Send...">
+    </div>
+  </div>
+
+  <!--div class="input-group">
+    <input id="inputChat" name="player_write" class="nk-messagesContainer-output" type="text" placeholder="Send...">
+    <div class="input-group-append">
+      <input type="submit" class="btn btn-warning btn-personalization">
+    </div>
+  </div>
+  
+  <div id="chat" class="nk-showMessages-container"></div-->
   <!--div class="--dark-theme" id="chat">
     <div class="col-md-6 mt4">
       <div class="card">
@@ -86,7 +98,6 @@
     <h1 id="finalScore"></h1>
     <ul id="highScores"></ul>
   </div>
-</div>
 
 
   <!--div class="flex-container">
@@ -135,8 +146,8 @@ var victoryMusic;
 var defMusic;
 
 const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
-//const inputMessage = document.getElementById('inputMessage');
-//const messages = document.getElementById('messages');
+const inputMessage = document.getElementById('inputChat');
+const messages = document.getElementById('messages');
 var playerName;
 var password;
 
@@ -148,13 +159,14 @@ window.addEventListener('keydown', event => {
   if (event.which === 32) {
     if (document.activeElement === inputMessage) {
       inputMessage.value = inputMessage.value + ' ';
+      console.log(inputMessage);
     }
   }
 });
 
 $(document).ready(function()
 { 
-  //updateChat();  
+  updateChat();  
 });
 
 
@@ -700,7 +712,7 @@ var MainGame = new Phaser.Class({
       'transparent'
     ]
   },
-  scene: [/*PantallaCarga, MainGame, PantallaInicio, PantallaCreditos, */TwoCharacterSelect, PantallaPausa, ResultadoDerrota, ResultadoVictoria, HighScoresScreen]
+  scene: [PantallaCarga, MainGame, PantallaInicio, PantallaCreditos, TwoCharacterSelect, PantallaPausa, ResultadoDerrota, ResultadoVictoria, HighScoresScreen]
   };
 
   var game = new Phaser.Game(config);
