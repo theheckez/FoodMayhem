@@ -372,7 +372,8 @@ Se utilizan WebSockets como mecanismo de comunicación asíncrona en el juego. S
 - PlayerInfoWebSocket.js
 - SceneChangeWebSocket.js
 - WebSocketVariables.js
-![Chat](FoodMayhem/foodmayhem/src/main/resources/static/Assets/Scenaries/Map/map1.png)
+  
+![Chat](Screenshots/ChatScreen.jpeg)
 
 
 
