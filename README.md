@@ -8,8 +8,8 @@
 __Juegos en Red
 Curso 2022/23__
 
-
-
+## Vídeo demo técnico
+https://youtu.be/xZE7valpch4
 
 __Fase 1__
 
@@ -372,7 +372,8 @@ Se utilizan WebSockets como mecanismo de comunicación asíncrona en el juego. S
 - PlayerInfoWebSocket.js
 - SceneChangeWebSocket.js
 - WebSocketVariables.js
-![Chat](FoodMayhem/foodmayhem/src/main/resources/static/Assets/Scenaries/Map/map1.png)
+  
+![Chat](Screenshots/ChatScreen.jpeg)
 
 
 
