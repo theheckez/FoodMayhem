@@ -370,16 +370,9 @@ var TwoCharacterSelect = new Phaser.Class({
         this.menu = this.add.sprite(100, 69, "menu").setInteractive();
         this.marcoMenu = this.add.image(100, 69, 'marco').setVisible(false);
 
-        //Boton play
-        this.play = this.add.sprite(695, 480, "play").setInteractive();
-        this.play.setVisible(false);
-        this.marcoPlay = this.add.image(695, 480, 'marco').setVisible(false);
-
         //***CHAT***//
-        let chatArea = document.getElementById("chat");
+        let chatArea = document.getElementById("chatContainer");
         chatArea.style.visibility = "visible";
-        let textInput = document.getElementById("inputChat");
-        textInput.style.visibility = "visible";
         //let sendButton = document.getElementById("sendButton");
         //sendButton.style.visibility = "visible";
 
@@ -415,15 +408,11 @@ var TwoCharacterSelect = new Phaser.Class({
         this.aceptar1.on("pointerdown", () => {
             this.marco1.setVisible(false);
             this.aceptar1.setFrame(1);
-            player1T = document.getElementById("namebar");
-            if (player1T.value == "") document.getElementById("namebar").value = "Player1";
             this.ready1 = 1;
-            console.log("Player1:" + player1T.value);
-            this.aceptar1.disableInteractive();
-            player1T.disabled = true;
         })
         this.aceptar1.on("pointerup", () => {
             document.body.style.cursor = "auto";
+            if(this.ready1 == 1 && this.ready2 == 1) connectionWebSocket.sendWS("play");
         })
 
         //ok 2:
@@ -440,15 +429,12 @@ var TwoCharacterSelect = new Phaser.Class({
         this.aceptar2.on("pointerdown", () => {
             this.marco2.setVisible(false);
             this.aceptar2.setFrame(1);
-           // player2T = document.getElementById("namebar2");
-            //if (player2T.value == "") document.getElementById("namebar2").value = "Player2";
             this.ready2 = 1;
-           // console.log("Player2:" + player2T.value);
             this.aceptar2.disableInteractive();
-            //player2T.disabled = true;
         })
         this.aceptar2.on("pointerup", () => {
             document.body.style.cursor = "auto";
+            if(this.ready1 == 1 && this.ready2 == 1) connectionWebSocket.sendWS("play");
         })
 
         //menu:
@@ -468,34 +454,6 @@ var TwoCharacterSelect = new Phaser.Class({
             document.body.style.cursor = "auto";
             this.scene.start("PantallaInicio");
         })
-
-        //Boton play
-        this.play.on("pointerover", () => {
-            document.body.style.cursor = "pointer";
-            this.marcoPlay.setVisible(true);
-        })
-        this.play.on("pointerout", () => {
-            document.body.style.cursor = "auto";
-            this.marcoPlay.setVisible(false);
-        })
-        this.play.on("pointerdown", () => {
-            this.marcoPlay.setVisible(false);
-            this.play.setFrame(1);
-        })
-        this.play.on('pointerup', () => {
-
-            connectionWebSocket.sendWS("play");
-            //this.scene.start('mainGame');
-            this.play.setFrame(0);
-            player1T.style.visibility = "hidden";
-           // player2T.style.visibility = "hidden";
-        })
-
-        //CHAT
-        //sendButton.onclick(() => {
-
-        //})
-
         
     },
 
