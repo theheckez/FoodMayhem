@@ -359,7 +359,7 @@ API REST
 
 Se ha creado un back-end que permite implementar la comunicación entre el cliente y un servidor utilizando un servicio REST, definir la API REST que ofrecerá el servidor y definir las funciones de gestión de clientes y servidor, así como los datos que se gestionarán usando REST. En nuestro caso se ha utilizado REST para la implementación del login del los usuarios al inicio del juego, para almacenar su nombre y contraseña. También se ha usado para guardar las mejores puntaciones de cada usuario, y mantener actualizada la lista de highscores del juego.
 
-![Pantalla login](FoodMayhem/foodmayhem/src/main/resources/static/Assets/Scenaries/Map/map1.png)
+![Pantalla login](Screenshots/Login.PNG)
 
 WEBSOCKETS
 
