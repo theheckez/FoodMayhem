@@ -49,13 +49,15 @@ openConnection = function()
 		}
 	
 		if(data.type === "play")
-		{
+		{	
+			ticks += 1;
             console.log("P1" + p1Connected + " y P2: " + p2Connected)
             console.log("Entramos a play");
-			if(p1Connected && p2Connected)
+			if((p1Connected && p2Connected) && ticks == 2)
 			{
                 console.log("Estan los dos conectados");
 				characterSelectScene.scene.start('mainGame');
+				ticks = 0;
 			}
 		}
 		

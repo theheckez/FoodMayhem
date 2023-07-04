@@ -152,6 +152,7 @@ const messages = document.getElementById('messages');
 var playerName;
 var password;
 
+var ticks = 0;
 
 window.addEventListener('keydown', event => {
   if (event.which === 13) {
@@ -565,7 +566,7 @@ var MainGame = new Phaser.Class({
 
       checkforLevel: function() {
         if(!player1.dead || !player2.dead){
-          if(this.level < 1){
+          if(this.level < 2){
             if(this.enemies.countActive() === 0 && this.bosses.countActive() === 0 ) {
               this.generateEnemies(Phaser.Math.Between(3,10), this.enemies, 'malvin');
               generationWebSocket.sendWS(enemiesList, "enemies");

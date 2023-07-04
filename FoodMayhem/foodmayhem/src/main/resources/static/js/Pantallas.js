@@ -223,8 +223,7 @@ var PantallaInicio = new Phaser.Class({
         
 
         this.playButton.on("pointerup", ()=>{
-            name.style.visibility = "hidden";
-            passwordo.style.visibility = "hidden";
+          
             document.body.style.cursor = "auto";
             if (name.value != "" && passwordo.value != "") {
                 playerName = name.value;
@@ -252,6 +251,8 @@ var PantallaInicio = new Phaser.Class({
                 // Starts the next scene
                 if (change) { //Si el usuario y contraseña existen y estan bien o no existen, se crea uno nuevo y se inicia la escena
                     //this.responseText.setFrame(0);
+                    name.style.visibility = "hidden";
+                    passwordo.style.visibility = "hidden";
                     //this.responseText.setVisible(true);
                     //this.scene.stop();
                     //this.dataObj.username = this.name.value;
@@ -362,9 +363,9 @@ var TwoCharacterSelect = new Phaser.Class({
         this.marco1 = this.add.image(210, 350, 'marco').setVisible(false);
         this.marco1.setScale(1.2);
 
-        this.aceptar2 = this.add.sprite(590, 350, "aceptar").setInteractive();
+       /* this.aceptar2 = this.add.sprite(590, 350, "aceptar").setInteractive();
         this.marco2 = this.add.image(590, 350, 'marco').setVisible(false);
-        this.marco2.setScale(1.2);
+        this.marco2.setScale(1.2);*/
 
         //Boton menu: volver al menu
         this.menu = this.add.sprite(100, 69, "menu").setInteractive();
@@ -412,11 +413,12 @@ var TwoCharacterSelect = new Phaser.Class({
         })
         this.aceptar1.on("pointerup", () => {
             document.body.style.cursor = "auto";
-            if(this.ready1 == 1 && this.ready2 == 1) connectionWebSocket.sendWS("play");
+            connectionWebSocket.sendWS("play");
+            chatArea.style.visibility = "hidden";
         })
 
         //ok 2:
-        this.aceptar2.on("pointerover", () => {
+       /* this.aceptar2.on("pointerover", () => {
             if (this.ready2 != 1) {
                 document.body.style.cursor = "pointer";
                 this.marco2.setVisible(true);
@@ -434,8 +436,8 @@ var TwoCharacterSelect = new Phaser.Class({
         })
         this.aceptar2.on("pointerup", () => {
             document.body.style.cursor = "auto";
-            if(this.ready1 == 1 && this.ready2 == 1) connectionWebSocket.sendWS("play");
-        })
+            connectionWebSocket.sendWS("play");
+        })*/
 
         //menu:
         this.menu.on("pointerover", () => {
@@ -1573,7 +1575,7 @@ class ResultadoVictoria extends Phaser.Scene {
         this.continue = this.make.text(next);
 
         document.addEventListener('keydown', () => {
-            this.scene.start('HighScoresScreen');
+            this.scene.start('TwochSelect');
         })
     }
     update(time, date) {
