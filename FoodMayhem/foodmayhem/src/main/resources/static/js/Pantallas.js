@@ -227,7 +227,7 @@ var PantallaInicio = new Phaser.Class({
             passwordo.style.visibility = "hidden";
             document.body.style.cursor = "auto";
             if (name.value != "" && passwordo.value != "") {
-               
+                playerName = name.value;
                 console.log(this.url);
                 console.log(name.value);
                 console.log(passwordo.value)
@@ -258,7 +258,7 @@ var PantallaInicio = new Phaser.Class({
                     //this.dataObj.url = this.url;
                     //this.time.addEvent({ delay: 1000, callback: countdownFunction, callbackScope: this, loop: true });
                     //this.scene.start('lobby', data);
-                    this.scene.start("chSelect");
+                    this.scene.start("TwochSelect");
                 } else { // Si existe el usuario introducido pero la contraseña no es la guardada en el servidor, le decimos que intente de nuevo
                     //this.responseText.setFrame(2);
                     //this.responseText.setVisible(true);
@@ -295,7 +295,7 @@ var TwoCharacterSelect = new Phaser.Class({
     initialize:
 
         function CharacterSelect() {
-            Phaser.Scene.call(this, { key: 'chSelect' });
+            Phaser.Scene.call(this, { key: 'TwochSelect' });
         },
 
     preload: function () {
@@ -354,7 +354,7 @@ var TwoCharacterSelect = new Phaser.Class({
         this.player2 = this.add.sprite(590, 200, 'player2').setInteractive();
         this.player2.setFrame(3);
         this.player2.setScale(3);
-
+        
         //***POR HACER: MOSTRAR NOMBRES JUGADORES***//
 
         //Botones aceptar: bloquean introducir nombre y van a siguiente pantalla
@@ -462,11 +462,7 @@ var TwoCharacterSelect = new Phaser.Class({
         this.player1.anims.play('pose', true);
         this.player2.anims.play('pose2', true);
 
-        //Cambiar de pantalla:
-        if (this.ready1 + this.ready2 == 2) {
-            this.ready = 0;
-            this.play.setVisible(true);;
-        }
+        //Cambiar de pantalla
         /*
 
         if(this.teclasJ1.w.JustDown == true){
@@ -948,6 +944,7 @@ class PantallaPausa extends Phaser.Scene {
                 color: 0x32C93B
             }
         })
+        
         //Vida Jugador 1:
         if (player1.health == 100) {
             vidaJ1.fillRect(214, 267, 132, 10);

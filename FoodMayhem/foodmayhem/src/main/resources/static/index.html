@@ -148,6 +148,7 @@ var defMusic;
 const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
 const inputMessage = document.getElementById('inputChat');
 const messages = document.getElementById('messages');
+
 var playerName;
 var password;
 
@@ -164,16 +165,11 @@ window.addEventListener('keydown', event => {
   }
 });
 
-$(document).ready(function()
-{ 
-  updateChat();  
-});
-
 
 function sendMessage() {
 
   let msg = inputMessage.value;
-  let nick = player1Name.value;
+  let nick = playerName;
 
   if (msg && nick) {
     inputMessage.value = '';

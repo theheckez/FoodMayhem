@@ -12,6 +12,7 @@ chatWebSocket.onmessage = function (msg) {
 	var obj = JSON.parse(msg.data);
 
 	console.log(obj);
+    obj._nick += ": ";
 	const usernameSpan = document.createElement('span');
     const usernameText = document.createTextNode(obj._nick);
     usernameSpan.className = 'username';
